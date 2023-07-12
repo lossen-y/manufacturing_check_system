@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    标准化知识和信息|标准结构
+{% endblock title %}
+
+{% block main %}
+    <h2 class="page-header" style="border-bottom: none">标准化知识和信息|标准结构</h2>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#partStruction" data-toggle="tab">典型零件结构</a></li>
+        <li><a href="#featureStruction" data-toggle="tab">典型特征结构</a></li>
+
+        {#        <li class="dropdown">#}
+        {#            <a href="#" id="myTabDrop1" class="dropdown-toggle"#}
+        {#               data-toggle="dropdown">形状加工能力#}
+        {#                <b class="caret"></b>#}
+        {#            </a>#}
+        {#            <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">#}
+        {#                <li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>#}
+        {#                <li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>#}
+        {#            </ul>#}
+        {#        </li>#}
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        {#标签1：零件结构#}
+        <div class="tab-pane fade in active" id="partStruction">
+
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">作者列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">搜索</button>
+                                </span>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_author' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加作者</a>
+                            <button class="btn btn-success pull-right" data-toggle="modal" data-target="#myModal">新增
+                            </button>
+                        </div>
+
+                    </div><!-- /.row -->
+
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>id</th>
+                            <th>作者名字</th>
+                            <th>作品</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for author in author_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ author.id }}</td>
+                                <td>{{ author.name }}</td>
+                                <td>
+                                    {% for book in author.book.all %}
+                                        《{{ book.title }}》&nbsp;
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <a class="btn btn-danger" href="{% url 'delete_author' author.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_author' author.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>编辑</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+        {#标签2：特征结构#}
+        <div class="tab-pane fade" id="featureStruction">
+            <p>something</p>
+        </div>
+    </div>
+{% endblock main %}

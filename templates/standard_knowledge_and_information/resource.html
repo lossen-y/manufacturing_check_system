@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    标准化知识和信息|制造资源
+{% endblock title %}
+
+{% block main %}
+    <h2 class="page-header" style="border-bottom: none">标准化知识和信息|制造资源</h2>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#tool" data-toggle="tab">刀具</a></li>
+        <li><a href="#fixture" data-toggle="tab">工装</a></li>
+        <li class="dropdown">
+            <a href="#" id="myTabDrop1" class="dropdown-toggle"
+               data-toggle="dropdown">机床
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                <li><a href="#machine" tabindex="-1" data-toggle="tab">机床</a></li>
+                <li><a href="#angleHead" tabindex="-1" data-toggle="tab">角度头</a></li>
+            </ul>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        {#标签1：刀具#}
+        <div class="tab-pane fade in active" id="tool">
+
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">刀具列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_cutter/" method="get">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="cutter_search" placeholder="刀具编号">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_cutter' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加刀具</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
+		                {#display: -webkit-box;#}
+                        {#/* 限制再一个块元素再文本显示的行数 */#}
+                        {#-webkit-line-clamp: 2;#}
+                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
+                        {#-webkit-box-orient: vertical;#}
+
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>刀具编号</th>
+                            <th>供应商</th>
+                            <th>最高公差等级</th>
+                            <th>最低公差等级</th>
+                            <th>最小直径</th>
+                            <th>最大直径</th>
+                            <th>最小深径比</th>
+                            <th>最大深径比</th>
+                            <th>可加工材料</th>
+                            <th>刀具材料</th>
+                            <th>可加工工艺</th>
+                            <th>刀具成本</th>
+                            <th>刀具图片</th>
+                            <th>备注</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for cutter in cutter_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_cutter' cutter.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_cutter' cutter.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ cutter.name }}</td>
+                                <td>{{ cutter.supplier }}</td>
+                                <td>{{ cutter.minHoleTole }}</td>
+                                <td>{{ cutter.maxHoleTole }}</td>
+                                <td>{{ cutter.minDia }}</td>
+                                <td>{{ cutter.maxDia }}</td>
+                                <td>{{ cutter.minDepDia }}</td>
+                                <td>{{ cutter.maxDepDia }}</td>
+                                <td>{{ cutter.capMat }}</td>
+                                <td>{{ cutter.cutterMat }}</td>
+                                <td>{{ cutter.capPro }}</td>
+                                <td>{{ cutter.cutterCost }}</td>
+                                <td>{{ cutter.cutterImg }}</td>
+                                <td>{{ cutter.cutterRemark }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
+
+            </div>
+        </div>
+        {#标签2：工装#}
+        <div class="tab-pane fade" id="fixture">
+            <p>something</p>
+        </div>
+        {#标签2：机床#}
+        <div class="tab-pane fade" id="machine">
+            <p>机床something</p>
+        </div>
+        {#标签2：角度头#}
+        <div class="tab-pane fade" id="angleHead">
+            <p>角度头something</p>
+        </div>
+    </div>
+{% endblock main %}

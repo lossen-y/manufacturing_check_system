@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑规则关联参数
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">规则关联参数管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑规则关联参数</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_KnowledgeParaTable' KnowledgeParaTable.id %}" method="post">
+                <div class="form-group">
+                    <label for="KnowledgeParaTable-rulename" class="col-sm-2 control-label">规则名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" disabled="disabled" class="form-control" id="KnowledgeParaTable-rulename" placeholder="规则名称"
+                               name="KnowledgeParaTable_rulename" value="{{rule_name}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="KnowledgeParaTable-ruleid" class="col-sm-2 control-label">规则id</label>
+                    <div class="col-sm-10">
+                        <input type="text" disabled="disabled" class="form-control" id="KnowledgeParaTable-ruleid" placeholder="规则id"
+                               name="KnowledgeParaTable_ruleid" value="{{rule_id}}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="KnowledgeParaTable_name" class="col-sm-2 control-label">参数名</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="KnowledgeParaTable_name" name="KnowledgeParaTable_name"
+                               placeholder="参数名" value="{{ KnowledgeParaTable.name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="KnowledgeParaTable-paraType" class="col-sm-2 control-label">参数类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="KnowledgeParaTable-paraType" placeholder="参数类型"
+                               name="KnowledgeParaTable_paraType" value="{{ KnowledgeParaTable.paraType }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="KnowledgeParaTable-defaultValue" class="col-sm-2 control-label">默认值</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="KnowledgeParaTable-defaultValue" placeholder="默认值"
+                               name="KnowledgeParaTable_defaultValue" value="{{ KnowledgeParaTable.defaultValue }}">
+                    </div>
+                </div>
+{#                <div class="form-group">#}
+{#                    <label for="KnowledgeParaTable-tableFunction" class="col-sm-2 control-label">查表函数</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="text" class="form-control" id="KnowledgeParaTable-tableFunction" placeholder="查表函数"#}
+{#                               name="KnowledgeParaTable_tableFunction" value="{{ KnowledgeParaTable.outputPara }}">#}
+{#                    </div>#}
+{#                </div>#}
+                <div class="form-group">
+                    <label for="books" class="col-sm-2 control-label">查表函数</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="KnowledgeParaTable-tableFunction" name="KnowledgeParaTable_tableFunction">
+                            {% for tableFunction in tableFunction_list %}
+                                <option value="{{ tableFunction.id }}">{{ tableFunction.functionName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="KnowledgeParaTable-remark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="KnowledgeParaTable-remark" placeholder="备注"
+                                  name="KnowledgeParaTable_remark" rows="5" value="{{ KnowledgeParaTable.remark }}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block KnowledgeParaTable_list %}
+    active
+{% endblock KnowledgeParaTable_list %}

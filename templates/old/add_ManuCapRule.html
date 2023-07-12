@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|添加制造能力审查规则
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">制造能力审查规则管理页面</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加制造能力审查规则</h3>
+        </div>
+{#        <style type="text/css"> /*input css*/#}
+{#        .iInput{ position: absolute; #}
+{#            width: 99px; #}
+{#            height: 16px; #}
+{#            left: 1px; #}
+{#            top: 2px; #}
+{#            border-bottom: 0px; #}
+{#            border-right: 0px; #}
+{#            border-left: 0px; #}
+{#            border-top: 0px; }#}
+{#        </style>#}
+        <style>
+        select {
+          border-radius: 5px;
+          {#box-shadow: 2px 2px 5px #999;#}
+          transition: all .2s ease-in-out;
+        }
+        {#select:hover {#}
+        {##}
+        {#  background-color: #f0f0f0;#}
+        {##}
+        {#}#}
+      </style>
+
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'add_ManuCapRule' %}" method="post">
+                <div class="form-group">
+                    <label for="ManuCapRule-name" class="col-sm-2 control-label">规则名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-name" placeholder="规则名称"
+                               name="ManuCapRule_name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-captype" class="col-sm-2 control-label">制造能力参数类型</label>
+                    <div class="col-sm-10">
+                        <select select style="width:100%; height:40px;" name="ManuCapRule_captype">
+{#                         <select style="width:120px;" name="ManuCapRule_captype" onchange="document.getElementById('input').value=this.value">#}
+                        <option style="font-size:15px;" value="零件材料" selected>零件材料</option>
+                        <option value="精度">精度</option>
+                        <option value="尺寸加工能力">尺寸加工能力</option>
+                        </select>
+{#                        <input id="input" name="ManuCapRule_captype" class="iInput">#}
+{#                        <input type="text" class="form-control" id="ManuCapRule-captype" placeholder="制造能力参数类型"#}
+{#                               name="ManuCapRule_captype">#}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-manuType" class="col-sm-2 control-label">加工方式</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-manuType" placeholder="加工方式"
+                               name="ManuCapRule_manuType">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-featType1" class="col-sm-2 control-label">特征大类</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-featType1" placeholder="特征大类"
+                               name="ManuCapRule_featType1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-featType2" class="col-sm-2 control-label">特征小类</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-featType2" placeholder="特征小类"
+                               name="ManuCapRule_featType2">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-featPro" class="col-sm-2 control-label">特征属性</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-featPro" placeholder="特征属性"
+                               name="ManuCapRule_featPro">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-resType" class="col-sm-2 control-label">制造资源/工艺方案类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-resType" placeholder="制造资源/工艺方案类型"
+                               name="ManuCapRule_resType">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-content" class="col-sm-2 control-label">知识描述</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-content" placeholder="知识描述"
+                               name="ManuCapRule_content">
+                    </div>
+                </div>
+{#                <div class="form-group">#}
+{#                    <label for="ManuCapRule-script" class="col-sm-2 control-label">脚本</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="text" class="form-control" id="ManuCapRule-script" placeholder="脚本"#}
+{#                               name="ManuCapRule_script">#}
+{#                    </div>#}
+{#                </div>#}
+                <div class="form-group">
+                    <label for="ManuCapRule-script" class="col-sm-2 control-label">脚本</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="ManuCapRule_script" placeholder="脚本"
+                                  name="ManuCapRule_script" rows="20"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-inputParaList" class="col-sm-2 control-label">脚本输入参数列表</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-inputParaList" placeholder="脚本输入参数列表"
+                               name="ManuCapRule_inputParaList">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-outputParaList" class="col-sm-2 control-label">脚本输出参数列表</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-outputParaList" placeholder="脚本输出参数列表"
+                               name="ManuCapRule_outputParaList">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-paraTable" class="col-sm-2 control-label">知识参数表名</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-paraTable" placeholder="知识参数表名"
+                               name="ManuCapRule_paraTable">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-ManuCapRemark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="ManuCapRule-ManuCapRemark" placeholder="备注"
+                                  name="ManuCapRule_ManuCapRemark" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+            {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block ManuCapRule_list %}
+active
+{% endblock ManuCapRule_list %}

@@ -1,0 +1,440 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    工艺性审查知识|制造能力
+{% endblock title %}
+
+{% block main %}
+    <h2 class="page-header" style="border-bottom: none">工艺性审查知识|制造能力</h2>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#partMaterial" data-toggle="tab">零件材料</a></li>
+        <li><a href="#precision" data-toggle="tab">精度</a></li>
+        <li><a href="#size" data-toggle="tab">尺寸加工能力</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        {#标签1：零件材料#}
+        <div class="tab-pane in active" id="partMaterial">
+
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">零件材料制造能力审查规则列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_ManuCapRule/" method="get">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="ManuCapRule_search" placeholder="刀具编号">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_ManuCapRule' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加零件材料制造能力审查规则</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>规则名称</th>
+                            <th>制造能力参数类型</th>
+                            <th>加工方式</th>
+                            <th>特征大类</th>
+                            <th>特征小类</th>
+                            <th>特征属性</th>
+                            <th>制造资源/工艺方案类型</th>
+                            <th>知识描述</th>
+                            <th>脚本</th>
+                            <th>脚本输入参数列表</th>
+                            <th>脚本输出参数列表</th>
+                            <th>知识参数表名</th>
+                            <th>备注</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for ManuCapRule in ManuCapRule_mat_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_ManuCapRule' ManuCapRule.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_ManuCapRule' ManuCapRule.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ ManuCapRule.name }}</td>
+                                <td>{{ ManuCapRule.captype }}</td>
+                                <td>{{ ManuCapRule.manuType }}</td>
+                                <td>{{ ManuCapRule.featType1 }}</td>
+                                <td>{{ ManuCapRule.featType2 }}</td>
+                                <td>{{ ManuCapRule.featPro }}</td>
+                                <td>{{ ManuCapRule.resType }}</td>
+                                <td>{{ ManuCapRule.content }}</td>
+                                <td>{{ ManuCapRule.script }}</td>
+                                <td>{{ ManuCapRule.inputParaList }}</td>
+                                <td>{{ ManuCapRule.outputParaList }}</td>
+                                <td>{{ ManuCapRule.paraTable }}</td>
+                                <td>{{ ManuCapRule.ManuCapRemark }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
+
+            </div>
+         </div>
+        {#标签2：精度#}
+        <div class="tab-pane fade" id="precision">
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">精度制造能力审查规则列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_ManuCapRule/" method="get">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="ManuCapRule_search" placeholder="刀具编号">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_ManuCapRule' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加精度制造能力审查规则</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px black solid; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>规则名称</th>
+                            <th>制造能力参数类型</th>
+                            <th>加工方式</th>
+                            <th>特征大类</th>
+                            <th>特征小类</th>
+                            <th>特征属性</th>
+                            <th>制造资源/工艺方案类型</th>
+                            <th>知识描述</th>
+                            <th>脚本</th>
+                            <th>脚本输入参数列表</th>
+                            <th>脚本输出参数列表</th>
+                            <th>知识参数表名</th>
+                            <th>备注</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for ManuCapRule in ManuCapRule_acc_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_ManuCapRule' ManuCapRule.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_ManuCapRule' ManuCapRule.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ ManuCapRule.name }}</td>
+                                <td>{{ ManuCapRule.captype }}</td>
+                                <td>{{ ManuCapRule.manuType }}</td>
+                                <td>{{ ManuCapRule.featType1 }}</td>
+                                <td>{{ ManuCapRule.featType2 }}</td>
+                                <td>{{ ManuCapRule.featPro }}</td>
+                                <td>{{ ManuCapRule.resType }}</td>
+                                <td>{{ ManuCapRule.content }}</td>
+                                <td>{{ ManuCapRule.script }}</td>
+                                <td>{{ ManuCapRule.inputParaList }}</td>
+                                <td>{{ ManuCapRule.outputParaList }}</td>
+                                <td>{{ ManuCapRule.paraTable }}</td>
+                                <td>{{ ManuCapRule.ManuCapRemark }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
+
+            </div>
+        </div>
+        {#标签3：尺寸加工能力#}
+        <div class="tab-pane fade" id="size">
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">尺寸加工能力审查规则列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_ManuCapRule/" method="get">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="ManuCapRule_search" placeholder="刀具编号">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_ManuCapRule' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加尺寸加工制造能力审查规则</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>规则名称</th>
+                            <th>制造能力参数类型</th>
+                            <th>加工方式</th>
+                            <th>特征大类</th>
+                            <th>特征小类</th>
+                            <th>特征属性</th>
+                            <th>制造资源/工艺方案类型</th>
+                            <th>知识描述</th>
+                            <th>脚本</th>
+                            <th>脚本输入参数列表</th>
+                            <th>脚本输出参数列表</th>
+                            <th>知识参数表名</th>
+                            <th>备注</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for ManuCapRule in ManuCapRule_size_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_ManuCapRule' ManuCapRule.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_ManuCapRule' ManuCapRule.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ ManuCapRule.name }}</td>
+                                <td>{{ ManuCapRule.captype }}</td>
+                                <td>{{ ManuCapRule.manuType }}</td>
+                                <td>{{ ManuCapRule.featType1 }}</td>
+                                <td>{{ ManuCapRule.featType2 }}</td>
+                                <td>{{ ManuCapRule.featPro }}</td>
+                                <td>{{ ManuCapRule.resType }}</td>
+                                <td>{{ ManuCapRule.content }}</td>
+                                <td>{{ ManuCapRule.script }}</td>
+                                <td>{{ ManuCapRule.inputParaList }}</td>
+                                <td>{{ ManuCapRule.outputParaList }}</td>
+                                <td>{{ ManuCapRule.paraTable }}</td>
+                                <td>{{ ManuCapRule.ManuCapRemark }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock main %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑查表函数库
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">查表函数管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑查表函数数据</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_TableFunction' TableFunction.id %}" method="post">
+                <div class="form-group">
+                    <label for="TableFunction_name" class="col-sm-2 control-label">数据库中表名</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="TableFunction_name" name="TableFunction_name"
+                               placeholder="数据库中表名" value="{{ TableFunction.name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="TableFunction-functionName" class="col-sm-2 control-label">内部查表函数名</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="TableFunction-functionName" placeholder="内部查表函数名"
+                               name="TableFunction_functionName" value="{{ TableFunction.functionName }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="TableFunction-inputPara" class="col-sm-2 control-label">输入参数</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="TableFunction-inputPara" placeholder="输入参数"
+                               name="TableFunction_inputPara" value="{{ TableFunction.inputPara }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="TableFunction-outputPara" class="col-sm-2 control-label">返回参数</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="TableFunction-outputPara" placeholder="返回参数"
+                               name="TableFunction_outputPara" value="{{ TableFunction.outputPara }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="TableFunction-sql" class="col-sm-2 control-label">对应SQL语句</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="TableFunction-sql" placeholder="对应SQL语句"
+                               name="TableFunction_sql" value="{{ TableFunction.sql }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="TableFunction-remark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="TableFunction-remark" placeholder="备注"
+                                  name="TableFunction_remark" rows="5" value="{{ TableFunction.remark }}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block TableFunction_list %}
+    active
+{% endblock TableFunction_list %}

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    工艺性审查知识|制造能力
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header" style="border-bottom: 1px">工艺性审查知识|制造能力</h1>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#material" data-toggle="tab">零件材料</a></li>
+        <li><a href="#precision" data-toggle="tab">精度</a></li>
+        <li><a href="#size" data-toggle="tab">形状加工能力</a></li>
+        {#        <li class="dropdown">#}
+        {#            <a href="#" id="myTabDrop1" class="dropdown-toggle"#}/
+        {#               data-toggle="dropdown">形状加工能力#}
+        {#                <b class="caret"></b>#}
+        {#            </a>#}
+        {#            <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">#}
+        {#                <li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>#}
+        {#                <li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>#}
+        {#            </ul>#}
+        {#        </li>#}
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="material">
+
+            <!-- 面板开始 -->
+            {#            <hr style="border: none">#}
+            <div class="panel panel-primary">
+                <div class="panel-heading">书籍列表<i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">搜索</button>
+                        </span>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_book' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加书籍</a>
+                            <button class="btn btn-success pull-right" data-toggle="modal" data-target="#myModal">新增
+                            </button>
+                        </div>
+
+                    </div><!-- /.row -->
+
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>id</th>
+                            <th>书名</th>
+                            <th>出版社</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for book in books %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ book.id }}</td>
+                                <td>《{{ book.title }}》</td>
+                                <td>{{ book.publisher.name }}</td>
+                                <td><a class="btn btn-danger" href="{% url 'delete_book' book.id %}"><i
+                                        class="fa fa-trash-o fa-fw"></i>删除</a>&nbsp
+                                    <a class="btn btn-info" href="{% url 'edit_book' book.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>编辑</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="precision">
+            <p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple
+                TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。</p>
+        </div>
+        <div class="tab-pane fade" id="size">
+            <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock main %}
+
+

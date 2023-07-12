@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑制造能力审查规则
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">制造能力审查规则管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑制造能力审查规则数据</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_ManuCapRule' ManuCapRule.id %}" method="post">
+                <div class="form-group">
+                    <label for="ManuCapRule_name" class="col-sm-2 control-label">规则名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule_name" name="ManuCapRule_name"
+                               placeholder="规则名称" value="{{ ManuCapRule.name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-captype" class="col-sm-2 control-label">制造能力参数类型</label>
+                    <div class="col-sm-10">
+{#                        <select select style="width:100%; height:40px;" name="ManuCapRule_captype">#}
+{#                        <option style="font-size:15px;" value="零件材料" selected>零件材料</option>#}
+{#                        <option value="精度">精度</option>#}
+{#                        <option value="尺寸加工能力">尺寸加工能力</option>#}
+{#                        </select>#}
+                        <input type="text" class="form-control" id="ManuCapRule-captype" placeholder="制造能力参数类型"
+                               name="ManuCapRule_captype" value="{{ ManuCapRule.captype }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-manuType" class="col-sm-2 control-label">加工方式</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-manuType" placeholder="加工方式"
+                               name="ManuCapRule_manuType" value="{{ ManuCapRule.manuType }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-featType1" class="col-sm-2 control-label">特征大类</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-featType1" placeholder="特征大类"
+                               name="ManuCapRule_featType1" value="{{ ManuCapRule.featType1 }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-featType2" class="col-sm-2 control-label">特征小类</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-featType2" placeholder="特征小类"
+                               name="ManuCapRule_featType2" value="{{ ManuCapRule.featType2 }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-featPro" class="col-sm-2 control-label">特征属性</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-featPro" placeholder="特征属性"
+                               name="ManuCapRule_featPro" value="{{ ManuCapRule.featPro }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-resType" class="col-sm-2 control-label">制造资源/工艺方案类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-resType" placeholder="制造资源/工艺方案类型"
+                               name="ManuCapRule_resType" value="{{ ManuCapRule.resType }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-content" class="col-sm-2 control-label">知识描述</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="ManuCapRule-content" placeholder="知识描述"
+                               name="ManuCapRule_content" value="{{ ManuCapRule.content }}">
+                    </div>
+                </div>
+{#                <div class="form-group">#}
+{#                    <label for="ManuCapRule-script" class="col-sm-2 control-label">脚本</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="text" class="form-control" id="ManuCapRule-script" placeholder="脚本"#}
+{#                               name="ManuCapRule_script" value="{{ ManuCapRule.script }}">#}
+{#                    </div>#}
+{#                </div>#}
+                <div class="form-group">
+                    <label for="ManuCapRule-script" class="col-sm-2 control-label">脚本</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="ManuCapRule_script" placeholder="脚本"
+                                  name="ManuCapRule_script" rows="20" >{{ ManuCapRule.script }}</textarea>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-script" class="col-sm-2 control-label">规则关联参数表</label>
+
+                    <div class="col-sm-10" style="width:80%; height:100%; overflow:scroll;">
+                        <table class="table table-bordered" id="table">
+                            <thead>
+                            <tr>
+                                <th>数据操作</th>
+                                <th>参数名</th>
+                                <th>参数类型</th>
+                                <th>默认值</th>
+                                <th>查表函数</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for KnowledgePara in KnowledgePara_list %}
+                                <tr>
+                                    <td class="buttentest">
+                                        <a class="btn btn-danger" href="{% url 'delete_KnowledgeParaTable' KnowledgePara.id %}"><i
+                                                class="fa fa-trash-o fa-fw"></i>删除</a>
+                                        <a class="btn btn-info" href="{% url 'edit_KnowledgeParaTable' KnowledgePara.id %}"><i
+                                                class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                    </td>
+                                    <td>{{ KnowledgePara.name }}</td>
+                                    <td>{{ KnowledgePara.paraType }}</td>
+                                    <td>{{ KnowledgePara.defaultValue }}</td>
+                                    <td>{{ KnowledgePara.tableFunction.functionName }}</td>
+                                    <td>{{ KnowledgePara.remark }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <script type="text/javascript">
+                            var tTD;
+                            var table = document.getElementById("table");
+                            console.log(table.rows[0].cells)
+                            for (i = 0; i < table.rows[0].cells.length; i++) {
+                                table.rows[0].cells[i].onmousedown = function() {
+                                    tTD = this;
+                                    if (event.offsetX > tTD.offsetWidth - 10) {
+                                        tTD.mouseDown = true;
+                                        tTD.oldX = event.x;
+                                        tTD.oldWidth = tTD.offsetWidth;
+                                    }
+                                };
+                                table.rows[0].cells[i].onmouseup = function() {
+                                    if (tTD == undefined) tTD = this;
+                                    tTD.mouseDown = false;
+                                    tTD.style.cursor = 'default';
+                                };
+                                table.rows[0].cells[i].onmousemove = function() {
+                                    if (event.offsetX > this.offsetWidth - 10)
+                                        this.style.cursor = 'col-resize';
+                                    else
+                                        this.style.cursor = 'default';
+                                    if (tTD == undefined) tTD = this;
+                                    if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                        tTD.style.cursor = 'default';
+                                        if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                            tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                        tTD.style.width = tTD.width;
+                                        tTD.style.cursor = 'col-resize';
+                                        table = tTD;
+                                        while (table.tagName != 'TABLE') table = table.parentElement;
+                                        for (j = 0; j < table.rows.length; j++) {
+                                            table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                        }
+                                    }
+                                };
+                            }
+                    </script>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="{% url 'add_KnowledgeParaTable' ManuCapRule.id %}" class="btn btn-success"><i
+                            class="fa fa-plus fa-fw"></i>添加规则关联参数</a>
+                    </div>
+
+
+                </div>
+
+
+
+
+
+{#                <div class="form-group">#}
+{#                    <label for="ManuCapRule-inputParaList" class="col-sm-2 control-label">脚本输入参数列表</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="text" class="form-control" id="ManuCapRule-inputParaList" placeholder="脚本输入参数列表"#}
+{#                               name="ManuCapRule_inputParaList" value="{{ ManuCapRule.inputParaList }}">#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                    <label for="ManuCapRule-outputParaList" class="col-sm-2 control-label">脚本输出参数列表</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="text" class="form-control" id="ManuCapRule-outputParaList" placeholder="脚本输出参数列表"#}
+{#                               name="ManuCapRule_outputParaList" value="{{ ManuCapRule.outputParaList }}">#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                    <label for="ManuCapRule-paraTable" class="col-sm-2 control-label">知识参数表名</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="text" class="form-control" id="ManuCapRule-paraTable" placeholder="知识参数表名"#}
+{#                               name="ManuCapRule_paraTable" value="{{ ManuCapRule.paraTable }}">#}
+{#                    </div>#}
+{#                </div>#}
+                <div class="form-group">
+                    <label for="ManuCapRule-ManuCapRemark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="ManuCapRule-ManuCapRemark" placeholder="备注"
+                                  name="ManuCapRule_ManuCapRemark" rows="5" value="{{ ManuCapRule.ManuCapRemark }}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block ManuCapRule_list %}
+    active
+{% endblock ManuCapRule_list %}

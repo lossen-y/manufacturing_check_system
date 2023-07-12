@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://v3.bootcss.com/favicon.ico">
+
+    <title>{% block title %}{% endblock title %}</title>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'dashboard.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/font-awesome.min.css' %}">
+</head>
+
+<body>
+{#上方导航条#}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'index' %}" style="color: white;">可制造性审查知识管理系统</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a data-toggle="modal" data-target="#myModal" style="color:#fff; cursor: pointer">修改密码</a></li>
+                <li><a href="{% url 'login' %}" methods="GET" style="color:#fff">退出</a></li>
+            </ul>
+            {#
+            <form class="navbar-form navbar-right">#}
+                {# <input type="text" class="form-control" placeholder="占坑专用...">#}
+                {# <input type="submit" class="btn btn-danger" value="搜索">#}
+                {#
+            </form>
+            #}
+        </div>
+    </div>
+</nav>
+{#主界面#}
+<div class="container-fluid">
+    {#侧边导航条#}
+    <div class="col-sm-3 col-md-2 sidebar">
+        <div class="nav nav-sidebar ">
+            {#建模质量#}
+            <div class="nav-item">
+                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white"
+                   href="#pp1">建模质量审查知识</a>
+                <ul class="collapse list-group" id="pp1" style="margin-bottom: 0px;">
+                    <li class="collapse list-group-item"><a href="{% url 'PMI_annotation' %}">PMI标注</a></li>
+                </ul>
+            </div>
+            {#工艺性审查#}
+            <div class="nav-item">
+                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white"
+                   href="#pp2">工艺性审查知识</a>
+                <ul class="collapse list-group" id="pp2" style="margin-bottom: 0px">
+                    <li class="collapse list-group-item"><a href="{% url 'manufacturing_ability' %}">制造能力</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'space_Position' %}">空间位置</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'structural_machinability' %}">结构工艺性</a>
+                    </li>
+                </ul>
+            </div>
+            {#标准化知识和信息#}
+            <div class="nav-item">
+                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white "
+                   href="#pp3">标准化知识和信息</a>
+                <ul class="collapse list-group" id="pp3" style="margin-bottom: 0px">
+                    <li class="collapse list-group-item"><a href="{% url 'standard_struction' %}">标准结构</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'standardize' %}">标准与规范</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'standard_process' %}">标准工艺</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'material' %}">材料信息</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'resource' %}">制造资源</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-item">
+                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white "
+                   href="#pp4">函数与符号</a>
+                <ul class="collapse list-group" id="pp4" style="margin-bottom: 0px">
+                    <li class="collapse list-group-item"><a href="{% url 'table_function' %}">查表函数库</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'standardize' %}">规则参数库</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {#中间的处理界面#}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        {% block main %}
+        {% endblock %}
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="table1">
+                    <div class="form-group">
+                        <label for="userName" class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="userName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="oldPassword" class="col-sm-2 control-label">原密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="oldPassword">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword1" class="col-sm-2 control-label">新密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="newPassword1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword2" class="col-sm-2 control-label">确认密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="newPassword2">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="save1">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script src="{% static 'jquery-3.3.1.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<!--修改密码-->
+<script>
+    $("#save1").click(function () {
+        var userName = $("#userName").val();
+        var oldPassword = $("#oldPassword").val();
+        var newPassword1 = $("#newPassword1").val();
+        var newPassword2 = $("#newPassword2").val();
+        //建立提示标签
+        var form = document.getElementById("table1")
+        var alert = document.createElement("p")
+        //密码不一致，提示
+        if (newPassword1 != newPassword2){
+            alert.innerText = "新密码不一致"
+            alert.style.color = "red"
+        }else {//密码一致
+            $.ajax({
+                url: "changePassword/",
+                type: "POST",
+                data: {"userName": userName, "oldPassword": oldPassword, "newPassword": newPassword1},
+                dataType: "text",
+                headers: {"X-CSRFToken": "{{ csrf_token }}"},
+                success: function (arg) {
+                    alert.innerText = arg
+                    if (arg == '修改成功!') {//成功，加粗
+                        alert.style.fontWeight = "bold"
+                        alert.style.color = "blue"
+                        alert.style.fontSize = "20px"
+                    }else {//密码不一致，标红
+                        alert.style.color = "red"
+                    }
+                }
+            })
+        }
+        form.appendChild(alert)
+    })
+
+</script>
+<!--重新输入密码后把之前提示的标签删除-->
+<script>
+    $(document).ready(function () {
+        $("#table1").click(function () {
+            $(this).children("p").remove()
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑刀具数据
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">刀具管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑刀具数据</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_cutter' cutter.id %}" method="post">
+                <div class="form-group">
+                    <label for="cutter_name" class="col-sm-2 control-label">刀具编号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter_name" name="cutter_name"
+                               placeholder="刀具编号" value="{{ cutter.name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-supplier" class="col-sm-2 control-label">供应商</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-supplier" placeholder="供应商"
+                               name="cutter_supplier" value="{{ cutter.supplier }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-minHoleTole" class="col-sm-2 control-label">最高公差等级</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-minHoleTole" placeholder="最高公差等级"
+                               name="cutter_minHoleTole" value="{{ cutter.minHoleTole }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-maxHoleTole" class="col-sm-2 control-label">最低公差等级</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-maxHoleTole" placeholder="最低公差等级"
+                               name="cutter_maxHoleTole" value="{{ cutter.maxHoleTole }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-minDia" class="col-sm-2 control-label">最小直径</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-minDia" placeholder="最小直径"
+                               name="cutter_minDia" value="{{ cutter.minDia }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-maxDia" class="col-sm-2 control-label">最大直径</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-maxDia" placeholder="最大直径"
+                               name="cutter_maxDia" value="{{ cutter.maxDia }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-minDepDia" class="col-sm-2 control-label">最小深径比</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-minDepDia" placeholder="最小深径比"
+                               name="cutter_minDepDia" value="{{ cutter.minDepDia }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-maxDepDia" class="col-sm-2 control-label">最大深径比</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-maxDepDia" placeholder="最大深径比"
+                               name="cutter_maxDepDia" value="{{ cutter.maxDepDia }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-capMat" class="col-sm-2 control-label">可加工材料</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-capMat" placeholder="可加工材料"
+                               name="cutter_capMat" value="{{ cutter.capMat }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-cutterMat" class="col-sm-2 control-label">刀具材料</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-cutterMat" placeholder="刀具材料"
+                               name="cutter_cutterMat" value="{{ cutter.cutterMat }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-capPro" class="col-sm-2 control-label">可加工工艺</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-capPro" placeholder="可加工工艺"
+                               name="cutter_capPro" value="{{ cutter.capPro }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-cutterCost" class="col-sm-2 control-label">刀具成本</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-cutterCost" placeholder="刀具成本"
+                               name="cutter_cutterCost" value="{{ cutter.cutterCost }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-cutterRemark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="cutter-cutterRemark" placeholder="备注"
+                                  name="cutter_cutterRemark" rows="5" value="{{ cutter.cutterRemark }}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cutter-cutterImg" class="col-sm-2 control-label">刀具图片</label>
+                    <input type="file" id="oneimg" name="cutter_cutterImg_file">
+                </div>
+
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+    active
+{% endblock cutter_list %}
