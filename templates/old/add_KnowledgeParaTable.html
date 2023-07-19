@@ -61,8 +61,14 @@
                 <div class="form-group">
                     <label for="KnowledgeParaTable-paraType" class="col-sm-2 control-label">参数类型</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="KnowledgeParaTable-paraType" placeholder="参数类型"
-                               name="KnowledgeParaTable_paraType">
+                        <select select style="width:100%; height:40px;" name="KnowledgeParaTable_paraType">
+                        <option style="font-size:15px;" value="单值" selected>单值</option>
+                        <option value="区间值">区间值</option>
+                        <option value="系列值">系列值</option>
+                        <option value="查表值">查表值</option>
+                        </select>
+{#                        <input type="text" class="form-control" id="KnowledgeParaTable-paraType" placeholder="参数类型"#}
+{#                               name="KnowledgeParaTable_paraType">#}
                     </div>
                 </div>
                 <div class="form-group">

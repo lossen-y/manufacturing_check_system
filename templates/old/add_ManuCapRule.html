@@ -22,16 +22,19 @@
 {#            border-top: 0px; }#}
 {#        </style>#}
         <style>
-        select {
-          border-radius: 5px;
+        {#select {#}
+        {#  border-radius: 5px;#}
           {#box-shadow: 2px 2px 5px #999;#}
-          transition: all .2s ease-in-out;
-        }
-        {#select:hover {#}
-        {##}
-        {#  background-color: #f0f0f0;#}
-        {##}
+        {#  transition: all .2s ease-in-out;#}
         {#}#}
+        input{
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        h4{
+            border-left:100px
+        }
+
       </style>
 
         <div class="panel-body">
@@ -46,7 +49,7 @@
                 <div class="form-group">
                     <label for="ManuCapRule-captype" class="col-sm-2 control-label">制造能力参数类型</label>
                     <div class="col-sm-10">
-                        <select select style="width:100%; height:40px;" name="ManuCapRule_captype">
+                        <select class="form-control" name="ManuCapRule_captype">
 {#                         <select style="width:120px;" name="ManuCapRule_captype" onchange="document.getElementById('input').value=this.value">#}
                         <option style="font-size:15px;" value="零件材料" selected>零件材料</option>
                         <option value="精度">精度</option>
@@ -71,11 +74,21 @@
                                name="ManuCapRule_featType1">
                     </div>
                 </div>
+{#                <div class="form-group">#}
+{#                    <label for="ManuCapRule-featType2" class="col-sm-2 control-label">特征小类</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="text" class="form-control" id="ManuCapRule-featType2" placeholder="特征小类"#}
+{#                               name="ManuCapRule_featType2">#}
+{#                    </div>#}
+{#                </div>#}
                 <div class="form-group">
                     <label for="ManuCapRule-featType2" class="col-sm-2 control-label">特征小类</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="ManuCapRule-featType2" placeholder="特征小类"
-                               name="ManuCapRule_featType2">
+                        <select class="form-control" id="ManuCapRule-featType2" name="ManuCapRule_featType2">
+                            {% for Feature in Feature_list %}
+                                <option value="{{ Feature.classSecond }}">{{ Feature.classSecond }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -106,34 +119,75 @@
 {#                               name="ManuCapRule_script">#}
 {#                    </div>#}
 {#                </div>#}
+                <h4 class="page-header">产生式规则脚本输入</h4>
+{#                            <div class="input-group">#}
+{#                                <form style="width:400px;display:inline" action="/add_rule_search_Feature_para/" method="get">#}
+{#                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>#}
+{#                                </form>#}
+{#                            </div><!-- /input-group -->#}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-info" type="button" data-toggle="tooltip" title="搜索" id="addCenterIpGrpBtn"
+            onclick="/add_rule_search_Feature_para/">搜索</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ManuCapRule-script" class="col-sm-2 control-label">标准特征参数表</label>
+                    <div class="col-sm-10" style="width:80%; height:100%; overflow:scroll;">
+                        <table class="table table-bordered" id="table">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数描述</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for FeaturePara in FeaturePara_list %}
+                                <tr>
+                                    <td>{{ FeaturePara.classSecond }}</td>
+                                    <td>{{ FeaturePara.paraDef }}</td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                <div class="form-group">
+                    <label for="ManuCapRule-script" class="col-sm-2 control-label">If前提</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="ManuCapRule_script_if_1" placeholder="If前提"
+                               name="ManuCapRule_script_if_1" >
+                    </div>
+                    <label for="ManuCapRule-script" class="col-sm-2 control-label">Then结论</label>
+                    <div class="col-sm-10">
+                    <input class="form-control" id="ManuCapRule_script_then_1" placeholder="Then结论"
+                               name="ManuCapRule_script_then_1" >
+                        </div>
+                </div>
+                <div class="form-group">
+                <button class="btn btn-info" type="button" data-toggle="tooltip" title="新增" id="addCenterIpGrpBtn"
+            onclick="addCenterIpGrp(this)" style="margin-left: 225px">新增If-Then <span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-info" type="button" data-toggle="tooltip" title="生成脚本代码" id="addCenterIpGrpBtn"
+            onclick="genscript()">生成脚本代码</button>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="ManuCapRule-script" class="col-sm-2 control-label">脚本</label>
                     <div class="col-sm-10">
-                        <textarea  class="form-control" id="ManuCapRule_script" placeholder="脚本"
-                                  name="ManuCapRule_script" rows="20"></textarea>
+                        <textarea  class="form-control" id="ManuCapRule-script" placeholder="脚本"
+                                  name="ManuCapRule_script" rows="5"></textarea>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="ManuCapRule-inputParaList" class="col-sm-2 control-label">脚本输入参数列表</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="ManuCapRule-inputParaList" placeholder="脚本输入参数列表"
-                               name="ManuCapRule_inputParaList">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="ManuCapRule-outputParaList" class="col-sm-2 control-label">脚本输出参数列表</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="ManuCapRule-outputParaList" placeholder="脚本输出参数列表"
-                               name="ManuCapRule_outputParaList">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="ManuCapRule-paraTable" class="col-sm-2 control-label">知识参数表名</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="ManuCapRule-paraTable" placeholder="知识参数表名"
-                               name="ManuCapRule_paraTable">
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <label for="ManuCapRule-ManuCapRemark" class="col-sm-2 control-label">备注</label>
                     <div class="col-sm-10">
@@ -148,6 +202,61 @@
                         <p style="color: red;">{{ error_msg }}</p>
                     </div>
                 </div>
+                <script type="text/javascript">
+                    var rowCount = 1;//(资源)行数默认1行
+                    //添加脚本输入框项
+
+                    function addCenterIpGrp(obj) {
+                        rowCount++
+                        html =
+                            '<div class="form-group">' +
+                            '<label for="ManuCapRule-script" class="col-sm-2 control-label">If前提</label>'+
+                            '<div class="col-sm-10">'+
+                            '<input class="form-control" id="ManuCapRule_script_if_' +rowCount+
+                            '" placeholder="If前提" name="ManuCapRule_script_if_' +rowCount+ '" ></div>'+
+                            '<label for="ManuCapRule-script" class="col-sm-2 control-label">Then结论</label>'+
+                            '<div class="col-sm-10">'+
+                            '<input class="form-control" id="ManuCapRule_script_then_' +rowCount+
+                            '" placeholder="If结论" name="ManuCapRule_script_if_' +rowCount+ '" >'+
+                            '<button class="btn btn-info" type="button" data-toggle="tooltip" title="删除" id="delCenterIpGrp">删除 <span class="glyphicon glyphicon-minus"></span></button>' +
+                            ' </span>' +
+                            '</div>'+
+                            '</div>'
+                        obj.insertAdjacentHTML('beforebegin', html)
+
+                        $(document).on('click', '#delCenterIpGrp', function () {
+                            rowCount--;
+                            var el = this.parentNode.parentNode;
+                            var centerIp = $(this).parent().parent().find('#ipInput').val();
+                            el.parentNode.removeChild(el)
+                        })
+                    }
+
+                        function genscript() {
+                            var ruleArray = new Array();
+                            alert(rowCount);
+                            for (var i = 1; i <= rowCount; i++) {
+                                var script_if = document.getElementById('ManuCapRule_script_if_' + i).value;
+                                var script_then = document.getElementById('ManuCapRule_script_then_' + i).value;
+                                alert("成功"+i)
+                                if ((script_if != "" && undefined != script_if)) {
+                                    var obj = new Object();
+                                    obj['script_if'] = script_if;
+                                    {#alert("成功"+script_if);#}
+                                    obj['script_then'] = script_then;
+                                    ruleArray.push(obj);
+                                }
+                            }
+                            var ruleJsonData = JSON.stringify(ruleArray);
+                            var obj=document.getElementById('ManuCapRule-script')
+                            obj.value=ruleJsonData
+
+
+                        }
+
+
+                </script>
+
             {% csrf_token %}
             </form>
         </div>

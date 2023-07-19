@@ -67,6 +67,10 @@ urlpatterns = [
 
 
 
+
+
+
+
     # 刀具相关的对应关系
     #url(r'^standardKnowNInfo/resource/', views.cutter_list, name='standardKnowNInfo'),
     #url(r'^resource/$', views.reource, name='book_list'),
@@ -75,6 +79,12 @@ urlpatterns = [
     url(r'^delete_cutter/([0-9]+)/$', views.delete_cutter, name='delete_cutter'),
     url(r'^edit_cutter/([0-9]+)/$', views.edit_cutter, name='edit_cutter'),
 
+    # 标准特征相关的对应关系
+    url(r'^add_Feature/$', views.add_Feature, name='add_Feature'),
+    url(r'^search_Feature/$', views.search_Feature, name='search_Feature'),
+    url(r'^delete_Feature/([0-9]+)/$', views.delete_Feature, name='delete_Feature'),
+    url(r'^edit_Feature/([0-9]+)/$', views.edit_Feature, name='edit_Feature'),
+
     # 制造能力规则相关的对应关系
     # url(r'^standardKnowNInfo/resource/', views.cutter_list, name='standardKnowNInfo'),
     # url(r'^resource/$', views.reource, name='book_list'),
@@ -82,6 +92,8 @@ urlpatterns = [
     url(r'^search_ManuCapRule/$', views.search_ManuCapRule, name='search_ManuCapRule'),
     url(r'^delete_ManuCapRule/([0-9]+)/$', views.delete_ManuCapRule, name='delete_ManuCapRule'),
     url(r'^edit_ManuCapRule/([0-9]+)/$', views.edit_ManuCapRule, name='edit_ManuCapRule'),
+    url(r'^edit_ParaForManuCapRule/([0-9]+)/$', views.edit_ParaForManuCapRule, name='edit_ParaForManuCapRule'),
+    # url(r'^add_rule_search_Feature_para/$', views.add_rule_search_Feature_para, name='add_rule_search_Feature_para'),
 
     # 规则参数表相关的对应关系
     url(r'^add_KnowledgeParaTable/([0-9]+)/$', views.add_KnowledgeParaTable, name='add_KnowledgeParaTable'),
@@ -94,6 +106,15 @@ urlpatterns = [
     url(r'^delete_TableFunction/([0-9]+)/$', views.delete_TableFunction, name='delete_TableFunction'),
     url(r'^edit_TableFunction/([0-9]+)/$', views.edit_TableFunction, name='edit_TableFunction'),
 
+
+    # 系统接口
+    # url(r'^input_FeaturePara/([0-9]+)/$', views.input_FeaturePara, name='input_FeaturePara'),
+    # url(r'^input_table_Function/([0-9]+)/$', views.input_FeaturePara, name='input_FeaturePara'),
+    #
+    #
+    #
+    #
+    # url(r'^output_RuleData/([0-9]+)/$', views.output_RuleData, name='output_RuleData'),
 
 
 

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|添加标准特征
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">标准特征管理页面</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加标准特征数据</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'add_Feature' %}" method="post">
+                <div class="form-group">
+                    <label for="Feature-classFirst" class="col-sm-2 control-label">特征大类</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="Feature-classFirst" placeholder="特征大类"
+                               name="Feature_classFirst">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Feature-classSecond" class="col-sm-2 control-label">特征小类</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="Feature-classSecond" placeholder="特征小类"
+                               name="Feature_classSecond">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Feature-paraDef" class="col-sm-2 control-label">参数化定义</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="Feature-paraDef" placeholder="参数化定义"
+                                  name="Feature_paraDef" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Feature-imgPath" class="col-sm-2 control-label">示意图片</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="Feature-imgPath" placeholder="示意图片"
+                                  name="Feature_imgPath" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Feature-remark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="Feature-remark" placeholder="备注"
+                                  name="Feature_remark" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+            {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block Feature_list %}
+active
+{% endblock Feature_list %}

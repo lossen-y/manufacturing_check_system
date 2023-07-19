@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    管理系统|编辑制造能力审查规则
+    管理系统|编辑制造能力审查规则关联参数
 {% endblock title %}
 
 {% block main %}
-    <h1 class="page-header">制造能力审查规则管理页面</h1>
+    <h1 class="page-header">制造能力审查规则关联参数管理页面</h1>
 
     <div class="panel panel-primary">
-        <div class="panel-heading">编辑制造能力审查规则数据</div>
+        <div class="panel-heading">编辑制造能力审查规则关联参数</div>
         <div class="panel-body">
-            <form class="form-horizontal" action="{% url 'edit_ManuCapRule' ManuCapRule.id %}" method="post">
+            <form class="form-horizontal" action="{% url 'edit_ParaForManuCapRule' ManuCapRule.id %}" method="post">
                 <div class="form-group">
                     <label for="ManuCapRule_name" class="col-sm-2 control-label">规则名称</label>
                     <div class="col-sm-10">
@@ -87,90 +87,94 @@
 
                     </div>
                 </div>
-{#                <div class="form-group">#}
-{#                    <label for="ManuCapRule-script" class="col-sm-2 control-label">规则关联参数表</label>#}
-{##}
-{#                    <div class="col-sm-10" style="width:80%; height:100%; overflow:scroll;">#}
-{#                        <table class="table table-bordered" id="table">#}
-{#                            <thead>#}
-{#                            <tr>#}
-{#                                <th>数据操作</th>#}
-{#                                <th>参数名</th>#}
-{#                                <th>参数类型</th>#}
-{#                                <th>默认值</th>#}
-{#                                <th>查表函数</th>#}
-{#                                <th>备注</th>#}
-{#                            </tr>#}
-{#                            </thead>#}
-{#                            <tbody>#}
-{#                            {% for KnowledgePara in KnowledgePara_list %}#}
-{#                                <tr>#}
-{#                                    <td class="buttentest">#}
-{#                                        <a class="btn btn-danger" href="{% url 'delete_KnowledgeParaTable' KnowledgePara.id %}"><i#}
-{#                                                class="fa fa-trash-o fa-fw"></i>删除</a>#}
-{#                                        <a class="btn btn-info" href="{% url 'edit_KnowledgeParaTable' KnowledgePara.id %}"><i#}
-{#                                                class="fa fa-pencil fa-fw"></i>查看并编辑</a>#}
-{#                                    </td>#}
-{#                                    <td>{{ KnowledgePara.name }}</td>#}
-{#                                    <td>{{ KnowledgePara.paraType }}</td>#}
-{#                                    <td>{{ KnowledgePara.defaultValue }}</td>#}
-{#                                    <td>{{ KnowledgePara.tableFunction.functionName }}</td>#}
-{#                                    <td>{{ KnowledgePara.remark }}</td>#}
-{#                                </tr>#}
-{#                            {% endfor %}#}
-{#                            </tbody>#}
-{#                        </table>#}
-{#                        <script type="text/javascript">#}
-{#                            var tTD;#}
-{#                            var table = document.getElementById("table");#}
-{#                            console.log(table.rows[0].cells)#}
-{#                            for (i = 0; i < table.rows[0].cells.length; i++) {#}
-{#                                table.rows[0].cells[i].onmousedown = function() {#}
-{#                                    tTD = this;#}
-{#                                    if (event.offsetX > tTD.offsetWidth - 10) {#}
-{#                                        tTD.mouseDown = true;#}
-{#                                        tTD.oldX = event.x;#}
-{#                                        tTD.oldWidth = tTD.offsetWidth;#}
-{#                                    }#}
-{#                                };#}
-{#                                table.rows[0].cells[i].onmouseup = function() {#}
-{#                                    if (tTD == undefined) tTD = this;#}
-{#                                    tTD.mouseDown = false;#}
-{#                                    tTD.style.cursor = 'default';#}
-{#                                };#}
-{#                                table.rows[0].cells[i].onmousemove = function() {#}
-{#                                    if (event.offsetX > this.offsetWidth - 10)#}
-{#                                        this.style.cursor = 'col-resize';#}
-{#                                    else#}
-{#                                        this.style.cursor = 'default';#}
-{#                                    if (tTD == undefined) tTD = this;#}
-{#                                    if (tTD.mouseDown != null && tTD.mouseDown == true) {#}
-{#                                        tTD.style.cursor = 'default';#}
-{#                                        if (tTD.oldWidth + (event.x - tTD.oldX) > 0)#}
-{#                                            tTD.width = tTD.oldWidth + (event.x - tTD.oldX);#}
-{#                                        tTD.style.width = tTD.width;#}
-{#                                        tTD.style.cursor = 'col-resize';#}
-{#                                        table = tTD;#}
-{#                                        while (table.tagName != 'TABLE') table = table.parentElement;#}
-{#                                        for (j = 0; j < table.rows.length; j++) {#}
-{#                                            table.rows[j].cells[tTD.cellIndex].width = tTD.width;#}
-{#                                        }#}
-{#                                    }#}
-{#                                };#}
-{#                            }#}
-{#                    </script>#}
-{#                    </div>#}
-{#                </div>#}
+                <div class="form-group">
+                    <label for="ManuCapRule-script" class="col-sm-2 control-label">规则关联参数表</label>
+
+                    <div class="col-sm-10" style="width:80%; height:100%; overflow:scroll;">
+                        <table class="table table-bordered" id="table">
+                            <thead>
+                            <tr>
+                                <th>数据操作</th>
+                                <th>参数名</th>
+                                <th>参数类型</th>
+                                <th>默认值</th>
+                                <th>查表函数</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for KnowledgePara in KnowledgePara_list %}
+                                <tr>
+                                    <td class="buttentest">
+                                        <a class="btn btn-danger" href="{% url 'delete_KnowledgeParaTable' KnowledgePara.id %}"><i
+                                                class="fa fa-trash-o fa-fw"></i>删除</a>
+                                        <a class="btn btn-info" href="{% url 'edit_KnowledgeParaTable' KnowledgePara.id %}"><i
+                                                class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                    </td>
+                                    <td>{{ KnowledgePara.name }}</td>
+                                    <td>{{ KnowledgePara.paraType }}</td>
+                                    <td>{{ KnowledgePara.defaultValue }}</td>
+                                    <td>{{ KnowledgePara.tableFunction.functionName }}</td>
+                                    <td>{{ KnowledgePara.remark }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <script type="text/javascript">
+                            var tTD;
+                            var table = document.getElementById("table");
+                            console.log(table.rows[0].cells)
+                            for (i = 0; i < table.rows[0].cells.length; i++) {
+                                table.rows[0].cells[i].onmousedown = function() {
+                                    tTD = this;
+                                    if (event.offsetX > tTD.offsetWidth - 10) {
+                                        tTD.mouseDown = true;
+                                        tTD.oldX = event.x;
+                                        tTD.oldWidth = tTD.offsetWidth;
+                                    }
+                                };
+                                table.rows[0].cells[i].onmouseup = function() {
+                                    if (tTD == undefined) tTD = this;
+                                    tTD.mouseDown = false;
+                                    tTD.style.cursor = 'default';
+                                };
+                                table.rows[0].cells[i].onmousemove = function() {
+                                    if (event.offsetX > this.offsetWidth - 10)
+                                        this.style.cursor = 'col-resize';
+                                    else
+                                        this.style.cursor = 'default';
+                                    if (tTD == undefined) tTD = this;
+                                    if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                        tTD.style.cursor = 'default';
+                                        if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                            tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                        tTD.style.width = tTD.width;
+                                        tTD.style.cursor = 'col-resize';
+                                        table = tTD;
+                                        while (table.tagName != 'TABLE') table = table.parentElement;
+                                        for (j = 0; j < table.rows.length; j++) {
+                                            table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                        }
+                                    }
+                                };
+                            }
+                    </script>
+                    </div>
+                </div>
 
 
-{#                <div class="form-group">#}
-{#                    <div class="col-sm-offset-2 col-sm-10">#}
-{#                        <a href="{% url 'add_KnowledgeParaTable' ManuCapRule.id %}" class="btn btn-success"><i#}
-{#                            class="fa fa-plus fa-fw"></i>添加规则关联参数</a>#}
-{#                    </div>#}
-{##}
-{##}
-{#                </div>#}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="{% url 'add_KnowledgeParaTable' ManuCapRule.id %}" class="btn btn-success"><i
+                            class="fa fa-plus fa-fw"></i>添加规则关联参数</a>
+                    </div>
+
+
+                </div>
+
+
+
+
 
 {#                <div class="form-group">#}
 {#                    <label for="ManuCapRule-inputParaList" class="col-sm-2 control-label">脚本输入参数列表</label>#}
@@ -197,7 +201,7 @@
                     <label for="ManuCapRule-ManuCapRemark" class="col-sm-2 control-label">备注</label>
                     <div class="col-sm-10">
                         <textarea  class="form-control" id="ManuCapRule-ManuCapRemark" placeholder="备注"
-                                  name="ManuCapRule_ManuCapRemark" rows="5" value="{{ ManuCapRule.ManuCapRemark }}"></textarea>
+                                  name="ManuCapRule_ManuCapRemark" rows="5" >{{ ManuCapRule.ManuCapRemark }}</textarea>
                     </div>
                 </div>
                 <div class="form-group">

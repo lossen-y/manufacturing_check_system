@@ -7,7 +7,7 @@
 {% block main %}
     <h2 class="page-header" style="border-bottom: none">脚本与符号|查表函数</h2>
 {#    <ul id="myTab" class="nav nav-tabs">#}
-{#        <li class="active"><a href="#tool" data-toggle="tab">刀具</a></li>#}
+{#        <li class="active"><a href="#tool" data-toggle="tab">查表函数</a></li>#}
 {#        <li><a href="#fixture" data-toggle="tab">工装</a></li>#}
 {#        <li class="dropdown">#}
 {#            <a href="#" id="myTabDrop1" class="dropdown-toggle"#}
@@ -21,25 +21,25 @@
 {#        </li>#}
 {#    </ul>#}
     <div id="myTabContent" class="tab-content">
-        {#标签1：刀具#}
+        {#标签1：查表函数#}
         <div class="tab-pane fade in active" id="tool">
 
             <div class="panel panel-primary">
                 <!-- Default panel contents -->
-                <div class="panel-heading">刀具列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-heading">查表函数列表 <i class="fa fa-thumb-tack pull-right"></i></div>
                 <div class="panel-body">
                     <div class="row" style="margin-bottom: 15px">
                         <div class="col-md-4" >
                             <div class="input-group">
                                 <form style="width:400px;display:inline" action="/search_TableFunction/" method="get">
-                                <input style="width:300px;float:left;" class="form-control" type="text" name="TableFunction_search" placeholder="刀具编号">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="TableFunction_search" placeholder="内部查表函数名">
                                     <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
                                 </form>
                             </div><!-- /input-group -->
                         </div><!-- /.col-md-4 -->
                         <div class="col-md-3 pull-right">
                             <a href="{% url 'add_TableFunction' %}" class="btn btn-success pull-right"><i
-                                    class="fa fa-plus fa-fw"></i>添加刀具</a>
+                                    class="fa fa-plus fa-fw"></i>添加查表函数</a>
 
                         </div>
 
@@ -94,8 +94,8 @@
                         <thead>
                         <tr>
                             <th>数据操作</th>
-                            <th>数据库内表名</th>
                             <th>内部查表函数名</th>
+                            <th>数据库内表名</th>
                             <th>输入参数</th>
                             <th>返回参数</th>
                             <th>对应SQL语句</th>
@@ -111,8 +111,8 @@
                                     <a class="btn btn-info" href="{% url 'edit_TableFunction' TableFunction.id %}"><i
                                             class="fa fa-pencil fa-fw"></i>查看并编辑</a>
                                 </td>
-                                <td>{{ TableFunction.name }}</td>
                                 <td>{{ TableFunction.functionName }}</td>
+                                <td>{{ TableFunction.name }}</td>
                                 <td>{{ TableFunction.inputPara }}</td>
                                 <td>{{ TableFunction.outputPara }}</td>
                                 <td>{{ TableFunction.sql }}</td>

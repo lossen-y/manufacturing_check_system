@@ -214,9 +214,75 @@ def search_cutter(request):
     return render(request, 'standard_knowledge_and_information/resource.html', {'cutter_list': all_cutter_obj})
 
 
+
+
+def add_Feature(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_Feature = request.POST.get('Feature_classSecond')
+        if new_Feature:
+            # img_file=request.FILES.get('Feature_FeatureImg')
+            new_Feature_obj = models.Feature.objects.create(classSecond=new_Feature,classFirst=request.POST.get('Feature_classFirst'),
+                                                          paraDef=request.POST.get('Feature_paraDef'),
+                                                          imgPath=request.POST.get('Feature_imgPath'),
+                                                          remark=request.POST.get('Feature_remark')
+                                               )
+
+            return redirect('/standardKnowNInfo/standardStruction/')
+        else:
+            error_msg = '特征小类不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_Feature.html', { 'error_msg': error_msg})
+
+
+def delete_Feature(request, del_id):
+    models.Feature.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/standardStruction/')
+
+
+def edit_Feature(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('Feature_classSecond')
+        if new_name:
+            edit_Feature_obj = models.Feature.objects.get(id=edit_id)
+            edit_Feature_obj.classSecond = new_name
+            edit_Feature_obj.classFirst = request.POST.get('Feature_classFirst')
+            edit_Feature_obj.paraDef = request.POST.get('Feature_paraDef')
+            edit_Feature_obj.imgPath = request.POST.get('Feature_imgPath')
+            edit_Feature_obj.remark = request.POST.get('Feature_remark')
+            edit_Feature_obj.save()
+            return redirect('/standardKnowNInfo/standardStruction/')
+        else:
+            error_msg = '特征小类不能为空'
+    Feature_obj = models.Feature.objects.get(id=edit_id)
+    return render(request, 'old/edit_Feature.html', {'Feature': Feature_obj, 'error_msg': error_msg})
+
+def search_Feature(request):
+    search = request.GET.get('Feature_search')
+    all_Feature_obj = models.Feature.objects.filter(classSecond__icontains=search).all()
+    error_msg = ''
+    return render(request, 'standard_knowledge_and_information/standard_struction.html', {'Feature_list': all_Feature_obj})
+
+
+
+
+
+
+
+
+
+
+
 def ManuCapRule_list(request):
     all_ManuCapRule = models.ManuCapRule.objects.all()
     return render(request, 'process_Check/manufacturing_ability.html', {'ManuCapRule_list': all_ManuCapRule})
+
+# def add_rule_search_Feature_para(request):
+#     search = request.GET.get('ManuCapRule_featType2')
+#     all_Feature_obj = models.Feature.objects.filter(classSecond__icontains=search).all()
+#     error_msg = ''
+#     return render(request, 'old/add_ManuCapRule.html', {'FeaturePara_list': FeaturePara_list})
 
 def add_ManuCapRule(request):
     error_msg = ''
@@ -242,7 +308,9 @@ def add_ManuCapRule(request):
         else:
             error_msg = '刀具名称不能为空'
     #books = models.Book.objects.all()
-    return render(request, 'old/add_ManuCapRule.html', { 'error_msg': error_msg})
+    Feature_list = models.Feature.objects.all()
+    FeaturePara_list=models.Feature.objects.all()
+    return render(request, 'old/add_ManuCapRule.html', { 'FeaturePara_list':FeaturePara_list,'Feature_list':Feature_list,'error_msg': error_msg})
 
 
 def delete_ManuCapRule(request, del_id):
@@ -277,6 +345,33 @@ def edit_ManuCapRule(request, edit_id):
     KnowledgePara_list=models.KnowledgeParaTable.objects.filter(ruleid=edit_id).all
     return render(request, 'old/edit_ManuCapRule.html', {'KnowledgePara_list':KnowledgePara_list,'ManuCapRule': ManuCapRule_obj, 'error_msg': error_msg})
 
+def edit_ParaForManuCapRule(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('ManuCapRule_name')
+        if new_name:
+            edit_ManuCapRule_obj = models.ManuCapRule.objects.get(id=edit_id)
+            edit_ManuCapRule_obj.name = new_name
+            edit_ManuCapRule_obj.captype = request.POST.get('ManuCapRule_captype')
+            edit_ManuCapRule_obj.manuType = request.POST.get('ManuCapRule_manuType')
+            edit_ManuCapRule_obj.featType1 = request.POST.get('ManuCapRule_featType1')
+            edit_ManuCapRule_obj.featType2 = request.POST.get('ManuCapRule_featType2')
+            edit_ManuCapRule_obj.featPro = request.POST.get('ManuCapRule_featPro')
+            edit_ManuCapRule_obj.resType = request.POST.get('ManuCapRule_resType')
+            edit_ManuCapRule_obj.content = request.POST.get('ManuCapRule_content')
+            edit_ManuCapRule_obj.script = request.POST.get('ManuCapRule_script')
+            edit_ManuCapRule_obj.inputParaList = request.POST.get('ManuCapRule_inputParaList')
+            edit_ManuCapRule_obj.outputParaList = request.POST.get('ManuCapRule_outputParaList')
+            edit_ManuCapRule_obj.paraTable = request.POST.get('ManuCapRule_paraTable')
+            edit_ManuCapRule_obj.ManuCapRemark = request.POST.get('ManuCapRule_ManuCapRemark')
+            edit_ManuCapRule_obj.save()
+            return redirect('/processCheck/manuAbility/')
+        else:
+            error_msg = '刀具名不能为空'
+    ManuCapRule_obj = models.ManuCapRule.objects.get(id=edit_id)
+    KnowledgePara_list=models.KnowledgeParaTable.objects.filter(ruleid=edit_id).all
+    return render(request, 'old/edit_ParaForManuCapRule.html', {'KnowledgePara_list':KnowledgePara_list,'ManuCapRule': ManuCapRule_obj, 'error_msg': error_msg})
+
 
 def search_ManuCapRule(request):
     search = request.GET.get('ManuCapRule_search')
@@ -304,7 +399,7 @@ def add_KnowledgeParaTable(request, rule_id):
                                                                                       'KnowledgeParaTable_remark')
                                                                                   )
 
-            return redirect('/edit_ManuCapRule/'+str(rule_id)+'/')
+            return redirect('/edit_ParaForManuCapRule/'+str(rule_id)+'/')
         else:
             error_msg = '参数名称不能为空'
     rule_name =ManuCapRule_obj.name
@@ -335,7 +430,7 @@ def edit_KnowledgeParaTable(request, edit_id):
             edit_KnowledgeParaTable_obj.tableFunction = tablefunction_obj
             edit_KnowledgeParaTable_obj.remark = request.POST.get('KnowledgeParaTable_remark')
             edit_KnowledgeParaTable_obj.save()
-            return redirect('/edit_ManuCapRule/'+str(ManuCapRule_obj.id)+'/')
+            return redirect('/edit_ParaForManuCapRule/'+str(ManuCapRule_obj.id)+'/')
         else:
             error_msg = '刀具名不能为空'
     KnowledgeParaTable_obj = models.KnowledgeParaTable.objects.get(id=edit_id)
@@ -514,8 +609,8 @@ def structural_machinability(request):
 
 
 def standard_struction(request):
-    all_author = models.Author.objects.all()
-    return render(request, 'standard_knowledge_and_information/standard_struction.html', {'author_list': all_author})
+    all_Feature = models.Feature.objects.all()
+    return render(request, 'standard_knowledge_and_information/standard_struction.html', {'Feature_list': all_Feature})
 
 
 def standard_process(request):

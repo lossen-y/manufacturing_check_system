@@ -7,7 +7,7 @@
 {% block main %}
     <h2 class="page-header" style="border-bottom: none">标准化知识和信息|标准结构</h2>
     <ul id="myTab" class="nav nav-tabs">
-        <li class="active"><a href="#partStruction" data-toggle="tab">典型零件结构</a></li>
+        <li class="active"><a href="#partStruction" data-toggle="tab">典型特征结构</a></li>
         <li><a href="#featureStruction" data-toggle="tab">典型特征结构</a></li>
 
         {#        <li class="dropdown">#}
@@ -22,63 +22,139 @@
         {#        </li>#}
     </ul>
     <div id="myTabContent" class="tab-content">
-        {#标签1：零件结构#}
-        <div class="tab-pane fade in active" id="partStruction">
+        {#标签1：标准特征#}
+        <div class="tab-pane fade in active" id="tool">
 
             <div class="panel panel-primary">
                 <!-- Default panel contents -->
-                <div class="panel-heading">作者列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-heading">标准特征列表 <i class="fa fa-thumb-tack pull-right"></i></div>
                 <div class="panel-body">
                     <div class="row" style="margin-bottom: 15px">
-                        <div class="col-md-4">
+                        <div class="col-md-4" >
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">搜索</button>
-                                </span>
+                                <form style="width:400px;display:inline" action="/search_Feature/" method="get">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="Feature_search" placeholder="特征小类">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
                             </div><!-- /input-group -->
                         </div><!-- /.col-md-4 -->
                         <div class="col-md-3 pull-right">
-                            <a href="{% url 'add_author' %}" class="btn btn-success pull-right"><i
-                                    class="fa fa-plus fa-fw"></i>添加作者</a>
-                            <button class="btn btn-success pull-right" data-toggle="modal" data-target="#myModal">新增
-                            </button>
+                            <a href="{% url 'add_Feature' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加标准特征数据</a>
+
                         </div>
 
                     </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
 
-                    <table class="table table-bordered">
+
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>id</th>
-                            <th>作者名字</th>
-                            <th>作品</th>
-                            <th>操作</th>
+                            <th>数据操作</th>
+                            <th>特征大类</th>
+                            <th>特征小类</th>
+                            <th>参数化定义</th>
+                            <th>示意图片路径</th>
+                            <th>备注</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for author in author_list %}
+                        {% for Feature in Feature_list %}
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ author.id }}</td>
-                                <td>{{ author.name }}</td>
-                                <td>
-                                    {% for book in author.book.all %}
-                                        《{{ book.title }}》&nbsp;
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    <a class="btn btn-danger" href="{% url 'delete_author' author.id %}"><i
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_Feature' Feature.id %}"><i
                                             class="fa fa-trash-o fa-fw"></i>删除</a>
-                                    <a class="btn btn-info" href="{% url 'edit_author' author.id %}"><i
-                                            class="fa fa-pencil fa-fw"></i>编辑</a>
+                                    <a class="btn btn-info" href="{% url 'edit_Feature' Feature.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
                                 </td>
+                                <td>{{ Feature.classFirst }}</td>
+                                <td>{{ Feature.classSecond }}</td>
+                                <td>{{ Feature.paraDef }}</td>
+                                <td>{{ Feature.imgPath }}</td>
+                                <td>{{ Feature.remark }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
-
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
                 </div>
 
             </div>
