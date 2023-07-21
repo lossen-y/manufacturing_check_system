@@ -164,7 +164,7 @@ def add_cutter(request):
                                                           cutterMat=request.POST.get('cutter_cutterMat'),
                                                           capPro=request.POST.get('cutter_capPro'),
                                                           cutterCost=request.POST.get('cutter_cutterCost'),
-                                                          cutterImg=request.POST.get('cutter_cutterImg'),
+                                                          cutterImg=request.FILES.get('cutter_cutterImg_file'),
                                                           cutterRemark=request.POST.get('cutter_cutterRemark')
                                                )
 

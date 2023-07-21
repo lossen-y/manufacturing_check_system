@@ -52,7 +52,7 @@ class Cutter(models.Model):
     cutterMat=models.CharField(max_length=128, null=True, unique=False)  #刀具材料
     capPro=models.TextField( null=True, unique=False)  #可加工工艺
     cutterCost=models.CharField(max_length=128, null=True, unique=False)  #刀具成本
-    cutterImg=models.TextField(null=True, unique=False)  #刀具图片
+    cutterImg=models.FileField(null=True, unique=False)  #刀具图片
     cutterRemark=models.TextField( null=True, unique=False)  #备注
     def __str__(self):
         return self.name

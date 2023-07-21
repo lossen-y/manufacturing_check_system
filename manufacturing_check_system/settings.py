@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'manufacturing_check_system',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'YES',
         'HOST': 'localhost',
         'PORT': 3306,
         #'ENGINE': 'django.db.backends.sqlite3',
@@ -131,3 +131,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+#media_url
+MEDIA_URL = '/media/'  # 媒体文件的 URL 前缀
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 媒体文件的存储路径
