@@ -198,7 +198,7 @@ def edit_cutter(request, edit_id):
             edit_cutter_obj.cutterMat = request.POST.get('cutter_cutterMat')
             edit_cutter_obj.capPro = request.POST.get('cutter_capPro')
             edit_cutter_obj.cutterCost = request.POST.get('cutter_cutterCost')
-            edit_cutter_obj.cutterImg = request.POST.get('cutter_cutterImg')
+            edit_cutter_obj.cutterImg = request.FILES.get('cutter_cutterImg_file')
             edit_cutter_obj.cutterRemark = request.POST.get('cutter_cutterRemark')
             edit_cutter_obj.save()
             return redirect('/standardKnowNInfo/resource/')
