@@ -66,11 +66,11 @@ urlpatterns = [
     #  脚本与函数
     url(r'^scripNFunction/table_function/$', views.table_function, name='table_function'),
 
-
-
-
-
-
+    # 工装相关的对应关系
+      url(r'^add_fixture/$', views.add_fixture, name='add_fixture'),
+      url(r'^search_fixture/$', views.search_fixture, name='search_fixture'),
+      url(r'^delete_fixture/([0-9]+)/$', views.delete_fixture, name='delete_fixture'),
+      url(r'^edit_fixture/([0-9]+)/$', views.edit_fixture, name='edit_fixture'),
 
 
     # 刀具相关的对应关系

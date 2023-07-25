@@ -20,6 +20,7 @@
             </ul>
         </li>
     </ul>
+
     <div id="myTabContent" class="tab-content">
         {#标签1：刀具#}
         <div class="tab-pane fade in active" id="tool">
@@ -181,9 +182,164 @@
 
             </div>
         </div>
+
         {#标签2：工装#}
         <div class="tab-pane fade" id="fixture">
-            <p>something</p>
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">工装列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_fixture/" method="get">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="fixture_search" placeholder="工装编号">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_fixture' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加工装</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
+		                {#display: -webkit-box;#}
+                        {#/* 限制再一个块元素再文本显示的行数 */#}
+                        {#-webkit-line-clamp: 2;#}
+                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
+                        {#-webkit-box-orient: vertical;#}
+
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>工装编号</th>
+                            <th>工装类型</th>
+                            <th>工装名称</th>
+                            <th>工装打标号</th>
+                            <th>工装尺寸</th>
+                            <th>零件类型</th>
+                            <th>零件结构形式</th>
+                            <th>零件材料</th>
+                            <th>零件尺寸</th>
+                            <th>接口尺寸</th>
+                            <th>工装图片</th>
+                            <th>备注</th>
+                            <th>其他字段</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for fixture in fixture_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_fixture' fixture.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_fixture' fixture.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ fixture.name }}</td>
+                                <td>{{ fixture.fixtureType }}</td>
+                                <td>{{ fixture.fixtureName }}</td>
+                                <td>{{ fixture.fixtureCode }}</td>
+                                <td>{{ fixture.geoDim }}</td>
+                                <td>{{ fixture.partType }}</td>
+                                <td>{{ fixture.partStruct }}</td>
+                                <td>{{ fixture.partMat }}</td>
+                                <td>{{ fixture.partSize }}</td>
+                                <td>{{ fixture.InterfaceDim }}</td>
+                                <td>{{ fixture.fixtureImg }}</td>
+                                <td>{{ fixture.fixtureRemark }}</td>
+                                <td>{{ fixture.otherFields }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
+
+            </div>
         </div>
         {#标签2：机床#}
         <div class="tab-pane fade" id="machine">
@@ -194,4 +350,6 @@
             <p>角度头something</p>
         </div>
     </div>
+
+
 {% endblock main %}

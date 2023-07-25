@@ -213,9 +213,76 @@ def search_cutter(request):
     error_msg = ''
     return render(request, 'standard_knowledge_and_information/resource.html', {'cutter_list': all_cutter_obj})
 
+# About fixtures
+def fixture_list(request):
+    all_fixture = models.Fixture.objects.all()
+    return render(request, 'standard_knowledge_and_information/resource.html', {'fixture_list': all_fixture})
+
+def add_fixture(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_fixture = request.POST.get('fixture_name')
+        if new_fixture:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_fixture_obj = models.Fixture.objects.create(name=new_fixture,
+                                                          fixtureType=request.POST.get('fixture_fixtureType'),
+                                                          fixtureName=request.POST.get('fixture_fixtureName'),
+                                                          fixtureCode=request.POST.get('fixture_fixtureCode'),
+                                                          geoDim=request.POST.get('fixture_geoDim'),
+                                                          partType=request.POST.get('fixture_partType'),
+                                                          partStruct=request.POST.get('fixture_partStruct'),
+                                                          partMat=request.POST.get('fixture_partMat'),
+                                                          partSize=request.POST.get('fixture_partSize'),
+                                                          InterfaceDim=request.POST.get('fixture_InterfaceDim'),
+                                                          fixtureImg=request.FILES.get('fixture_fixtureImg'),
+                                                          fixtureRemark=request.POST.get('fixture_fixtureRemark'),
+                                                          otherFields=request.POST.get('fixture_otherFields'),
+                                               )
+
+            return redirect('/standardKnowNInfo/resource/')
+        else:
+            error_msg = '工装名称不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_fixture.html', { 'error_msg': error_msg})
+
+def delete_fixture(request, del_id):
+    models.Fixture.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/resource/')
+
+def edit_fixture(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('fixture_name')
+        if new_name:
+            edit_fixture_obj = models.Fixture.objects.get(id=edit_id)
+            edit_fixture_obj.name = new_name
+            edit_fixture_obj.fixtureType = request.POST.get('fixture_fixtureType')
+            edit_fixture_obj.fixtureName = request.POST.get('fixture_fixtureName')
+            edit_fixture_obj.fixtureCode = request.POST.get('fixture_fixtureCode')
+            edit_fixture_obj.geoDim = request.POST.get('fixture_geoDim')
+            edit_fixture_obj.partType = request.POST.get('fixture_partType')
+            edit_fixture_obj.partStruct = request.POST.get('fixture_partStruct')
+            edit_fixture_obj.partMat = request.POST.get('fixture_partMat')
+            edit_fixture_obj.partSize = request.POST.get('fixture_partSize')
+            edit_fixture_obj.InterfaceDim = request.POST.get('fixture_InterfaceDim')
+            edit_fixture_obj.fixtureImg = request.FILES.get('fixture_fixtureImg')
+            edit_fixture_obj.fixtureRemark = request.POST.get('fixture_fixtureRemark')
+            edit_fixture_obj.otherFields = request.POST.get('fixture_otherFields')
+            edit_fixture_obj.save()
+            return redirect('/standardKnowNInfo/resource/')
+        else:
+            error_msg = '工装名不能为空'
+    fixture_obj = models.Fixture.objects.get(id=edit_id)
+    return render(request, 'old/edit_fixture.html', {'fixture': fixture_obj, 'error_msg': error_msg})
+
+def search_fixture(request):
+    search = request.GET.get('fixture_search')
+    all_fixture_obj = models.Fixture.objects.filter(name__icontains=search).all()
+    error_msg = ''
+    return render(request, 'standard_knowledge_and_information/resource.html', {'fixture_list': all_fixture_obj})
 
 
-
+# Feature
 def add_Feature(request):
     error_msg = ''
     if request.method == 'POST':

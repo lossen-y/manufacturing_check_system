@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑工装数据
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">工装管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑工装数据</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_fixture' fixture.id %}" enctype="multipart/form-data" method="post">
+
+                <div class="form-group">
+                    <label for="fixture_name" class="col-sm-2 control-label">工装编号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture_name" name="fixture_name"
+                               placeholder="工装编号" value="{{ fixture.name }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureType" class="col-sm-2 control-label">工装类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-fixtureType" placeholder="工装类型"
+                               name="fixture_fixtureType" value="{{ fixture.fixtureType }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureName" class="col-sm-2 control-label">工装名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-fixtureName" placeholder="工装名称"
+                               name="fixture_fixtureName" value="{{ fixture.fixtureName }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureCode" class="col-sm-2 control-label">工装打标号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-fixtureCode" placeholder="工装打标号"
+                               name="fixture_fixtureCode" value="{{ fixture.fixtureCode }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-geoDim" class="col-sm-2 control-label">工装尺寸</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-geoDim" placeholder="工装尺寸"
+                               name="fixture_geoDim" value="{{ fixture.geoDim }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cutter-maxDia" class="col-sm-2 control-label">最大直径</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-maxDia" placeholder="最大直径"
+                               name="cutter_maxDia" value="{{ cutter.maxDia }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-partType" class="col-sm-2 control-label">零件类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-partType" placeholder="零件类型"
+                               name="fixture_partType" value="{{ fixture.partType }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-partStruct" class="col-sm-2 control-label">零件结构形式</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-partStruct" placeholder="零件结构形式"
+                               name="fixture_partStruct" value="{{ fixture.partStruct }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cutter-capMat" class="col-sm-2 control-label">可加工材料</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-capMat" placeholder="可加工材料"
+                               name="cutter_capMat" value="{{ cutter.capMat }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-partMat" class="col-sm-2 control-label">零件材料</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-partMat" placeholder="零件材料"
+                               name="fixture_partMat" value="{{ fixture.partMat }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-partSize" class="col-sm-2 control-label">零件尺寸</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-partSize" placeholder="零件尺寸"
+                               name="fixture_partSize" value="{{ fixture.partSize }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-InterfaceDim" class="col-sm-2 control-label">接口尺寸</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-InterfaceDim" placeholder="接口尺寸"
+                               name="fixture_InterfaceDim" value="{{ fixture.InterfaceDim }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-otherFields" class="col-sm-2 control-label">其他字段</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="fixture-otherFields" placeholder="其他字段"
+                                  name="fixture_otherFields" rows="5" >{{ fixture.fixtureRemark }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureRemark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="fixture-fixtureRemark" placeholder="备注"
+                                  name="fixture_fixtureRemark" rows="5" >{{ fixture.fixtureRemark }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureImg" class="col-sm-2 control-label">工装图片</label>
+                    <input type="file" id="oneimg" name="fixture_fixtureImg">
+                </div>
+
+                <div style="width: 300px; height: 200px; display: flex; justify-content: flex-end;" id="preview">
+                                    <img src="{{ fixture.fixtureImg.url }}" alt="{{ fixture.fixtureImg }}" style="width: 100%; height: 100%;">
+                                </div>
+
+
+                <script>
+                    const uploadInput = document.getElementById('oneimg');
+                    const preview = document.getElementById('preview');
+
+                    uploadInput.addEventListener('change', function (event) {
+                      const file = event.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+
+                        reader.addEventListener('load', function () {
+                          preview.innerHTML = `<img src="${reader.result}" alt="预览图">`;
+                        });
+
+                        reader.readAsDataURL(file);
+                      } else {
+                        preview.innerHTML = '暂无预览';
+                      }
+                    });
+                  </script>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+    active
+{% endblock cutter_list %}

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|添加工装
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">工装管理页面</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加工装</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'add_fixture' %}" enctype="multipart/form-data" method="post">
+                <div class="form-group">
+                    <label for="fixture-name" class="col-sm-2 control-label">工装id</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-name" placeholder="工装id"
+                               name="fixture_name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureType" class="col-sm-2 control-label">工装类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-fixtureType" placeholder="工装类型"
+                               name="fixture_fixtureType">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureName" class="col-sm-2 control-label">工装名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-fixtureName" placeholder="工装名称"
+                               name="fixture_fixtureName">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureCode" class="col-sm-2 control-label">工装打标号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-fixtureCode" placeholder="工装打标号"
+                               name="fixture_fixtureCode">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-geoDim" class="col-sm-2 control-label">工装尺寸</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-geoDim" placeholder="工装尺寸"
+                               name="fixture_geoDim">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-partType" class="col-sm-2 control-label">零件类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-partType" placeholder="零件类型"
+                               name="fixture_partType">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-partStruct" class="col-sm-2 control-label">零件结构形式</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-partStruct" placeholder="零件结构形式"
+                               name="fixture_partStruct">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-partMat" class="col-sm-2 control-label">零件材料</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-partMat" placeholder="零件材料"
+                               name="fixture_partMat">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cutter-capMat" class="col-sm-2 control-label">可加工材料</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-capMat" placeholder="可加工材料"
+                               name="cutter_capMat">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-partSize" class="col-sm-2 control-label">零件尺寸</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-partSize" placeholder="零件尺寸"
+                               name="fixture_partSize">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cutter-capPro" class="col-sm-2 control-label">可加工工艺</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="cutter-capPro" placeholder="可加工工艺"
+                               name="cutter_capPro">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-InterfaceDim" class="col-sm-2 control-label">接口尺寸</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fixture-InterfaceDim" placeholder="接口尺寸"
+                               name="fixture_InterfaceDim">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureRemark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="fixture-fixtureRemark" placeholder="备注"
+                                  name="fixture_fixtureRemark" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-otherFields" class="col-sm-2 control-label">其他字段</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="fixture-otherFields" placeholder="其他字段"
+                                  name="fixture_otherFields" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixture-fixtureImg" class="col-sm-2 control-label">刀具图片</label>
+                    <input type="file" id="oneimg" name="fixture_fixtureImg">
+
+                <div style="width: 300px; height: 200px; display: flex; justify-content: flex-end; " id="preview">
+                                    <img src="{{ fixture.fixtureImg.url }}" alt="{{ fixture.fixtureImg }}" style="width: 100%; height: 100%;">
+                                </div>
+{#                    <input type="text" class="form-control" id="cutter-cutterImg" placeholder="刀具图片路径"#}
+{#                               name="cutter_cutterImg">#}
+{#                    <script type="text/javascript">#}
+{##}
+{#                        function fn_input(){#}
+{#                    document.getElementById("oneimg").value=document.getElementById("cutter-cutterImg").value;#}
+{#}#}
+{#                    </script>#}
+{#                    <script>#}
+{#                        $("#oneimg").change(function(){#}
+{#                            var vue = $(this).val();#}
+{#                            $("#cutter-cutterImg").val(vue);#}
+{#                        })#}
+{#                    </script>#}
+{#                    <input type="submit" value="上传">#}
+{#                    <script type="text/javascript">#}
+{#                        function getFilePath(){#}
+{#                        $('input[type=file]').change(function () {#}
+{#                        var filePath=$('#fileUpload').val();#}
+{#                         });#}
+{#                         }#}
+{#                    </script>#}
+                </div>
+                  <script>
+                    const uploadInput = document.getElementById('oneimg');
+                    const preview = document.getElementById('preview');
+
+                    uploadInput.addEventListener('change', function (event) {
+                      const file = event.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+
+                        reader.addEventListener('load', function () {
+                          preview.innerHTML = `<img src="${reader.result}" alt="预览图">`;
+                        });
+
+                        reader.readAsDataURL(file);
+                      } else {
+                        preview.innerHTML = '暂无预览';
+                      }
+                    });
+                  </script>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+            {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+active
+{% endblock cutter_list %}

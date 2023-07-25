@@ -57,6 +57,28 @@ class Cutter(models.Model):
     def __str__(self):
         return self.name
 
+class Fixture(models.Model):
+    '''
+    工装表
+    '''
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=128, null=False, unique=True)    #工装编号
+    fixtureType = models.CharField(max_length=128, null=True, unique=False)  #工装类型
+    fixtureName = models.CharField(max_length=128, null=True, unique=False)  #工装名称
+    fixtureCode = models.CharField(max_length=128, null=True, unique=False)  #工装打标号
+    geoDim = models.CharField(max_length=128, null=True, unique=False)  #工装尺寸
+    partType = models.CharField(max_length=128, null=True, unique=False)  #零件类型
+    partStruct = models.CharField(max_length=128, null=True, unique=False)  #零件结构形式
+    partMat = models.CharField(max_length=128, null=True, unique=False)  #零件材料
+    partSize = models.CharField(max_length=128, unique=False)  #零件尺寸
+    InterfaceDim = models.TextField(null=True, unique=False)  #接口尺寸
+    fixtureImg = models.FileField(null=True, unique=False)  # 工装图片
+    fixtureRemark = models.TextField(null=True, unique=False)  # 备注
+    otherFields = models.TextField(null=True, unique=False)  # 其他字段
+
+    def __str__(self):
+        return self.name
+
 class ManuCapRule(models.Model):
     '''
     制造能力审查规则表
