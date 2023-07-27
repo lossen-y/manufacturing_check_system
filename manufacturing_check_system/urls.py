@@ -66,12 +66,23 @@ urlpatterns = [
     #  脚本与函数
     url(r'^scripNFunction/table_function/$', views.table_function, name='table_function'),
 
+    # 机床相关的对应关系
+      url(r'^add_mach/$', views.add_mach, name='add_mach'),
+      url(r'^search_mach/$', views.search_mach, name='search_mach'),
+      url(r'^delete_mach/([0-9]+)/$', views.delete_mach, name='delete_mach'),
+      url(r'^edit_mach/([0-9]+)/$', views.edit_mach, name='edit_mach'),
+
     # 工装相关的对应关系
       url(r'^add_fixture/$', views.add_fixture, name='add_fixture'),
       url(r'^search_fixture/$', views.search_fixture, name='search_fixture'),
       url(r'^delete_fixture/([0-9]+)/$', views.delete_fixture, name='delete_fixture'),
       url(r'^edit_fixture/([0-9]+)/$', views.edit_fixture, name='edit_fixture'),
 
+      # 角度头相关的对应关系
+      url(r'^add_head/$', views.add_head, name='add_head'),
+      url(r'^search_head/$', views.search_head, name='search_head'),
+      url(r'^delete_head/([0-9]+)/$', views.delete_head, name='delete_head'),
+      url(r'^edit_head/([0-9]+)/$', views.edit_head, name='edit_head'),
 
     # 刀具相关的对应关系
     #url(r'^standardKnowNInfo/resource/', views.cutter_list, name='standardKnowNInfo'),

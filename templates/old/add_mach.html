@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|添加机床
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">机床管理页面</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加机床</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'add_mach' %}" enctype="multipart/form-data" method="post">
+                <div class="form-group">
+                    <label for="mach-name" class="col-sm-2 control-label">机床名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-name" placeholder="机床名称"
+                               name="mach_name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-machType" class="col-sm-2 control-label">机床类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-machType" placeholder="机床类型"
+                               name="mach_machType">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-travelX" class="col-sm-2 control-label">线行轴X行程</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-travelX" placeholder="线行轴X行程"
+                               name="mach_travelX">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-travelY" class="col-sm-2 control-label">线行轴Y行程</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-travelY" placeholder="线行轴Y行程"
+                               name="mach_travelY">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-travelZ" class="col-sm-2 control-label">线行轴Z行程</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-travelZ" placeholder="线行轴Z行程"
+                               name="mach_travelZ">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-travelA" class="col-sm-2 control-label">线行轴A行程</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-travelA" placeholder="线行轴A行程"
+                               name="mach_travelA">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-travelB" class="col-sm-2 control-label">线行轴B行程</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-travelB" placeholder="线行轴B行程"
+                               name="mach_travelB">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-travelC" class="col-sm-2 control-label">线行轴C行程</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-travelC" placeholder="线行轴C行程"
+                               name="mach_travelC">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-PrecisionX" class="col-sm-2 control-label">X轴定位精度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-PrecisionX" placeholder="X轴定位精度"
+                               name="mach_PrecisionX">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-PrecisionY" class="col-sm-2 control-label">Y轴定位精度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-PrecisionY" placeholder="Y轴定位精度"
+                               name="mach_PrecisionY">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-PrecisionZ" class="col-sm-2 control-label">Z轴定位精度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-PrecisionZ" placeholder="Z轴定位精度"
+                               name="mach_PrecisionZ">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-PrecisionA" class="col-sm-2 control-label">A轴定位精度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-PrecisionA" placeholder="A轴定位精度"
+                               name="mach_PrecisionA">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-PrecisionB" class="col-sm-2 control-label">B轴定位精度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-PrecisionB" placeholder="B轴定位精度"
+                               name="mach_PrecisionB">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-PrecisionC" class="col-sm-2 control-label">C轴定位精度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-PrecisionC" placeholder="C轴定位精度"
+                               name="mach_PrecisionC">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-worktableSize_length" class="col-sm-2 control-label">工作台长</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-worktableSize_length" placeholder="工作台长"
+                               name="mach_worktableSize_length">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-worktableSize_width" class="col-sm-2 control-label">工作台宽</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-worktableSize_width" placeholder="工作台宽"
+                               name="mach_worktableSize_width">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-load" class="col-sm-2 control-label">工作台允许最大荷重（kg）</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-load" placeholder="工作台允许最大荷重（kg）"
+                               name="mach_load">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-process" class="col-sm-2 control-label">适用工序</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-process" placeholder="适用工序"
+                               name="mach_process">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-feature" class="col-sm-2 control-label">适用特征</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-feature" placeholder="适用特征"
+                               name="mach_feature">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-headID" class="col-sm-2 control-label">关联角度头</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="mach-headID" placeholder="关联角度头"
+                               name="mach_headID">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-machRemark" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="mach-machRemark" placeholder="备注"
+                                  name="mach_machRemark" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-otherFields" class="col-sm-2 control-label">其他字段</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="mach-otherFields" placeholder="其他字段"
+                                  name="mach_otherFields" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mach-machImg" class="col-sm-2 control-label">机床图片</label>
+                    <input type="file" id="oneimg" name="mach_machImg">
+
+                <div style="width: 300px; height: 200px; display: flex; justify-content: flex-end; " id="preview">
+                                    <img src="{{ mach.machImg.url }}" alt="{{ mach.machImg }}" style="width: 100%; height: 100%;">
+                                </div>
+{#                    <input type="text" class="form-control" id="cutter-cutterImg" placeholder="刀具图片路径"#}
+{#                               name="cutter_cutterImg">#}
+{#                    <script type="text/javascript">#}
+{##}
+{#                        function fn_input(){#}
+{#                    document.getElementById("oneimg").value=document.getElementById("cutter-cutterImg").value;#}
+{#}#}
+{#                    </script>#}
+{#                    <script>#}
+{#                        $("#oneimg").change(function(){#}
+{#                            var vue = $(this).val();#}
+{#                            $("#cutter-cutterImg").val(vue);#}
+{#                        })#}
+{#                    </script>#}
+{#                    <input type="submit" value="上传">#}
+{#                    <script type="text/javascript">#}
+{#                        function getFilePath(){#}
+{#                        $('input[type=file]').change(function () {#}
+{#                        var filePath=$('#fileUpload').val();#}
+{#                         });#}
+{#                         }#}
+{#                    </script>#}
+                </div>
+                  <script>
+                    const uploadInput = document.getElementById('oneimg');
+                    const preview = document.getElementById('preview');
+
+                    uploadInput.addEventListener('change', function (event) {
+                      const file = event.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+
+                        reader.addEventListener('load', function () {
+                          preview.innerHTML = `<img src="${reader.result}" alt="预览图">`;
+                        });
+
+                        reader.readAsDataURL(file);
+                      } else {
+                        preview.innerHTML = '暂无预览';
+                      }
+                    });
+                  </script>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+            {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+active
+{% endblock cutter_list %}

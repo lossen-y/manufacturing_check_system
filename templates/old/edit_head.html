@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑角度头数据
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">角度头管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑角度头数据</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_head' head.id %}" enctype="multipart/form-data" method="post">
+
+                <div class="form-group">
+                    <label for="head-name" class="col-sm-2 control-label">角度头名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="head-name" name="head_name"
+                               placeholder="角度头名称" value="{{ head.name }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-headType" class="col-sm-2 control-label">角度头型号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="head-headType" placeholder="角度头型号"
+                               name="head_headType" value="{{ head.headType }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-headStruct" class="col-sm-2 control-label">角度铣头及加长杆包络轮廓</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="head-headStruct" placeholder="角度铣头及加长杆包络轮廓"
+                               name="head_headStruct" value="{{ head.headStruct }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-headDepth" class="col-sm-2 control-label">最大加工深度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="head-headDepth" placeholder="最大加工深度"
+                               name="head_headDepth" value="{{ head.headDepth }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-toolDiamRange_max" class="col-sm-2 control-label">适用刀具直径范围（最大）</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="head-toolDiamRange_max" placeholder="适用刀具直径范围（最大）"
+                               name="head_toolDiamRange_max" value="{{ head.toolDiamRange_max }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-toolDiamRange_min" class="col-sm-2 control-label">适用刀具直径范围（最小）</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="head-toolDiamRange_min" placeholder="适用刀具直径范围（最小）"
+                               name="head_toolDiamRange_min" value="{{ head.toolDiamRange_min }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-appMach" class="col-sm-2 control-label">适用机床</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="head-appMach" placeholder="适用机床"
+                               name="head_appMach" value="{{ head.appMach }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-otherFields" class="col-sm-2 control-label">其他字段</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="head-otherFields" placeholder="其他字段"
+                                  name="head_otherFields" rows="5" >{{ head.otherFields }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-headRemark" class="col-sm-2 control-label">角度头备注</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="head-headRemark" placeholder="角度头备注"
+                                  name="head_headRemark" rows="5" >{{ head.headRemark }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="head-headImg" class="col-sm-2 control-label">角度头图片</label>
+                    <input type="file" id="oneimg" name="head_headImg">
+                </div>
+
+                <div style="width: 300px; height: 200px; display: flex; justify-content: flex-end;" id="preview">
+                                    <img src="{{ head.headImg.url }}" alt="{{ head.headImg }}" style="width: 100%; height: 100%;">
+                                </div>
+
+
+                <script>
+                    const uploadInput = document.getElementById('oneimg');
+                    const preview = document.getElementById('preview');
+
+                    uploadInput.addEventListener('change', function (event) {
+                      const file = event.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+
+                        reader.addEventListener('load', function () {
+                          preview.innerHTML = `<img src="${reader.result}" alt="预览图">`;
+                        });
+
+                        reader.readAsDataURL(file);
+                      } else {
+                        preview.innerHTML = '暂无预览';
+                      }
+                    });
+                  </script>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+    active
+{% endblock cutter_list %}

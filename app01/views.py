@@ -211,7 +211,8 @@ def search_cutter(request):
     search = request.GET.get('cutter_search')
     all_cutter_obj = models.Cutter.objects.filter(name__icontains=search).all()
     error_msg = ''
-    return render(request, 'standard_knowledge_and_information/resource.html', {'cutter_list': all_cutter_obj})
+    tab_name = 'tool'
+    return render(request, 'standard_knowledge_and_information/resource.html', {'cutter_list': all_cutter_obj,'tab_name': tab_name})
 
 # About fixtures
 def fixture_list(request):
@@ -279,7 +280,163 @@ def search_fixture(request):
     search = request.GET.get('fixture_search')
     all_fixture_obj = models.Fixture.objects.filter(name__icontains=search).all()
     error_msg = ''
-    return render(request, 'standard_knowledge_and_information/resource.html', {'fixture_list': all_fixture_obj})
+    tab_name = 'fixture'
+    return render(request, 'standard_knowledge_and_information/resource.html', {'fixture_list': all_fixture_obj,"tab_name" : tab_name})
+
+# Mach
+def mach_list(request):
+    all_mach = models.Mach.objects.all()
+    return render(request, 'standard_knowledge_and_information/resource.html', {'mach_list': all_mach})
+
+def add_mach(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_mach = request.POST.get('mach_name')
+        if new_mach:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_mach_obj = models.Mach.objects.create(name=new_mach,
+                                                      machType=request.POST.get('mach_machType'),
+                                                      travelX=request.POST.get('mach_travelX'),
+                                                      travelY=request.POST.get('mach_travelY'),
+                                                      travelZ=request.POST.get('mach_travelZ'),
+                                                      travelA=request.POST.get('mach_travelA'),
+                                                      travelB=request.POST.get('mach_travelB'),
+                                                      travelC=request.POST.get('mach_travelC'),
+                                                      PrecisionX=request.POST.get('mach_PrecisionX'),
+                                                      PrecisionY=request.POST.get('mach_PrecisionY'),
+                                                      PrecisionZ=request.POST.get('mach_PrecisionZ'),
+                                                      PrecisionA=request.POST.get('mach_PrecisionA'),
+                                                      PrecisionB=request.POST.get('mach_PrecisionB'),
+                                                      PrecisionC=request.POST.get('mach_PrecisionC'),
+                                                      worktableSize_length=request.POST.get('mach_worktableSize_length'),
+                                                      worktableSize_width=request.POST.get('mach_worktableSize_width'),
+                                                      load=request.POST.get('mach_load'),
+                                                      process=request.POST.get('mach_process'),
+                                                      feature=request.POST.get('mach_feature'),
+                                                      headID=request.POST.get('mach_headID'),
+                                                      machImg=request.FILES.get('mach_machImg'),
+                                                      machRemark=request.POST.get('mach_machRemark'),
+                                                      otherFields=request.POST.get('mach_otherFields'),
+                                               )
+
+            return redirect('/standardKnowNInfo/resource/')
+        else:
+            error_msg = '机床名称不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_mach.html', { 'error_msg': error_msg})
+
+def delete_mach(request, del_id):
+    models.Mach.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/resource/')
+
+def edit_mach(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('mach_name')
+        if new_name:
+            edit_mach_obj = models.Mach.objects.get(id=edit_id)
+            edit_mach_obj.name = new_name
+            edit_mach_obj.machType = request.POST.get('mach_machType')
+            edit_mach_obj.travelX = request.POST.get('mach_travelX')
+            edit_mach_obj.travelY = request.POST.get('mach_travelY')
+            edit_mach_obj.travelZ = request.POST.get('mach_travelZ')
+            edit_mach_obj.travelA = request.POST.get('mach_travelA')
+            edit_mach_obj.travelB = request.POST.get('mach_travelB')
+            edit_mach_obj.travelC = request.POST.get('mach_travelC')
+            edit_mach_obj.PrecisionX = request.POST.get('mach_PrecisionX')
+            edit_mach_obj.PrecisionY = request.POST.get('mach_PrecisionY')
+            edit_mach_obj.PrecisionZ = request.POST.get('mach_PrecisionZ')
+            edit_mach_obj.PrecisionA = request.POST.get('mach_PrecisionA')
+            edit_mach_obj.PrecisionB = request.POST.get('mach_PrecisionB')
+            edit_mach_obj.PrecisionC = request.POST.get('mach_PrecisionC')
+            edit_mach_obj.worktableSize_length = request.POST.get('mach_worktableSize_length')
+            edit_mach_obj.worktableSize_width = request.POST.get('mach_worktableSize_width')
+            edit_mach_obj.load = request.POST.get('mach_load')
+            edit_mach_obj.process = request.POST.get('mach_process')
+            edit_mach_obj.feature = request.POST.get('mach_feature')
+            edit_mach_obj.headID = request.POST.get('mach_headID')
+            edit_mach_obj.machImg = request.FILES.get('mach_machImg')
+            edit_mach_obj.machRemark = request.POST.get('mach_machRemark')
+            edit_mach_obj.otherFields = request.POST.get('mach_otherFields')
+            edit_mach_obj.save()
+            return redirect('/standardKnowNInfo/resource/')
+        else:
+            error_msg = '机床名不能为空'
+    mach_obj = models.Mach.objects.get(id=edit_id)
+    return render(request, 'old/edit_mach.html', {'mach': mach_obj, 'error_msg': error_msg})
+
+def search_mach(request):
+    search = request.GET.get('mach_search')
+    all_mach_obj = models.Mach.objects.filter(name__icontains=search).all()
+    error_msg = ''
+    tab_name = 'mach'
+    return render(request, 'standard_knowledge_and_information/resource.html', {'mach_list': all_mach_obj,"tab_name" : tab_name})
+
+#Head
+
+def head_list(request):
+    all_head = models.Head.objects.all()
+    return render(request, 'standard_knowledge_and_information/resource.html', {'mach_list': all_head})
+
+def add_head(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_head = request.POST.get('head_name')
+        if new_head:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_head_obj = models.Head.objects.create(name=new_head,
+                                                      headType=request.POST.get('head_headType'),
+                                                      headStruct=request.POST.get('head_headStruct'),
+                                                      headDepth=request.POST.get('head_headDepth'),
+                                                      toolDiamRange_max=request.POST.get('head_toolDiamRange_max'),
+                                                      toolDiamRange_min=request.POST.get('head_toolDiamRange_min'),
+                                                      appMach=request.POST.get('head_appMach'),
+                                                      headImg=request.FILES.get('head_headImg'),
+                                                      headRemark=request.POST.get('head_headRemark'),
+                                                      otherFields=request.POST.get('head_otherFields'),
+                                               )
+
+            return redirect('/standardKnowNInfo/resource/')
+        else:
+            error_msg = '角度头名称不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_head.html', { 'error_msg': error_msg})
+
+def delete_head(request, del_id):
+    models.Head.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/resource/')
+
+def edit_head(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('head_name')
+        if new_name:
+            edit_head_obj = models.Head.objects.get(id=edit_id)
+            edit_head_obj.name = new_name
+            edit_head_obj.headType = request.POST.get('head_headType')
+            edit_head_obj.headStruct = request.POST.get('head_headStruct')
+            edit_head_obj.headDepth = request.POST.get('head_headDepth')
+            edit_head_obj.toolDiamRange_max = request.POST.get('head_toolDiamRange_max')
+            edit_head_obj.toolDiamRange_min = request.POST.get('head_toolDiamRange_min')
+            edit_head_obj.appMach = request.POST.get('head_appMach')
+            edit_head_obj.headImg = request.FILES.get('head_headImg')
+            edit_head_obj.headRemark = request.POST.get('head_headRemark')
+            edit_head_obj.otherFields = request.POST.get('head_otherFields')
+            edit_head_obj.save()
+            return redirect('/standardKnowNInfo/resource/')
+        else:
+            error_msg = '角度头名不能为空'
+    head_obj = models.Head.objects.get(id=edit_id)
+    return render(request, 'old/edit_head.html', {'head': head_obj, 'error_msg': error_msg})
+
+def search_head(request):
+    search = request.GET.get('head_search')
+    all_head_obj = models.Head.objects.filter(name__icontains=search).all()
+    error_msg = ''
+    tab_name = 'head'
+    return render(request, 'standard_knowledge_and_information/resource.html', {'head_list': all_head_obj,"tab_name" : tab_name})
+
+
 
 
 # Feature
