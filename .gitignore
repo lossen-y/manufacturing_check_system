@@ -25,6 +25,7 @@ wheels/
 *.egg
 MANIFEST
 .idea/
+.migrations/
 **/settings.py
 
 # PyInstaller
