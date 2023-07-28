@@ -190,8 +190,10 @@ class Feature(models.Model):
     id = models.AutoField(primary_key=True)
     classFirst = models.CharField(max_length=128, null=False, unique=False)  # 特征大类
     classSecond = models.CharField(max_length=128, null=True, unique=False)  # 特征小类
+    # classID = models.CharField(max_length=128, null=True, unique=False) #特征编号
+    # classDes=models.TextField(null=True, unique=False)   # 特征描述
     paraDef = models.TextField(null=True, unique=False)   # 参数化定义
-    imgPath = models.TextField(null=True, unique=False)  # 示意图片路径
+    imgPath = models.FileField(null=True, unique=False)  # 示意图片
     remark = models.TextField(null=True, unique=False)  # 备注
 
     def __str__(self):

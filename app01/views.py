@@ -6,7 +6,9 @@ from app01 import models
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+import json
 
 # =========Class Based View==================
 class AddPublisher(View):
@@ -20,6 +22,34 @@ class AddPublisher(View):
             return redirect('/publisher_list/')
         error_msg = '出版社名字不能为空'
         return render(request, 'old/add_publisher.html', {'error_msg': error_msg})
+
+
+# class add_rule_search_Feature_para(View):
+#     @method_decorator(ensure_csrf_cookie)
+#     def get(self, request):
+#         return render(request, 'old/add_ManuCapRule.html')
+#
+#     def post(self, request, featType):
+#         all_Feature_obj = models.Feature.objects.filter(classSecond__icontains=featType).all()
+#         error_msg = ''
+#         return render(request, 'old/add_ManuCapRule.html', {'FeaturePara_list': all_Feature_obj})
+
+# class FeaturePara:
+#     ParaDes = ''
+#     ParaName=''
+def add_rule_search_Feature_para(request):
+    featype = request.POST.get('featype')
+    all_Feature_obj = models.Feature.objects.filter(classSecond__icontains=featype).first()
+    error_msg = ''
+    json_str=all_Feature_obj.paraDef
+    #JSON解析
+    data=json.loads(json_str)
+    # print(data)
+    # for para in data:
+
+
+
+    return render(request, 'old/search_Feature.html', {'FeaturePara_list': data})
 
 
 # =========Function Based View==================
@@ -143,9 +173,11 @@ def edit_author(request, edit_id):
     return render(request, 'old/edit_author.html',
                   {'edit_author_obj': edit_author_obj, 'books': books, 'error_msg': error_msg})
 
+
 def cutter_list(request):
     all_cutter = models.Cutter.objects.all()
     return render(request, 'standard_knowledge_and_information/resource.html', {'cutter_list': all_cutter})
+
 
 def add_cutter(request):
     error_msg = ''
@@ -153,7 +185,7 @@ def add_cutter(request):
         new_cutter = request.POST.get('cutter_name')
         if new_cutter:
             # img_file=request.FILES.get('cutter_cutterImg')
-            new_cutter_obj = models.Cutter.objects.create(name=new_cutter,supplier=request.POST.get('cutter_supplier'),
+            new_cutter_obj = models.Cutter.objects.create(name=new_cutter, supplier=request.POST.get('cutter_supplier'),
                                                           minHoleTole=request.POST.get('cutter_minHoleTole'),
                                                           maxHoleTole=request.POST.get('cutter_maxHoleTole'),
                                                           minDia=request.POST.get('cutter_minDia'),
@@ -166,13 +198,13 @@ def add_cutter(request):
                                                           cutterCost=request.POST.get('cutter_cutterCost'),
                                                           cutterImg=request.FILES.get('cutter_cutterImg_file'),
                                                           cutterRemark=request.POST.get('cutter_cutterRemark')
-                                               )
+                                                          )
 
             return redirect('/standardKnowNInfo/resource/')
         else:
             error_msg = '刀具名称不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_cutter.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_cutter.html', {'error_msg': error_msg})
 
 
 def delete_cutter(request, del_id):
@@ -206,6 +238,7 @@ def edit_cutter(request, edit_id):
             error_msg = '刀具名不能为空'
     cutter_obj = models.Cutter.objects.get(id=edit_id)
     return render(request, 'old/edit_cutter.html', {'cutter': cutter_obj, 'error_msg': error_msg})
+
 
 def search_cutter(request):
     search = request.GET.get('cutter_search')
@@ -446,17 +479,18 @@ def add_Feature(request):
         new_Feature = request.POST.get('Feature_classSecond')
         if new_Feature:
             # img_file=request.FILES.get('Feature_FeatureImg')
-            new_Feature_obj = models.Feature.objects.create(classSecond=new_Feature,classFirst=request.POST.get('Feature_classFirst'),
-                                                          paraDef=request.POST.get('Feature_paraDef'),
-                                                          imgPath=request.POST.get('Feature_imgPath'),
-                                                          remark=request.POST.get('Feature_remark')
-                                               )
+            new_Feature_obj = models.Feature.objects.create(classSecond=new_Feature,
+                                                            classFirst=request.POST.get('Feature_classFirst'),
+                                                            paraDef=request.POST.get('Feature_paraDef'),
+                                                            imgPath=request.POST.get('Feature_imgPath'),
+                                                            remark=request.POST.get('Feature_remark')
+                                                            )
 
             return redirect('/standardKnowNInfo/standardStruction/')
         else:
             error_msg = '特征小类不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_Feature.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_Feature.html', {'error_msg': error_msg})
 
 
 def delete_Feature(request, del_id):
@@ -482,31 +516,25 @@ def edit_Feature(request, edit_id):
     Feature_obj = models.Feature.objects.get(id=edit_id)
     return render(request, 'old/edit_Feature.html', {'Feature': Feature_obj, 'error_msg': error_msg})
 
+
 def search_Feature(request):
     search = request.GET.get('Feature_search')
     all_Feature_obj = models.Feature.objects.filter(classSecond__icontains=search).all()
     error_msg = ''
-    return render(request, 'standard_knowledge_and_information/standard_struction.html', {'Feature_list': all_Feature_obj})
-
-
-
-
-
-
-
-
-
+    return render(request, 'standard_knowledge_and_information/standard_struction.html',
+                  {'Feature_list': all_Feature_obj})
 
 
 def ManuCapRule_list(request):
     all_ManuCapRule = models.ManuCapRule.objects.all()
     return render(request, 'process_Check/manufacturing_ability.html', {'ManuCapRule_list': all_ManuCapRule})
 
-# def add_rule_search_Feature_para(request):
-#     search = request.GET.get('ManuCapRule_featType2')
-#     all_Feature_obj = models.Feature.objects.filter(classSecond__icontains=search).all()
+
+# def add_rule_search_Feature_para(request,featType):
+#     #search = request.GET.get('ManuCapRule_featType2')
+#     all_Feature_obj = models.Feature.objects.filter(classSecond__icontains=featType).all()
 #     error_msg = ''
-#     return render(request, 'old/add_ManuCapRule.html', {'FeaturePara_list': FeaturePara_list})
+#     return render(request, 'old/add_ManuCapRule.html', {'FeaturePara_list': all_Feature_obj})
 
 def add_ManuCapRule(request):
     error_msg = ''
@@ -514,27 +542,32 @@ def add_ManuCapRule(request):
         new_ManuCapRule = request.POST.get('ManuCapRule_name')
         if new_ManuCapRule:
             # img_file=request.FILES.get('ManuCapRule_ManuCapRuleImg')
-            new_ManuCapRule_obj = models.ManuCapRule.objects.create(name=new_ManuCapRule,captype=request.POST.get('ManuCapRule_captype'),
-                                                          manuType=request.POST.get('ManuCapRule_manuType'),
-                                                          featType1=request.POST.get('ManuCapRule_featType1'),
-                                                          featType2=request.POST.get('ManuCapRule_featType2'),
-                                                          featPro=request.POST.get('ManuCapRule_featPro'),
-                                                          resType=request.POST.get('ManuCapRule_resType'),
-                                                          content=request.POST.get('ManuCapRule_content'),
-                                                          script=request.POST.get('ManuCapRule_script'),
-                                                          inputParaList=request.POST.get('ManuCapRule_inputParaList'),
-                                                          outputParaList=request.POST.get('ManuCapRule_outputParaList'),
-                                                          paraTable=request.POST.get('ManuCapRule_paraTable'),
-                                                          ManuCapRemark=request.POST.get('ManuCapRule_ManuCapRemark')
-                                               )
+            new_ManuCapRule_obj = models.ManuCapRule.objects.create(name=new_ManuCapRule,
+                                                                    captype=request.POST.get('ManuCapRule_captype'),
+                                                                    manuType=request.POST.get('ManuCapRule_manuType'),
+                                                                    featType1=request.POST.get('ManuCapRule_featType1'),
+                                                                    featType2=request.POST.get('ManuCapRule_featType2'),
+                                                                    featPro=request.POST.get('ManuCapRule_featPro'),
+                                                                    resType=request.POST.get('ManuCapRule_resType'),
+                                                                    content=request.POST.get('ManuCapRule_content'),
+                                                                    script=request.POST.get('ManuCapRule_script'),
+                                                                    inputParaList=request.POST.get(
+                                                                        'ManuCapRule_inputParaList'),
+                                                                    outputParaList=request.POST.get(
+                                                                        'ManuCapRule_outputParaList'),
+                                                                    paraTable=request.POST.get('ManuCapRule_paraTable'),
+                                                                    ManuCapRemark=request.POST.get(
+                                                                        'ManuCapRule_ManuCapRemark')
+                                                                    )
 
             return redirect('/processCheck/manuAbility/')
         else:
             error_msg = '刀具名称不能为空'
-    #books = models.Book.objects.all()
+    # books = models.Book.objects.all()
     Feature_list = models.Feature.objects.all()
-    FeaturePara_list=models.Feature.objects.all()
-    return render(request, 'old/add_ManuCapRule.html', { 'FeaturePara_list':FeaturePara_list,'Feature_list':Feature_list,'error_msg': error_msg})
+    FeaturePara_list = models.Feature.objects.all()
+    return render(request, 'old/add_ManuCapRule.html',
+                  {'FeaturePara_list': FeaturePara_list, 'Feature_list': Feature_list, 'error_msg': error_msg})
 
 
 def delete_ManuCapRule(request, del_id):
@@ -566,8 +599,10 @@ def edit_ManuCapRule(request, edit_id):
         else:
             error_msg = '刀具名不能为空'
     ManuCapRule_obj = models.ManuCapRule.objects.get(id=edit_id)
-    KnowledgePara_list=models.KnowledgeParaTable.objects.filter(ruleid=edit_id).all
-    return render(request, 'old/edit_ManuCapRule.html', {'KnowledgePara_list':KnowledgePara_list,'ManuCapRule': ManuCapRule_obj, 'error_msg': error_msg})
+    KnowledgePara_list = models.KnowledgeParaTable.objects.filter(ruleid=edit_id).all
+    return render(request, 'old/edit_ManuCapRule.html',
+                  {'KnowledgePara_list': KnowledgePara_list, 'ManuCapRule': ManuCapRule_obj, 'error_msg': error_msg})
+
 
 def edit_ParaForManuCapRule(request, edit_id):
     error_msg = ''
@@ -593,8 +628,9 @@ def edit_ParaForManuCapRule(request, edit_id):
         else:
             error_msg = '刀具名不能为空'
     ManuCapRule_obj = models.ManuCapRule.objects.get(id=edit_id)
-    KnowledgePara_list=models.KnowledgeParaTable.objects.filter(ruleid=edit_id).all
-    return render(request, 'old/edit_ParaForManuCapRule.html', {'KnowledgePara_list':KnowledgePara_list,'ManuCapRule': ManuCapRule_obj, 'error_msg': error_msg})
+    KnowledgePara_list = models.KnowledgeParaTable.objects.filter(ruleid=edit_id).all
+    return render(request, 'old/edit_ParaForManuCapRule.html',
+                  {'KnowledgePara_list': KnowledgePara_list, 'ManuCapRule': ManuCapRule_obj, 'error_msg': error_msg})
 
 
 def search_ManuCapRule(request):
@@ -610,8 +646,8 @@ def add_KnowledgeParaTable(request, rule_id):
     if request.method == 'POST':
         new_KnowledgeParaTable = request.POST.get('KnowledgeParaTable_name')
         if new_KnowledgeParaTable:
-            tablefunctionId=request.POST.get('KnowledgeParaTable_tableFunction')
-            tablefunction_obj=models.TableFunction.objects.get(id=tablefunctionId)
+            tablefunctionId = request.POST.get('KnowledgeParaTable_tableFunction')
+            tablefunction_obj = models.TableFunction.objects.get(id=tablefunctionId)
             new_KnowledgeParaTable_obj = models.KnowledgeParaTable.objects.create(name=new_KnowledgeParaTable,
                                                                                   ruleid=ManuCapRule_obj,
                                                                                   paraType=request.POST.get(
@@ -623,29 +659,32 @@ def add_KnowledgeParaTable(request, rule_id):
                                                                                       'KnowledgeParaTable_remark')
                                                                                   )
 
-            return redirect('/edit_ParaForManuCapRule/'+str(rule_id)+'/')
+            return redirect('/edit_ParaForManuCapRule/' + str(rule_id) + '/')
         else:
             error_msg = '参数名称不能为空'
-    rule_name =ManuCapRule_obj.name
-    tableFunction_list=models.TableFunction.objects.all()
-    return render(request, 'old/add_KnowledgeParaTable.html', {'tableFunction_list':tableFunction_list,'rule_name':rule_name,'rule_id': rule_id, 'error_msg': error_msg})
+    rule_name = ManuCapRule_obj.name
+    tableFunction_list = models.TableFunction.objects.all()
+    return render(request, 'old/add_KnowledgeParaTable.html',
+                  {'tableFunction_list': tableFunction_list, 'rule_name': rule_name, 'rule_id': rule_id,
+                   'error_msg': error_msg})
+
 
 def delete_KnowledgeParaTable(request, del_id):
-    rule_id=models.KnowledgeParaTable.objects.get(id=del_id).ruleid
+    rule_id = models.KnowledgeParaTable.objects.get(id=del_id).ruleid
     models.KnowledgeParaTable.objects.get(id=del_id).delete()
 
-    return redirect('/edit_ManuCapRule/'+str(rule_id.id)+'/')
+    return redirect('/edit_ManuCapRule/' + str(rule_id.id) + '/')
 
 
 def edit_KnowledgeParaTable(request, edit_id):
     error_msg = ''
-    ManuCapRule_obj=models.KnowledgeParaTable.objects.get(id=edit_id).ruleid
-    #ManuCapRule_obj = models.ManuCapRule.objects.get(id=rule_id)
+    ManuCapRule_obj = models.KnowledgeParaTable.objects.get(id=edit_id).ruleid
+    # ManuCapRule_obj = models.ManuCapRule.objects.get(id=rule_id)
     if request.method == 'POST':
         new_name = request.POST.get('KnowledgeParaTable_name')
         if new_name:
-            tablefunctionId=request.POST.get('KnowledgeParaTable_tableFunction')
-            tablefunction_obj=models.TableFunction.objects.get(id=tablefunctionId)
+            tablefunctionId = request.POST.get('KnowledgeParaTable_tableFunction')
+            tablefunction_obj = models.TableFunction.objects.get(id=tablefunctionId)
             edit_KnowledgeParaTable_obj = models.KnowledgeParaTable.objects.get(id=edit_id)
             edit_KnowledgeParaTable_obj.name = new_name
             edit_KnowledgeParaTable_obj.ruleid = ManuCapRule_obj
@@ -654,37 +693,23 @@ def edit_KnowledgeParaTable(request, edit_id):
             edit_KnowledgeParaTable_obj.tableFunction = tablefunction_obj
             edit_KnowledgeParaTable_obj.remark = request.POST.get('KnowledgeParaTable_remark')
             edit_KnowledgeParaTable_obj.save()
-            return redirect('/edit_ParaForManuCapRule/'+str(ManuCapRule_obj.id)+'/')
+            return redirect('/edit_ParaForManuCapRule/' + str(ManuCapRule_obj.id) + '/')
         else:
             error_msg = '刀具名不能为空'
     KnowledgeParaTable_obj = models.KnowledgeParaTable.objects.get(id=edit_id)
-    rule_id=ManuCapRule_obj.id
-    rule_name =ManuCapRule_obj.name
-    tableFunction_list=models.TableFunction.objects.all()
-    return render(request, 'old/edit_KnowledgeParaTable.html', {'KnowledgeParaTable': KnowledgeParaTable_obj, 'tableFunction_list':tableFunction_list,'rule_name':rule_name,'rule_id': rule_id, 'error_msg': error_msg})
+    rule_id = ManuCapRule_obj.id
+    rule_name = ManuCapRule_obj.name
+    tableFunction_list = models.TableFunction.objects.all()
+    return render(request, 'old/edit_KnowledgeParaTable.html',
+                  {'KnowledgeParaTable': KnowledgeParaTable_obj, 'tableFunction_list': tableFunction_list,
+                   'rule_name': rule_name, 'rule_id': rule_id, 'error_msg': error_msg})
     # return render(request, 'old/edit_KnowledgeParaTable.html', {'KnowledgeParaTable': KnowledgeParaTable_obj, 'error_msg': error_msg})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def TableFunction_list(request):
     all_TableFunction = models.TableFunction.objects.all()
     return render(request, 'script_and_function/table_function.html', {'TableFunction_list': all_TableFunction})
+
 
 def add_TableFunction(request):
     error_msg = ''
@@ -692,18 +717,22 @@ def add_TableFunction(request):
         new_TableFunction = request.POST.get('TableFunction_name')
         if new_TableFunction:
             # img_file=request.FILES.get('TableFunction_TableFunctionImg')
-            new_TableFunction_obj = models.TableFunction.objects.create(name=new_TableFunction,functionName=request.POST.get('TableFunction_functionName'),
-                                                          inputPara=request.POST.get('TableFunction_inputPara'),
-                                                          outputPara=request.POST.get('TableFunction_outputPara'),
-                                                          sql=request.POST.get('TableFunction_sql'),
-                                                          remark=request.POST.get('TableFunction_remark')
-                                               )
+            new_TableFunction_obj = models.TableFunction.objects.create(name=new_TableFunction,
+                                                                        functionName=request.POST.get(
+                                                                            'TableFunction_functionName'),
+                                                                        inputPara=request.POST.get(
+                                                                            'TableFunction_inputPara'),
+                                                                        outputPara=request.POST.get(
+                                                                            'TableFunction_outputPara'),
+                                                                        sql=request.POST.get('TableFunction_sql'),
+                                                                        remark=request.POST.get('TableFunction_remark')
+                                                                        )
 
             return redirect('/scripNFunction/table_function/')
         else:
             error_msg = '数据库内表名不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_TableFunction.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_TableFunction.html', {'error_msg': error_msg})
 
 
 def delete_TableFunction(request, del_id):
@@ -730,26 +759,12 @@ def edit_TableFunction(request, edit_id):
     TableFunction_obj = models.TableFunction.objects.get(id=edit_id)
     return render(request, 'old/edit_TableFunction.html', {'TableFunction': TableFunction_obj, 'error_msg': error_msg})
 
+
 def search_TableFunction(request):
     search = request.GET.get('TableFunction_search')
     all_TableFunction_obj = models.TableFunction.objects.filter(name__icontains=search).all()
     error_msg = ''
     return render(request, 'script_and_function/table_function.html', {'TableFunction_list': all_TableFunction_obj})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def change_password(request):
@@ -782,9 +797,9 @@ def login(request):
             # 返回登录失败信息
             error_msg = '用户名或密码错误'
             # return HttpResponse('登陆失败')
-            return render(request, 'login.html', {'errorMessage':error_msg})
+            return render(request, 'login.html', {'errorMessage': error_msg})
 
-    return render(request, 'login.html', {'errorMessage':error_msg})
+    return render(request, 'login.html', {'errorMessage': error_msg})
 
 
 def index(request):
@@ -800,16 +815,18 @@ def manufacturing_ability(request):
     all_mat_ManuCapRule = models.ManuCapRule.objects.filter(captype__icontains="材料").all()
     all_acc_ManuCapRule = models.ManuCapRule.objects.filter(captype__icontains="精度").all()
     all_size_ManuCapRule = models.ManuCapRule.objects.filter(captype__icontains="尺寸").all()
-    return render(request, 'process_Check/manufacturing_ability.html', {'ManuCapRule_mat_list': all_mat_ManuCapRule,'ManuCapRule_acc_list': all_acc_ManuCapRule,'ManuCapRule_size_list': all_size_ManuCapRule})
+    return render(request, 'process_Check/manufacturing_ability.html',
+                  {'ManuCapRule_mat_list': all_mat_ManuCapRule, 'ManuCapRule_acc_list': all_acc_ManuCapRule,
+                   'ManuCapRule_size_list': all_size_ManuCapRule})
 
 
 def knowledge_para(request):
     knowledge_para = models.ManuCapRule.objects.filter(captype__icontains="材料").all()
     all_acc_ManuCapRule = models.ManuCapRule.objects.filter(captype__icontains="精度").all()
     all_size_ManuCapRule = models.ManuCapRule.objects.filter(captype__icontains="尺寸").all()
-    return render(request, 'process_Check/manufacturing_ability.html', {'ManuCapRule_mat_list': all_mat_ManuCapRule,'ManuCapRule_acc_list': all_acc_ManuCapRule,'ManuCapRule_size_list': all_size_ManuCapRule})
-
-
+    return render(request, 'process_Check/manufacturing_ability.html',
+                  {'ManuCapRule_mat_list': all_mat_ManuCapRule, 'ManuCapRule_acc_list': all_acc_ManuCapRule,
+                   'ManuCapRule_size_list': all_size_ManuCapRule})
 
 
 # def manufacturing_ability_acc(request):
@@ -819,7 +836,6 @@ def knowledge_para(request):
 # def manufacturing_ability_size(request):
 #     all_size_ManuCapRule = models.ManuCapRule.objects.filter(captype__icontains="尺寸").all()
 #     return render(request, 'process_Check/manufacturing_ability.html', {'ManuCapRule_size_list': all_size_ManuCapRule})
-
 
 
 def space_position(request):
@@ -859,5 +875,3 @@ def standardize(request):
 def table_function(request):
     all_tablaFuction = models.TableFunction.objects.all()
     return render(request, 'script_and_function/table_function.html', {'TableFunction_list': all_tablaFuction})
-
-

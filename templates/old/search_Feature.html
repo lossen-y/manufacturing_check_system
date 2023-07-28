@@ -1,0 +1,44 @@
+<thead>
+<tr>
+    <th>操作</th>
+    <th>参数名</th>
+    <th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+{% for FeaturePara in FeaturePara_list %}
+    <tr>
+        <td class="buttentest">
+            <button class="btn btn-info" type="button" data-toggle="tooltip" title="复制参数名"
+                    id="btn" data-clipboard-text="123" onclick="copyname('{{ FeaturePara.name }}')"
+                    >复制参数名
+            </button>
+            <input style="width:30%;display:inline" type="text" id="{{ FeaturePara.name }}">
+        </td>
+        <td>{{ FeaturePara.description }}</td>
+        <td>{{ FeaturePara.name }}</td>
+    </tr>
+{% endfor %}
+<tbody>
+<div class="col-sm-10">
+<input   type="text" id="copy-name" value="123" placeholder="test">
+</div>
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+
+<script type="text/javascript">
+
+    function copyname(paraname) {
+        {#var paranamecopy=paraname;#}
+        {#alert(paraname);#}
+        {#var paranamecopy=paraname;#}
+        var copyText = document.getElementById(paraname);
+        {#alert(copyText.value);#}
+        copyText.value = paraname;
+        copyText.select();
+        navigator.clipboard.writeText(copyText.value);
+  /* 弹出已复制的内容 */
+        alert("复制的参数名为: " + copyText.value);
+
+                    }
+
+</script>

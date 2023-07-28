@@ -22,11 +22,7 @@
 {#            border-top: 0px; }#}
 {#        </style>#}
         <style>
-        {#select {#}
-        {#  border-radius: 5px;#}
-          {#box-shadow: 2px 2px 5px #999;#}
-        {#  transition: all .2s ease-in-out;#}
-        {#}#}
+
         input{
             margin-top: 5px;
             margin-bottom: 5px;
@@ -34,11 +30,35 @@
         h4{
             border-left:100px
         }
+        table {
+        border-collapse: collapse; /* 合并单元格 */
+        }
+        th {
+            font-size: 10px;
+            border: 1px solid black; /* 设置边框 */
+            padding: 10px; /* 设置内边距 */
+            height: 20px; /* 设置行高 */
+            min-width:60px;
+            max-height:50px;
+            width: 50px;
+            max-width: 100px;
+        }
+        td{
+            font-size: 10px;
+            height: 20px; /* 设置行高 */
+            max-height:30px;
+            {#width: 50px;#}
+            max-width: 100px;
+            min-width:60px;
+            overflow:hidden;text-overflow:ellipsis;
+            white-space:nowrap; /* 超出部分用省略号 */
+        }
 
       </style>
 
         <div class="panel-body">
             <form class="form-horizontal" action="{% url 'add_ManuCapRule' %}" method="post">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="ManuCapRule-name" class="col-sm-2 control-label">规则名称</label>
                     <div class="col-sm-10">
@@ -127,14 +147,16 @@
 {#                            </div><!-- /input-group -->#}
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-info" type="button" data-toggle="tooltip" title="搜索" id="addCenterIpGrpBtn"
-            onclick="/add_rule_search_Feature_para/">搜索</button>
+                        <button class="btn btn-info" type="button" data-toggle="tooltip" title="搜索"
+                                name="searchFeature" id="searchFeature" onclick="searchfea()"
+                                >搜索
+                        </button>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="ManuCapRule-script" class="col-sm-2 control-label">标准特征参数表</label>
                     <div class="col-sm-10" style="width:80%; height:100%; overflow:scroll;">
-                        <table class="table table-bordered" id="table">
+                        <table class="table table-bordered" id="paratable">
                             <thead>
                             <tr>
                                 <th>参数名</th>
@@ -152,6 +174,8 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+
 
 
 
@@ -171,15 +195,14 @@
                 <button class="btn btn-info" type="button" data-toggle="tooltip" title="新增" id="addCenterIpGrpBtn"
             onclick="addCenterIpGrp(this)" style="margin-left: 225px">新增If-Then <span class="glyphicon glyphicon-plus"></span></button>
                 </div>
-
-
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-info" type="button" data-toggle="tooltip" title="生成脚本代码" id="addCenterIpGrpBtn"
-            onclick="genscript()">生成脚本代码</button>
+                        <button class="btn btn-info" type="button" data-toggle="tooltip" title="生成脚本代码"
+                                id="searchBtn"
+                                onclick="genscript()">生成脚本代码
+                        </button>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="ManuCapRule-script" class="col-sm-2 control-label">脚本</label>
                     <div class="col-sm-10">
@@ -203,11 +226,13 @@
                     </div>
                 </div>
                 <script type="text/javascript">
+
                     var rowCount = 1;//(资源)行数默认1行
                     //添加脚本输入框项
 
                     function addCenterIpGrp(obj) {
                         rowCount++
+                        alert(rowCount);
                         html =
                             '<div class="form-group">' +
                             '<label for="ManuCapRule-script" class="col-sm-2 control-label">If前提</label>'+
@@ -217,47 +242,64 @@
                             '<label for="ManuCapRule-script" class="col-sm-2 control-label">Then结论</label>'+
                             '<div class="col-sm-10">'+
                             '<input class="form-control" id="ManuCapRule_script_then_' +rowCount+
-                            '" placeholder="If结论" name="ManuCapRule_script_if_' +rowCount+ '" >'+
-                            '<button class="btn btn-info" type="button" data-toggle="tooltip" title="删除" id="delCenterIpGrp">删除 <span class="glyphicon glyphicon-minus"></span></button>' +
+                            '" placeholder="Then结论" name="ManuCapRule_script_if_' +rowCount+ '" >'+
+                            '<button class="btn btn-danger" type="button" data-toggle="tooltip" title="删除" id="delCenterIpGrp">删除行 <span class="glyphicon glyphicon-minus"></span></button>' +
                             ' </span>' +
                             '</div>'+
                             '</div>'
                         obj.insertAdjacentHTML('beforebegin', html)
 
                         $(document).on('click', '#delCenterIpGrp', function () {
-                            rowCount--;
+                            {#rowCount--;#}
+                            {#alert(rowCount);#}
                             var el = this.parentNode.parentNode;
-                            var centerIp = $(this).parent().parent().find('#ipInput').val();
+                            {#var centerIp = $(this).parent().parent().find('#ipInput').val();#}
                             el.parentNode.removeChild(el)
                         })
                     }
 
-                        function genscript() {
-                            var ruleArray = new Array();
-                            alert(rowCount);
-                            for (var i = 1; i <= rowCount; i++) {
+                    function genscript() {
+                        var ruleArray = new Array();
+                        alert(rowCount);
+                        for (var i = 1; i <= rowCount; i++) {
+                            if (document.getElementById('ManuCapRule_script_if_' + i)!=null){
                                 var script_if = document.getElementById('ManuCapRule_script_if_' + i).value;
                                 var script_then = document.getElementById('ManuCapRule_script_then_' + i).value;
-                                alert("成功"+i)
                                 if ((script_if != "" && undefined != script_if)) {
                                     var obj = new Object();
                                     obj['script_if'] = script_if;
-                                    {#alert("成功"+script_if);#}
                                     obj['script_then'] = script_then;
                                     ruleArray.push(obj);
                                 }
                             }
-                            var ruleJsonData = JSON.stringify(ruleArray);
-                            var obj=document.getElementById('ManuCapRule-script')
-                            obj.value=ruleJsonData
-
-
                         }
+                        var ruleJsonData = JSON.stringify(ruleArray);
+                        var obj=document.getElementById('ManuCapRule-script');
+
+
+
+                        obj.value=ruleJsonData;
+                    }
+                    {#$(document).on('click', '#searchFeature', function () {#}
+                    function searchfea() {
+                            {#alert(rowCount);#}
+                            var featureType = $("#ManuCapRule-featType2").val(); //获取特征小类
+                            alert(featureType)
+
+                            $.post("/add_rule_search_Feature_para/", { "featype": featureType, "csrfmiddlewaretoken": '{{ csrf_token }}'}, //post函数到后端
+                                function (data, status) { //回调函数
+                                    $("#paratable").html(data); //将id为pstable的标签的html替换为返回的data
+                                    {#$("#ip").val(ip) //将输入框的值改为查询的ip#}
+                                });
+                    }
 
 
                 </script>
 
+
+
             {% csrf_token %}
+
             </form>
         </div>
     </div>

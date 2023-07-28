@@ -106,7 +106,7 @@ urlpatterns = [
     url(r'^delete_ManuCapRule/([0-9]+)/$', views.delete_ManuCapRule, name='delete_ManuCapRule'),
     url(r'^edit_ManuCapRule/([0-9]+)/$', views.edit_ManuCapRule, name='edit_ManuCapRule'),
     url(r'^edit_ParaForManuCapRule/([0-9]+)/$', views.edit_ParaForManuCapRule, name='edit_ParaForManuCapRule'),
-    # url(r'^add_rule_search_Feature_para/$', views.add_rule_search_Feature_para, name='add_rule_search_Feature_para'),
+    url(r'^add_rule_search_Feature_para/$', views.add_rule_search_Feature_para, name='add_rule_search_Feature_para'),
 
     # 规则参数表相关的对应关系
     url(r'^add_KnowledgeParaTable/([0-9]+)/$', views.add_KnowledgeParaTable, name='add_KnowledgeParaTable'),
