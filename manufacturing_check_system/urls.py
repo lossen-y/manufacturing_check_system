@@ -22,6 +22,11 @@ from app01 import views
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+
+
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^index/', views.index, name='index'),
@@ -92,6 +97,14 @@ urlpatterns = [
     url(r'^delete_cutter/([0-9]+)/$', views.delete_cutter, name='delete_cutter'),
     url(r'^edit_cutter/([0-9]+)/$', views.edit_cutter, name='edit_cutter'),
 
+      # 标准孔相关的对应关系
+      # url(r'^standardKnowNInfo/resource/', views.cutter_list, name='standardKnowNInfo'),
+      # url(r'^resource/$', views.reource, name='book_list'),
+      url(r'^add_apert/$', views.add_apert, name='add_apert'),
+      url(r'^search_apert/$', views.search_apert, name='search_apert'),
+      url(r'^delete_apert/([0-9]+)/$', views.delete_apert, name='delete_apert'),
+      url(r'^edit_apert/([0-9]+)/$', views.edit_apert, name='edit_apert'),
+
     # 标准特征相关的对应关系
     url(r'^add_Feature/$', views.add_Feature, name='add_Feature'),
     url(r'^search_Feature/$', views.search_Feature, name='search_Feature'),
@@ -128,7 +141,6 @@ urlpatterns = [
     #
     #
     # url(r'^output_RuleData/([0-9]+)/$', views.output_RuleData, name='output_RuleData'),
-
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
