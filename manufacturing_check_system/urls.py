@@ -104,6 +104,9 @@ urlpatterns = [
       url(r'^search_apert/$', views.search_apert, name='search_apert'),
       url(r'^delete_apert/([0-9]+)/$', views.delete_apert, name='delete_apert'),
       url(r'^edit_apert/([0-9]+)/$', views.edit_apert, name='edit_apert'),
+             # 下载excel
+      url(r'^download_apert/([0-9]+)/$', views.download_excel, name='download_excel'),
+
 
     # 标准特征相关的对应关系
     url(r'^add_Feature/$', views.add_Feature, name='add_Feature'),
@@ -141,6 +144,7 @@ urlpatterns = [
     #
     #
     # url(r'^output_RuleData/([0-9]+)/$', views.output_RuleData, name='output_RuleData'),
+
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

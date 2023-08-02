@@ -526,7 +526,30 @@ def search_apert(request):
     tab_name = 'apert'
     return render(request, 'standard_knowledge_and_information/resource.html', {'apert_list': all_apert_obj,"tab_name" : tab_name})
 
-# 下载excel文件
+# 下载apert excel文件
+# views.py
+from django.http import HttpResponse
+
+import os
+
+def download_excel(request, apert_id):
+    print('1')
+    try:
+        apert = models.Apert.objects.get(id=apert_id)
+        excel_file_path = apert.excel_apertfile.path
+
+        if os.path.exists(excel_file_path) and os.path.isfile(excel_file_path):
+            with open(excel_file_path, 'rb') as excel_file:
+                response = HttpResponse(excel_file.read(), content_type='application/vnd.ms-excel')
+                response['Content-Disposition'] = f'attachment; filename="{os.path.basename(excel_file_path)}"'
+                return response
+
+    except models.Apert.DoesNotExist:
+        print('文件不存在')
+        pass
+
+    # If the Apert object does not exist or the file is not found, return a 404 Not Found response.
+    return HttpResponse(status=404)
 
 
 
