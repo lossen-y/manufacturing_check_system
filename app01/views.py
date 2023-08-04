@@ -409,7 +409,7 @@ def search_mach(request):
 
 def head_list(request):
     all_head = models.Head.objects.all()
-    return render(request, 'standard_knowledge_and_information/resource.html', {'mach_list': all_head})
+    return render(request, 'standard_knowledge_and_information/resource.html', {'head_list': all_head})
 
 def add_head(request):
     error_msg = ''
@@ -469,6 +469,87 @@ def search_head(request):
     tab_name = 'head'
     return render(request, 'standard_knowledge_and_information/resource.html', {'head_list': all_head_obj,"tab_name" : tab_name})
 
+# Apert
+
+def apert_list(request):
+    all_apert = models.Apert.objects.all()
+    return render(request, 'standard_knowledge_and_information/resource.html', {'apert_list': all_apert})
+
+def add_apert(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_apert = request.POST.get('apert_apertType')
+        if new_apert:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_apert_obj = models.Apert.objects.create(
+                                                      apertType=new_apert,
+                                                      standard_apert=request.POST.get('apert_standard_apert'),
+                                                      apertImg=request.FILES.get('apert_apertImg'),
+                                                      excel_apertfile=request.FILES.get('apert_excel_apertfile'),
+                                                      apertRemark=request.POST.get('apert_apertRemark'),
+                                                      otherFields=request.POST.get('apert_otherFields'),
+                                               )
+
+            return redirect('/standardKnowNInfo/resource/')
+        else:
+            error_msg = '孔名称不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_apert.html', { 'error_msg': error_msg})
+
+def delete_apert(request, del_id):
+    models.Apert.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/resource/')
+
+def edit_apert(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('apert_apertType')
+        if new_name:
+            edit_apert_obj = models.Apert.objects.get(id=edit_id)
+            edit_apert_obj.apertType = new_name
+            edit_apert_obj.standard_apert = request.POST.get('apert_standard_apert')
+            edit_apert_obj.apertImg = request.FILES.get('apert_apertImg')
+            edit_apert_obj.excel_apertfile = request.FILES.get('apert_excel_apertfile')
+            edit_apert_obj.apertRemark = request.POST.get('apert_apertRemark')
+            edit_apert_obj.otherFields = request.POST.get('apert_otherFields')
+            edit_apert_obj.save()
+            return redirect('/standardKnowNInfo/resource/')
+        else:
+            error_msg = '孔名称不能为空'
+    apert_obj = models.Apert.objects.get(id=edit_id)
+    return render(request, 'old/edit_apert.html', {'apert': apert_obj, 'error_msg': error_msg})
+
+def search_apert(request):
+    search = request.GET.get('apert_search')
+    all_apert_obj = models.Apert.objects.filter(apertType__icontains=search).all()
+    error_msg = ''
+    tab_name = 'apert'
+    return render(request, 'standard_knowledge_and_information/resource.html', {'apert_list': all_apert_obj,"tab_name" : tab_name})
+
+# 下载apert excel文件
+# views.py
+from django.http import HttpResponse
+
+import os
+
+def download_excel(request, apert_id):
+    print('1')
+    try:
+        apert = models.Apert.objects.get(id=apert_id)
+        excel_file_path = apert.excel_apertfile.path
+
+        if os.path.exists(excel_file_path) and os.path.isfile(excel_file_path):
+            with open(excel_file_path, 'rb') as excel_file:
+                response = HttpResponse(excel_file.read(), content_type='application/vnd.ms-excel')
+                response['Content-Disposition'] = f'attachment; filename="{os.path.basename(excel_file_path)}"'
+                return response
+
+    except models.Apert.DoesNotExist:
+        print('文件不存在')
+        pass
+
+    # If the Apert object does not exist or the file is not found, return a 404 Not Found response.
+    return HttpResponse(status=404)
 
 
 

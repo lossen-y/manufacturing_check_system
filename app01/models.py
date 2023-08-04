@@ -131,6 +131,22 @@ class Head(models.Model):
     def __str__(self):
         return self.name
 
+class Apert(models.Model):
+    '''
+    标准孔径表
+    '''
+    id = models.AutoField(primary_key=True)
+    apertType = models.CharField(max_length=128, null=True, unique=False)    #孔类型名称
+    standard_apert = models.TextField(null=True, unique=False) # 标准孔径
+    apertImg = models.FileField(null=True, unique=False)  # 标准孔图片
+    excel_apertfile = models.FileField(null=True, unique=False, upload_to='excel_apertfiles/') # excel_apert文件模板
+    apertRemark = models.TextField(null=True, unique=False)  # 标准孔备注
+    otherFields = models.TextField(null=True, unique=False)  # 其他字段
+
+    def __str__(self):
+        return self.name
+
+
 class ManuCapRule(models.Model):
     '''
     制造能力审查规则表
