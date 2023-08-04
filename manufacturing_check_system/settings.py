@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'manufacturing_check_system',
         'USER': 'root',
-        'PASSWORD': 'YES',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': 3306,
         #'ENGINE': 'django.db.backends.sqlite3',
