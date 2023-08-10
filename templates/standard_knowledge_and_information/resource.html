@@ -15,6 +15,7 @@
             form.submit();
         }
     </script>
+
     <ul id="myTab" class="nav nav-tabs">
 
         <li class="{% if tab_name|default:'tool' == 'tool' %}active{% endif %}">
@@ -33,9 +34,6 @@
             <a href="#head" data-toggle="tab" onclick="changeForm('head_form')">角度头</a>
         </li>
 
-        <li class="{% if tab_name == 'apert' %}active{% endif %}">
-            <a href="#apert" data-toggle="tab" onclick="changeForm('apert_form')">标准孔</a>
-        </li>
 
     </ul>
 
@@ -200,7 +198,6 @@
 
             </div>
         </div>
-
         {#标签2：工装#}
         <div class="{% if tab_name == 'fixture' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}" id="fixture">
             <div class="panel panel-primary">
@@ -359,7 +356,7 @@
 
             </div>
         </div>
-        {#标签2：机床#}
+        {#标签3：机床#}
         <div class="{% if tab_name == 'mach' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}" id="mach">
             <div class="panel panel-primary">
                 <!-- Default panel contents -->
@@ -538,7 +535,7 @@
 
             </div>
         </div>
-        {#标签2：角度头#}
+        {#标签4：角度头#}
         <div class="{% if tab_name == 'head' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}"  id="head">
             <div class="panel panel-primary">
                 <!-- Default panel contents -->
@@ -691,153 +688,7 @@
 
             </div>
         </div>
-        {#标签4：标准孔#}
-        <div class="{% if tab_name == 'apert' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}"  id="apert">
-            <div class="panel panel-primary">
-                <!-- Default panel contents -->
-                <div class="panel-heading">标准孔列表 <i class="fa fa-thumb-tack pull-right"></i></div>
-                <div class="panel-body">
-                    <div class="row" style="margin-bottom: 15px">
-                        <div class="col-md-4" >
-                            <div class="input-group">
-                                <form style="width:400px;display:inline" action="/search_apert/" method="get" id="apert_form">
-                                <input style="width:300px;float:left;" class="form-control" type="text" name="apert_search" placeholder="角度头编号">
-                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
-                                </form>
-                            </div><!-- /input-group -->
-                        </div><!-- /.col-md-4 -->
-                        <div class="col-md-3 pull-right">
-                            <a href="{% url 'add_apert' %}" class="btn btn-success pull-right"><i
-                                    class="fa fa-plus fa-fw"></i>添加孔</a>
 
-                        </div>
-
-                    </div><!-- /.row -->
-                    <style>
-                    table {
-                    border-collapse: collapse; /* 合并单元格 */
-                    }
-                    th {
-                        font-size: 10px;
-                        border: 1px solid black; /* 设置边框 */
-                        padding: 10px; /* 设置内边距 */
-                        height: 20px; /* 设置行高 */
-                        min-width:60px;
-                        max-height:50px;
-                        width: 50px;
-                        max-width: 300px;
-                    }
-                    td{
-                        font-size: 10px;
-                        height: 20px; /* 设置行高 */
-                        max-height:30px;
-                        {#width: 50px;#}
-                        max-width: 300px;
-                        min-width:60px;
-                        overflow:hidden;text-overflow:ellipsis;
-                        white-space:nowrap; /* 超出部分用省略号 */
-                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
-		                {#display: -webkit-box;#}
-                        {#/* 限制再一个块元素再文本显示的行数 */#}
-                        {#-webkit-line-clamp: 2;#}
-                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
-                        {#-webkit-box-orient: vertical;#}
-
-                    }
-                    td.buttentest{
-                        width: 200px;
-                        max-width: 300px;
-                    }
-                    a{
-                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
-                        {#font-size: 10px;#}
-                        {#height: 30px;#}
-                        {#width: 20px;#}
-
-                    }
-                    {#i{font-size: 10px;}#}
-
-                    </style>
-                <div style="width:100%; height:100%; overflow:scroll;">
-                    <table class="table table-bordered" id="table">
-                        <thead>
-                        <tr>
-                            <th>数据操作</th>
-                            <th>孔类型名</th>
-                            <th>标准孔径</th>
-                            <th>示意图片</th>
-                            <th>excel文件模板</th>
-                            <th>其他字段</th>
-                            <th>角度头备注</th>
-
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for apert in apert_list %}
-                            <tr>
-                                <td class="buttentest">
-                                    <a class="btn btn-danger" href="{% url 'delete_apert' apert.id %}"><i
-                                            class="fa fa-trash-o fa-fw"></i>删除</a>
-                                    <a class="btn btn-info" href="{% url 'edit_apert' apert.id %}"><i
-                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
-                                </td>
-                                <td>{{ apert.apertType }}</td>
-                                <td>{{ apert.standard_apert }}</td>
-                                <td>{{ apert.apertImg }}</td>
-                                <td>{{ apert.excel_apertfile }}</td>
-                                <td>{{ apert.otherFields }}</td>
-                                <td>{{ apert.apertRemark }}</td>
-
-
-
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                    <script type="text/javascript">
-                        var tTD;
-                        var table = document.getElementById("table");
-                        console.log(table.rows[0].cells)
-                        for (i = 0; i < table.rows[0].cells.length; i++) {
-                            table.rows[0].cells[i].onmousedown = function() {
-                                tTD = this;
-                                if (event.offsetX > tTD.offsetWidth - 10) {
-                                    tTD.mouseDown = true;
-                                    tTD.oldX = event.x;
-                                    tTD.oldWidth = tTD.offsetWidth;
-                                }
-                            };
-                            table.rows[0].cells[i].onmouseup = function() {
-                                if (tTD == undefined) tTD = this;
-                                tTD.mouseDown = false;
-                                tTD.style.cursor = 'default';
-                            };
-                            table.rows[0].cells[i].onmousemove = function() {
-                                if (event.offsetX > this.offsetWidth - 10)
-                                    this.style.cursor = 'col-resize';
-                                else
-                                    this.style.cursor = 'default';
-                                if (tTD == undefined) tTD = this;
-                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
-                                    tTD.style.cursor = 'default';
-                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
-                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
-                                    tTD.style.width = tTD.width;
-                                    tTD.style.cursor = 'col-resize';
-                                    table = tTD;
-                                    while (table.tagName != 'TABLE') table = table.parentElement;
-                                    for (j = 0; j < table.rows.length; j++) {
-                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
-                                    }
-                                }
-                            };
-                        }
-                </script>
-                </div>
-                </div>
-
-            </div>
-        </div>
     </div>
 
 

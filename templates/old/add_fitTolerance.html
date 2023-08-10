@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|添加公差等级
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">公差等级管理页面</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加公差等级</h3>
+        </div>
+
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'add_fitTolerance' %}" enctype="multipart/form-data" method="post">
+
+                <div class="form-group">
+
+                    <label for="fitTolerance-Class" class="col-sm-2 control-label">精度等级</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fitTolerance-Class" placeholder="精度等级"
+                               name="fitTolerance_Class">
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <label for="fitTolerance-nomiSizeL" class="col-sm-2 control-label">公称尺寸下界</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fitTolerance-nomiSizeL" placeholder="公称尺寸下界"
+                               name="fitTolerance_nomiSizeL">
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <label for="fitTolerance-nomiSizeR" class="col-sm-2 control-label">公称尺寸上界</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fitTolerance-nomiSizeR" placeholder="公称尺寸上界"
+                               name="fitTolerance_nomiSizeR">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="fitTolerance-tolNum" class="col-sm-2 control-label">公差值</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="fitTolerance-tolNum" placeholder="公差值"
+                               name="fitTolerance_tolNum">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="fitTolerance-otherField1" class="col-sm-2 control-label">其他字段1</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="fitTolerance-otherField1" placeholder="其他字段1"
+                                  name="fitTolerance_otherField1" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fitTolerance-otherField2" class="col-sm-2 control-label">其他字段2</label>
+                    <div class="col-sm-10">
+                        <input  type="text" class="form-control" id="fitTolerance-otherField2" placeholder="其他字段2"
+                                  name="fitTolerance_otherField2" >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+            {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}

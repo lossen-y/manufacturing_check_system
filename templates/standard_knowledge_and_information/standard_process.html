@@ -6,9 +6,24 @@
 
 {% block main %}
     <h2 class="page-header" style="border-bottom: none">标准化知识和信息|标准工艺</h2>
+        <script>
+        function changeForm(newFormName) {
+            // 获取表单元素
+            console.log("这是输出的消息");
+            var form = document.getElementById(newFormName);
+            // 提交表单
+            form.submit();
+        }
+    </script>
     <ul id="myTab" class="nav nav-tabs">
-        <li class="active"><a href="#partProcess" data-toggle="tab">零件工艺路线</a></li>
-        <li><a href="#featureProcess" data-toggle="tab">特征工艺路线</a></li>
+
+        <li class="{% if tab_name == 'part' %}active{% endif %}" >
+            <a href="#part" data-toggle="tab" id = 'partLink' onclick="changeForm('part_form')"  >零件工艺路线</a>
+        </li>
+
+        <li class="{% if tab_name == 'feat' %}active{% endif %}">
+            <a href="#feat" data-toggle="tab" id = 'featLink' onclick="changeForm('feat_form')"  >特征工艺路线</a>
+        </li>
 
         {#        <li class="dropdown">#}
         {#            <a href="#" id="myTabDrop1" class="dropdown-toggle"#}
@@ -21,71 +36,320 @@
         {#            </ul>#}
         {#        </li>#}
     </ul>
+
+
+
     <div id="myTabContent" class="tab-content">
         {#标签1：零件工艺#}
-        <div class="tab-pane fade in active" id="partProcess">
-
+        <div class="{% if tab_name == 'part' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}" id="part">
             <div class="panel panel-primary">
-                <!-- Default panel contents -->
-                <div class="panel-heading">作者列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+            <!-- Default panel contents -->
+                <div class="panel-heading">零件工艺路线表<i class="fa fa-thumb-tack pull-right"></i></div>
                 <div class="panel-body">
                     <div class="row" style="margin-bottom: 15px">
-                        <div class="col-md-4">
+                        <div class="col-md-4" >
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">搜索</button>
-                                </span>
+                                <form style="width:400px;display:inline" action="/search_part/" method="get" id="part_form">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="part_search" placeholder="零件类型">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
                             </div><!-- /input-group -->
                         </div><!-- /.col-md-4 -->
                         <div class="col-md-3 pull-right">
-                            <a href="{% url 'add_author' %}" class="btn btn-success pull-right"><i
-                                    class="fa fa-plus fa-fw"></i>添加作者</a>
-                            <button class="btn btn-success pull-right" data-toggle="modal" data-target="#myModal">新增
-                            </button>
+                            <a href="{% url 'add_part' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加零件工艺路线</a>
+
                         </div>
 
                     </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
+		                {#display: -webkit-box;#}
+                        {#/* 限制再一个块元素再文本显示的行数 */#}
+                        {#-webkit-line-clamp: 2;#}
+                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
+                        {#-webkit-box-orient: vertical;#}
 
-                    <table class="table table-bordered">
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>id</th>
-                            <th>作者名字</th>
-                            <th>作品</th>
-                            <th>操作</th>
+                            <th>数据操作</th>
+                            <th>零件类型</th>
+                            <th>零件结构形式</th>
+                            <th>零件材料</th>
+                            <th>零件尺寸</th>
+                            <th>零件装夹位置</th>
+                            <th>关联的PMI及精度</th>
+                            <th>关联的特征类型</th>
+                            <th>工艺流程</th>
+                            <th>示意图</th>
+                            <th>其他字段1</th>
+                            <th>其他字段2</th>
+
                         </tr>
                         </thead>
                         <tbody>
-                        {% for author in author_list %}
+                        {% for part in part_list %}
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ author.id }}</td>
-                                <td>{{ author.name }}</td>
-                                <td>
-                                    {% for book in author.book.all %}
-                                        《{{ book.title }}》&nbsp;
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    <a class="btn btn-danger" href="{% url 'delete_author' author.id %}"><i
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_part' part.id %}"><i
                                             class="fa fa-trash-o fa-fw"></i>删除</a>
-                                    <a class="btn btn-info" href="{% url 'edit_author' author.id %}"><i
-                                            class="fa fa-pencil fa-fw"></i>编辑</a>
+                                    <a class="btn btn-info" href="{% url 'edit_part' part.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
                                 </td>
+                                <td>{{ part.partType }}</td>
+                                <td>{{ part.partStruct }}</td>
+                                <td>{{ part.partMat }}</td>
+                                <td>{{ part.partSize }}</td>
+                                <td>{{ part.geoFix }}</td>
+                                <td>{{ part.PMIInfo }}</td>
+                                <td>{{ part.featType }}</td>
+                                <td>{{ part.processFlow }}</td>
+                                <td>{{ part.Img }}</td>
+                                <td>{{ part.otherField1 }}</td>
+                                <td>{{ part.otherField2 }}</td>
+
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
-
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
                 </div>
 
             </div>
+
         </div>
+
+
         {#标签2：特征工艺#}
-        <div class="tab-pane fade" id="featureProcess">
-            <p>something</p>
+        <div class="{% if tab_name == 'feat' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}" id="feat">
+            <div class="panel panel-primary">
+            <!-- Default panel contents -->
+                <div class="panel-heading">特征工艺路线表<i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_feat/" method="get" id="feat_form">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="feat_search" placeholder="关联的特征">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_feat' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加零件工艺路线</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
+		                {#display: -webkit-box;#}
+                        {#/* 限制再一个块元素再文本显示的行数 */#}
+                        {#-webkit-line-clamp: 2;#}
+                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
+                        {#-webkit-box-orient: vertical;#}
+
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>关联的特征</th>
+                            <th>特征几何结构</th>
+                            <th>特征材料</th>
+                            <th>关联的PMI</th>
+                            <th>最高精度</th>
+                            <th>工艺流程</th>
+                            <th>示意图</th>
+                            <th>其他字段1</th>
+                            <th>其他字段2</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for feat in feat_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_feat' feat.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_feat' feat.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ feat.featID }}</td>
+                                <td>{{ feat.featType }}</td>
+                                <td>{{ feat.featMat }}</td>
+                                <td>{{ feat.geoDim }}</td>
+                                <td>{{ feat.precision }}</td>
+                                <td>{{ feat.processFlow }}</td>
+                                <td>{{ feat.Img }}</td>
+                                <td>{{ feat.otherField1 }}</td>
+                                <td>{{ feat.otherField2 }}</td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
+
+            </div>
+
         </div>
+
     </div>
 {% endblock main %}

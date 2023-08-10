@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|添加材料切削性
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">材料切削性管理页面</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加材料切削性</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'add_materialMachinability' %}" enctype="multipart/form-data" method="post">
+
+                <div class="form-group">
+                    <label for="materialMachinability-materialName" class="col-sm-2 control-label">材料名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialMachinability-materialName" placeholder="材料名称"
+                               name="materialMachinability_materialName">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialMachinability-Strength" class="col-sm-2 control-label">强度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialMachinability-Strength" placeholder="强度"
+                               name="materialMachinability_Strength">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialMachinability-hardness" class="col-sm-2 control-label">硬度</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialMachinability-hardness" placeholder="硬度"
+                               name="materialMachinability_hardness">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialMachinability-therConduct" class="col-sm-2 control-label">热传导率</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialMachinability-therConduct" placeholder="热传导率"
+                               name="materialMachinability_therConduct">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialMachinability-hardening" class="col-sm-2 control-label">加工硬化</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialMachinability-hardening" placeholder="加工硬化"
+                               name="materialMachinability_hardening">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialMachinability-affinity" class="col-sm-2 control-label">刀具材料亲和性</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialMachinability-affinity" placeholder="刀具材料亲和性"
+                               name="materialMachinability_affinity">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="materialMachinability-otherField1" class="col-sm-2 control-label">其他字段1</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialMachinability-otherField1" placeholder="其他字段1"
+                               name="materialMachinability_otherField1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="materialMachinability-otherField2" class="col-sm-2 control-label">其他字段2</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="materialMachinability-otherField2" placeholder="其他字段2"
+                                  name="materialMachinability_otherField2" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+            {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+

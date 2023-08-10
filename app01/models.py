@@ -146,6 +146,132 @@ class Apert(models.Model):
     def __str__(self):
         return self.name
 
+class Precision(models.Model):
+    '''
+    基本偏差表
+    '''
+    id = models.AutoField(primary_key=True)
+    basic = models.CharField(max_length=128, null=True, unique=False) # 基准
+    nomiSizeL = models.CharField(max_length=128, null=True, unique=False) # 公称尺寸下界
+    nomiSizeR = models.CharField(max_length=128, null=True, unique=False) # 公称尺寸上界
+    tolGrade = models.CharField(max_length=128, null=True, unique=False) # 公差等级
+    basicDevNum = models.CharField(max_length=128, null=True, unique=False) # 基本偏差数值
+    otherField1 = models.CharField(max_length=128, null=True, unique=False)  # 其他字段1
+    otherField2 = models.TextField(null=True, unique=False)  # 其他字段2
+
+    def __str__(self):
+        return self.name
+
+class FitTolerance(models.Model):
+    '''
+    公差等级表
+    '''
+    id = models.AutoField(primary_key=True)
+    Class = models.CharField(max_length=128, null=True, unique=False) # 精度等级
+    nomiSizeL = models.CharField(max_length=128, null=True, unique=False) # 公称尺寸下界
+    nomiSizeR = models.CharField(max_length=128, null=True, unique=False) # 公称尺寸上界
+    tolNum = models.CharField(max_length=128, null=True, unique=False) # 公差值
+    otherField1 = models.CharField(max_length=128, null=True, unique=False)  # 其他字段1
+    otherField2 = models.TextField(null=True, unique=False)  # 其他字段2
+
+    def __str__(self):
+        return self.name
+
+class Prio(models.Model):
+    '''
+    优先配合表
+    '''
+    id = models.AutoField(primary_key=True)
+    basic = models.CharField(max_length=128, null=True, unique=False) # 基准
+    holeTol = models.CharField(max_length=128, null=True, unique=False) # 基准孔代号
+    shaftTol = models.CharField(max_length=128, null=True, unique=False) # 轴公差代号
+    fitType = models.CharField(max_length=128, null=True, unique=False) # 配合类型
+    otherField1 = models.CharField(max_length=128, null=True, unique=False)  # 其他字段1
+    otherField2 = models.TextField(null=True, unique=False)  # 其他字段2
+
+    def __str__(self):
+        return self.name
+
+class Part(models.Model):
+    '''
+    零件工艺路线表
+    '''
+    id = models.AutoField(primary_key=True)
+    partType = models.CharField(max_length=128, null=True, unique=False) # 零件类型
+    partStruct = models.CharField(max_length=128, null=True, unique=False) # 零件结构形式
+    partMat = models.CharField(max_length=128, null=True, unique=False) # 零件材料
+    partSize = models.CharField(max_length=128, null=True, unique=False) # 零件尺寸
+
+    geoFix = models.TextField(null=True, unique=False)  # 零件装夹位置
+    PMIInfo = models.CharField(max_length=128, null=True, unique=False)  # 关联的PMI及精度
+    featType = models.CharField(max_length=128, null=True, unique=False)  # 关联的特征类型
+    processFlow = models.TextField(null=True, unique=False)  # 工艺流程
+    Img = models.FileField(null=True, unique=False)  # 示意图
+
+    otherField1 = models.CharField(max_length=128, null=True, unique=False)  # 其他字段1
+    otherField2 = models.TextField(null=True, unique=False)  # 其他字段2
+
+    def __str__(self):
+        return self.name
+
+
+class Feat(models.Model):
+    '''
+    特征工艺路线表
+    '''
+    id = models.AutoField(primary_key=True)
+    featID = models.CharField(max_length=128, null=True, unique=False) # 关联的特征
+    featType = models.CharField(max_length=128, null=True, unique=False) # 特征几何结构
+    featMat = models.CharField(max_length=128, null=True, unique=False) # 特征材料
+    geoDim = models.CharField(max_length=128, null=True, unique=False) # 关联的PMI
+    precision = models.TextField(null=True, unique=False)  # 最高精度
+    processFlow = models.TextField(null=True, unique=False)  # 工艺流程
+    Img = models.FileField(null=True, unique=False)  # 示意图
+    otherField1 = models.CharField(max_length=128, null=True, unique=False)  # 其他字段1
+    otherField2 = models.TextField(null=True, unique=False)  # 其他字段2
+
+    def __str__(self):
+        return self.name
+
+
+class MaterialDesignation(models.Model):
+    '''
+    材料牌号表
+    '''
+    id = models.AutoField(primary_key=True)
+    GBName = models.CharField(max_length=128, null=True, unique=False) # 材料名称
+    matType1 = models.CharField(max_length=128, null=True, unique=False) # 材料大类
+    matType2 = models.CharField(max_length=128, null=True, unique=False) # 材料小类
+    matName = models.CharField(max_length=128, null=True, unique=False) # 材料别名
+    ASTM = models.CharField(max_length=128, null=True, unique=False)  # ASTM
+    SAE = models.CharField(max_length=128, null=True, unique=False)  # SAE
+    desc = models.CharField(max_length=128, null=True, unique=False) # 描述
+    Img = models.FileField(null=True, unique=False)  # 示意图
+    otherField1 = models.CharField(max_length=128, null=True, unique=False)  # 其他字段1
+    otherField2 = models.TextField(null=True, unique=False)  # 其他字段2
+
+    def __str__(self):
+        return self.name
+
+
+class MaterialMachinability(models.Model):
+    '''
+    材料切削性表
+    '''
+    id = models.AutoField(primary_key=True)
+    materialName = models.CharField(max_length=128, null=True, unique=False) # 材料名称
+    Strength = models.CharField(max_length=128, null=True, unique=False) # 强度
+    hardness = models.CharField(max_length=128, null=True, unique=False) # 硬度
+    therConduct = models.CharField(max_length=128, null=True, unique=False) # 热传导率
+    hardening = models.CharField(max_length=128, null=True, unique=False)  # 加工硬化
+    affinity = models.CharField(max_length=128, null=True, unique=False)  # 刀具材料亲和性
+    otherField1 = models.CharField(max_length=128, null=True, unique=False)  # 其他字段1
+    otherField2 = models.TextField(null=True, unique=False)  # 其他字段2
+
+    def __str__(self):
+        return self.name
+
+
 
 class ManuCapRule(models.Model):
     '''

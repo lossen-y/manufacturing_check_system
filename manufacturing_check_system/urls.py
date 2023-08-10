@@ -104,11 +104,55 @@ urlpatterns = [
       url(r'^search_apert/$', views.search_apert, name='search_apert'),
       url(r'^delete_apert/([0-9]+)/$', views.delete_apert, name='delete_apert'),
       url(r'^edit_apert/([0-9]+)/$', views.edit_apert, name='edit_apert'),
-             # 下载excel
+      # 下载excel
       url(r'^download_apert/([0-9]+)/$', views.download_excel, name='download_excel'),
 
+      # 基本偏差表
+      url(r'^add_precision/$', views.add_precision, name='add_precision'),
+      url(r'^search_precision/$', views.search_precision, name='search_precision'),
+      url(r'^delete_precision/([0-9]+)/$', views.delete_precision, name='delete_precision'),
+      url(r'^edit_precision/([0-9]+)/$', views.edit_precision, name='edit_precision'),
 
-    # 标准特征相关的对应关系
+      # 公差等差表
+      url(r'^add_fitTolerance/$', views.add_fitTolerance, name='add_fitTolerance'),
+      url(r'^search_fitTolerance/$', views.search_fitTolerance, name='search_fitTolerance'),
+      url(r'^delete_fitTolerance/([0-9]+)/$', views.delete_fitTolerance, name='delete_fitTolerance'),
+      url(r'^edit_fitTolerance/([0-9]+)/$', views.edit_fitTolerance, name='edit_fitTolerance'),
+
+      # 优先配合表
+      url(r'^add_prio/$', views.add_prio, name='add_prio'),
+      url(r'^search_prio/$', views.search_prio, name='search_prio'),
+      url(r'^delete_prio/([0-9]+)/$', views.delete_prio, name='delete_prio'),
+      url(r'^edit_prio/([0-9]+)/$', views.edit_prio, name='edit_prio'),
+
+      # 零件工艺路线表
+      url(r'^add_part/$', views.add_part, name='add_part'),
+      url(r'^search_part/$', views.search_part, name='search_part'),
+      url(r'^delete_part/([0-9]+)/$', views.delete_part, name='delete_part'),
+      url(r'^edit_part/([0-9]+)/$', views.edit_part, name='edit_part'),
+
+      # 特征工艺路线表
+      url(r'^add_feat/$', views.add_feat, name='add_feat'),
+      url(r'^search_feat/$', views.search_feat, name='search_feat'),
+      url(r'^delete_feat/([0-9]+)/$', views.delete_feat, name='delete_feat'),
+      url(r'^edit_feat/([0-9]+)/$', views.edit_feat, name='edit_feat'),
+
+        # 材料牌号表
+      url(r'^add_materialDesignation/$', views.add_materialDesignation, name='add_materialDesignation'),
+      url(r'^search_materialDesignation/$', views.search_materialDesignation, name='search_materialDesignation'),
+      url(r'^delete_materialDesignation/([0-9]+)/$', views.delete_materialDesignation, name='delete_materialDesignation'),
+      url(r'^edit_materialDesignation/([0-9]+)/$', views.edit_materialDesignation, name='edit_materialDesignation'),
+
+      # 材料牌号表
+      url(r'^add_materialMachinability/$', views.add_materialMachinability, name='add_materialMachinability'),
+      url(r'^search_materialMachinability/$', views.search_materialMachinability,
+          name='search_materialMachinability'),
+      url(r'^delete_materialMachinability/([0-9]+)/$', views.delete_materialMachinability,
+          name='delete_materialMachinability'),
+      url(r'^edit_materialMachinability/([0-9]+)/$', views.edit_materialMachinability,
+          name='edit_materialMachinability'),
+
+      # 标准特征相关的对应关系
     url(r'^add_Feature/$', views.add_Feature, name='add_Feature'),
     url(r'^search_Feature/$', views.search_Feature, name='search_Feature'),
     url(r'^delete_Feature/([0-9]+)/$', views.delete_Feature, name='delete_Feature'),

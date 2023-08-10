@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|添加特征工艺路线
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">特征工艺路线管理页面</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加特征工艺路线</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'add_feat' %}" enctype="multipart/form-data" method="post">
+
+                <div class="form-group">
+                    <label for="feat-featID" class="col-sm-2 control-label">关联的特征</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="feat-featID" placeholder="关联的特征"
+                               name="feat_featID">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="feat-featType" class="col-sm-2 control-label">特征几何结构</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="feat-featType" placeholder="特征几何结构"
+                               name="feat_featType">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="feat-featMat" class="col-sm-2 control-label">特征材料</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="feat-featMat" placeholder="特征材料"
+                               name="feat_featMat">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="feat-geoDim" class="col-sm-2 control-label">关联的PMI</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="feat-geoDim" placeholder="关联的PMI"
+                               name="feat_geoDim">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="feat-precision" class="col-sm-2 control-label">最高精度</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="feat-precision" placeholder="最高精度"
+                                  name="feat_precision" rows="5"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="feat-processFlow" class="col-sm-2 control-label">工艺流程</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="feat-processFlow" placeholder="工艺流程"
+                                  name="feat_processFlow" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="feat-otherField1" class="col-sm-2 control-label">其他字段1</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="feat-otherField1" placeholder="其他字段1"
+                               name="feat_otherField1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="feat-otherField2" class="col-sm-2 control-label">其他字段2</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="feat-otherField2" placeholder="其他字段2"
+                                  name="feat_otherField2" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="feat-Img" class="col-sm-2 control-label">刀具图片</label>
+                    <input type="file" id="oneimg" name="feat_Img">
+
+                <div style="width: 300px; height: 200px; display: flex; justify-content: flex-end; " id="preview">
+                                    <img src="{{ feat.Img.url }}" alt="{{ feat.Img }}" style="width: 100%; height: 100%;">
+                                </div>
+{#                    <input type="text" class="form-control" id="cutter-cutterImg" placeholder="刀具图片路径"#}
+{#                               name="cutter_cutterImg">#}
+{#                    <script type="text/javascript">#}
+{##}
+{#                        function fn_input(){#}
+{#                    document.getElementById("oneimg").value=document.getElementById("cutter-cutterImg").value;#}
+{#}#}
+{#                    </script>#}
+{#                    <script>#}
+{#                        $("#oneimg").change(function(){#}
+{#                            var vue = $(this).val();#}
+{#                            $("#cutter-cutterImg").val(vue);#}
+{#                        })#}
+{#                    </script>#}
+{#                    <input type="submit" value="上传">#}
+{#                    <script type="text/javascript">#}
+{#                        function getFilePath(){#}
+{#                        $('input[type=file]').change(function () {#}
+{#                        var filePath=$('#fileUpload').val();#}
+{#                         });#}
+{#                         }#}
+{#                    </script>#}
+                </div>
+                  <script>
+                    const uploadInput = document.getElementById('oneimg');
+                    const preview = document.getElementById('preview');
+
+                    uploadInput.addEventListener('change', function (event) {
+                      const file = event.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+
+                        reader.addEventListener('load', function () {
+                          preview.innerHTML = `<img src="${reader.result}" alt="预览图">`;
+                        });
+
+                        reader.readAsDataURL(file);
+                      } else {
+                        preview.innerHTML = '暂无预览';
+                      }
+                    });
+                  </script>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+            {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+active
+{% endblock cutter_list %}

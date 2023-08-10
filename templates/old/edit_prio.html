@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑优先配合数据
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">优先配合管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑优先配合数据</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_prio' prio.id %}" enctype="multipart/form-data" method="post">
+
+                <div class="form-group">
+                    <label for="prio-basic" class="col-sm-2 control-label">基准</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="prio-basic"
+                               name="prio_basic" placeholder="基准" value="{{ prio.basic }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="prio-holeTol" class="col-sm-2 control-label">基准孔代号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="prio-holeTol" placeholder="基准孔代号"
+                               name="prio_holeTol" value="{{ prio.holeTol }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="prio-shaftTol" class="col-sm-2 control-label">轴公差代号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="prio-shaftTol" placeholder="轴公差代号"
+                               name="prio_shaftTol" value="{{ prio.shaftTol }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="prio-fitType" class="col-sm-2 control-label">配合类型</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="prio-fitType" placeholder="配合类型"
+                               name="prio_fitType" value="{{ prio.fitType }}">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="prio-otherField1" class="col-sm-2 control-label">其他字段1</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="prio-otherField1" placeholder="其他字段1"
+                                  name="prio_otherField1" rows="5" >{{ prio.otherField1 }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="prio-otherField2" class="col-sm-2 control-label">其他字段2</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="prio-otherField2" placeholder="其他字段2"
+                               name="prio_otherField2" value="{{ prio.otherField2 }}">
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+    active
+{% endblock cutter_list %}
