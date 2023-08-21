@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑基本偏差数据
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">基本偏差管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑基本偏差数据</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_precision' precision.id %}" enctype="multipart/form-data" method="post">
+
+                <div class="form-group">
+                    <label for="precision-basic" class="col-sm-2 control-label">基准</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="precision-basic"
+                               name="precision_basic" placeholder="基准" value="{{ precision.basic }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="precision-nomiSizeL" class="col-sm-2 control-label">公称尺寸下界</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="precision-nomiSizeL" placeholder="公称尺寸下界"
+                               name="precision_nomiSizeL" value="{{ precision.nomiSizeL }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="precision-nomiSizeR" class="col-sm-2 control-label">公称尺寸上界</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="precision-nomiSizeR" placeholder="公称尺寸上界"
+                               name="precision_nomiSizeR" value="{{ precision.nomiSizeR }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="precision-tolGrade" class="col-sm-2 control-label">公差等级</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="precision-tolGrade" placeholder="公差等级"
+                               name="precision_tolGrade" value="{{ precision.tolGrade }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="precision-basicDevNum" class="col-sm-2 control-label">基本偏差数值</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="precision-basicDevNum" placeholder="基本偏差数值"
+                               name="precision_basicDevNum" value="{{ precision.basicDevNum }}">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="precision-otherField1" class="col-sm-2 control-label">其他字段1</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="precision-otherField1" placeholder="其他字段1"
+                                  name="precision_otherField1" rows="5" >{{ precision.otherField1 }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="precision-otherField2" class="col-sm-2 control-label">其他字段2</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="precision-otherField2" placeholder="其他字段2"
+                               name="precision_otherField2" value="{{ precision.otherField2 }}">
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+    active
+{% endblock cutter_list %}

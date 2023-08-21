@@ -469,11 +469,11 @@ def search_head(request):
     tab_name = 'head'
     return render(request, 'standard_knowledge_and_information/resource.html', {'head_list': all_head_obj,"tab_name" : tab_name})
 
-# Apert
+# Apert 标准孔
 
 def apert_list(request):
     all_apert = models.Apert.objects.all()
-    return render(request, 'standard_knowledge_and_information/resource.html', {'apert_list': all_apert})
+    return render(request, 'standard_knowledge_and_information/standardize.html', {'apert_list': all_apert})
 
 def add_apert(request):
     error_msg = ''
@@ -490,7 +490,7 @@ def add_apert(request):
                                                       otherFields=request.POST.get('apert_otherFields'),
                                                )
 
-            return redirect('/standardKnowNInfo/resource/')
+            return redirect('/standardKnowNInfo/standardize/')
         else:
             error_msg = '孔名称不能为空'
     #books = models.Book.objects.all()
@@ -498,7 +498,7 @@ def add_apert(request):
 
 def delete_apert(request, del_id):
     models.Apert.objects.get(id=del_id).delete()
-    return redirect('/standardKnowNInfo/resource/')
+    return redirect('/standardKnowNInfo/standardize/')
 
 def edit_apert(request, edit_id):
     error_msg = ''
@@ -513,7 +513,7 @@ def edit_apert(request, edit_id):
             edit_apert_obj.apertRemark = request.POST.get('apert_apertRemark')
             edit_apert_obj.otherFields = request.POST.get('apert_otherFields')
             edit_apert_obj.save()
-            return redirect('/standardKnowNInfo/resource/')
+            return redirect('/standardKnowNInfo/standardize/')
         else:
             error_msg = '孔名称不能为空'
     apert_obj = models.Apert.objects.get(id=edit_id)
@@ -524,7 +524,7 @@ def search_apert(request):
     all_apert_obj = models.Apert.objects.filter(apertType__icontains=search).all()
     error_msg = ''
     tab_name = 'apert'
-    return render(request, 'standard_knowledge_and_information/resource.html', {'apert_list': all_apert_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/standardize.html', {'apert_list': all_apert_obj,"tab_name" : tab_name})
 
 # 下载apert excel文件
 # views.py
@@ -550,6 +550,437 @@ def download_excel(request, apert_id):
 
     # If the Apert object does not exist or the file is not found, return a 404 Not Found response.
     return HttpResponse(status=404)
+
+
+
+# basic Precision 基本偏差表
+
+def precision_list(request):
+    all_precision = models.Precision.objects.all()
+    return render(request, 'standard_knowledge_and_information/standardize.html', {'precision_list': all_precision})
+
+def add_precision(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_precision = request.POST.get('precision_basic')
+        if new_precision:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_new_precision_obj = models.Precision.objects.create(
+                                                      basic=new_precision,
+                                                      nomiSizeL=request.POST.get('precision_nomiSizeL'),
+                                                      nomiSizeR=request.POST.get('precision_nomiSizeR'),
+                                                      tolGrade=request.POST.get('precision_tolGrade'),
+                                                      basicDevNum=request.POST.get('precision_basicDevNum'),
+                                                      otherField1=request.POST.get('precision_otherField1'),
+                                                      otherField2 = request.POST.get('precision_otherField2'),
+                                               )
+
+            return redirect('/standardKnowNInfo/standardize/')
+        else:
+            error_msg = '基准名称不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_precision.html', { 'error_msg': error_msg})
+
+def delete_precision(request, del_id):
+    models.Precision.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/standardize/')
+
+def edit_precision(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('precision_basic')
+        if new_name:
+            edit_precision_obj = models.Precision.objects.get(id=edit_id)
+            edit_precision_obj.basic = new_name
+            edit_precision_obj.nomiSizeL = request.POST.get('precision_nomiSizeL')
+            edit_precision_obj.nomiSizeR = request.POST.get('precision_nomiSizeR')
+            edit_precision_obj.tolGrade = request.POST.get('precision_tolGrade')
+            edit_precision_obj.basicDevNum = request.POST.get('precision_basicDevNum')
+            edit_precision_obj.otherField1 = request.POST.get('precision_otherField1')
+            edit_precision_obj.otherField2 = request.POST.get('precision_otherField2')
+            edit_precision_obj.save()
+            return redirect('/standardKnowNInfo/standardize/')
+        else:
+            error_msg = '基准名称不能为空'
+    precision_obj = models.Precision.objects.get(id=edit_id)
+    return render(request, 'old/edit_precision.html', {'precision': precision_obj, 'error_msg': error_msg})
+
+def search_precision(request):
+    search = request.GET.get('precision_search')
+    all_precision_obj = models.Precision.objects.filter(basic__icontains=search).all()
+    error_msg = ''
+    tab_name = 'precision'
+    return render(request, 'standard_knowledge_and_information/standardize.html', {'precision_list': all_precision_obj,"tab_name" : tab_name})
+
+# FitTolerance
+def fitTolerance_list(request):
+    all_fitTolerance = models.FitTolerance.objects.all()
+    return render(request, 'standard_knowledge_and_information/standardize.html', {'fitTolerance_list': all_fitTolerance})
+
+def add_fitTolerance(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_fitTolerance = request.POST.get('fitTolerance_Class')
+        if new_fitTolerance:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_new_fitTolerance_obj = models.FitTolerance.objects.create(
+                                                      Class=new_fitTolerance,
+                                                      nomiSizeL=request.POST.get('fitTolerance_nomiSizeL'),
+                                                      nomiSizeR=request.POST.get('fitTolerance_nomiSizeR'),
+                                                      tolNum=request.POST.get('fitTolerance_tolNum'),
+                                                      otherField1=request.POST.get('fitTolerance_otherField1'),
+                                                      otherField2=request.POST.get('fitTolerance_otherField2'),
+                                               )
+
+            return redirect('/standardKnowNInfo/standardize/')
+        else:
+            error_msg = '精度等级不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_fitTolerance.html', { 'error_msg': error_msg})
+
+def delete_fitTolerance(request, del_id):
+    models.FitTolerance.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/standardize/')
+
+def edit_fitTolerance(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('fitTolerance_Class')
+        if new_name:
+            edit_fitTolerance_obj = models.FitTolerance.objects.get(id=edit_id)
+            edit_fitTolerance_obj.Class = new_name
+            edit_fitTolerance_obj.nomiSizeL = request.POST.get('fitTolerance_nomiSizeL')
+            edit_fitTolerance_obj.nomiSizeR = request.POST.get('fitTolerance_nomiSizeR')
+            edit_fitTolerance_obj.tolNum = request.POST.get('fitTolerance_tolNum')
+            edit_fitTolerance_obj.otherField1 = request.POST.get('fitTolerance_otherField1')
+            edit_fitTolerance_obj.otherField2 = request.POST.get('fitTolerance_otherField2')
+            edit_fitTolerance_obj.save()
+            return redirect('/standardKnowNInfo/standardize/')
+        else:
+            error_msg = '精度等级不能为空'
+    fitTolerance_obj = models.FitTolerance.objects.get(id=edit_id)
+    return render(request, 'old/edit_fitTolerance.html', {'fitTolerance': fitTolerance_obj, 'error_msg': error_msg})
+
+def search_fitTolerance(request):
+    search = request.GET.get('fitTolerance_search')
+    all_fitTolerance_obj = models.FitTolerance.objects.filter(Class__icontains=search).all()
+    error_msg = ''
+    tab_name = 'fitTolerance'
+    return render(request, 'standard_knowledge_and_information/standardize.html', {'fitTolerance_list': all_fitTolerance_obj,"tab_name" : tab_name})
+
+# Prio
+def prio_list(request):
+    all_prio = models.Prio.objects.all()
+    return render(request, 'standard_knowledge_and_information/standardize.html', {'prio_list': all_prio})
+
+def add_prio(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_prio = request.POST.get('prio_basic')
+        if new_prio:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_new_fitTolerance_obj = models.Prio.objects.create(
+                                                      basic=new_prio,
+                                                      holeTol=request.POST.get('prio_holeTol'),
+                                                      shaftTol=request.POST.get('prio_shaftTol'),
+                                                      fitType=request.POST.get('prio_fitType'),
+                                                      otherField1=request.POST.get('prio_otherField1'),
+                                                      otherField2=request.POST.get('prio_otherField2'),
+                                               )
+
+            return redirect('/standardKnowNInfo/standardize/')
+        else:
+            error_msg = '基准不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_prio.html', { 'error_msg': error_msg})
+
+def delete_prio(request, del_id):
+    models.Prio.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/standardize/')
+
+def edit_prio(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('prio_basic')
+        if new_name:
+            edit_prio_obj = models.Prio.objects.get(id=edit_id)
+            edit_prio_obj.basic = new_name
+            edit_prio_obj.holeTol = request.POST.get('prio_holeTol')
+            edit_prio_obj.shaftTol = request.POST.get('prio_shaftTol')
+            edit_prio_obj.fitType = request.POST.get('prio_fitType')
+            edit_prio_obj.otherField1 = request.POST.get('prio_otherField1')
+            edit_prio_obj.otherField2 = request.POST.get('prio_otherField2')
+            edit_prio_obj.save()
+            return redirect('/standardKnowNInfo/standardize/')
+        else:
+            error_msg = '基准不能为空'
+    prio_obj = models.Prio.objects.get(id=edit_id)
+    return render(request, 'old/edit_prio.html', {'prio': prio_obj, 'error_msg': error_msg})
+
+def search_prio(request):
+    search = request.GET.get('prio_search')
+    all_prio_obj = models.Prio.objects.filter(basic__icontains=search).all()
+    error_msg = ''
+    tab_name = 'prio'
+    return render(request, 'standard_knowledge_and_information/standardize.html', {'prio_list': all_prio_obj,"tab_name" : tab_name})
+
+
+
+# Part
+def part_list(request):
+    all_part = models.Part.objects.all()
+    return render(request, 'standard_knowledge_and_information/standard_process.html', {'part_list': all_part})
+
+def add_part(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_part = request.POST.get('part_partType')
+        if new_part:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_new_fitTolerance_obj = models.Part.objects.create(
+                                                      partType=new_part,
+                                                      partStruct=request.POST.get('part_partStruct'),
+                                                      partMat=request.POST.get('part_partMat'),
+                                                      partSize=request.POST.get('part_partSize'),
+                                                      geoFix=request.POST.get('part_geoFix'),
+                                                      PMIInfo=request.POST.get('part_PMIInfo'),
+                                                      featType=request.POST.get('part_featType'),
+                                                      processFlow=request.POST.get('part_processFlow'),
+                                                      Img=request.FILES.get('part_Img'),
+                                                      otherField1=request.POST.get('part_otherField1'),
+                                                      otherField2=request.POST.get('part_otherField2'),
+                                               )
+
+            return redirect('/standardKnowNInfo/standardProcess/')
+        else:
+            error_msg = '零件类型不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_part.html', { 'error_msg': error_msg})
+
+def delete_part(request, del_id):
+    models.Part.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/standardProcess/')
+
+def edit_part(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('part_partType')
+        if new_name:
+            edit_part_obj = models.Part.objects.get(id=edit_id)
+            edit_part_obj.partType = new_name
+            edit_part_obj.partStruct = request.POST.get('part_partStruct')
+            edit_part_obj.partMat = request.POST.get('part_partMat')
+            edit_part_obj.partSize = request.POST.get('part_partSize')
+            edit_part_obj.geoFix = request.POST.get('part_geoFix')
+            edit_part_obj.PMIInfo = request.POST.get('part_PMIInfo')
+            edit_part_obj.featType = request.POST.get('part_featType')
+            edit_part_obj.processFlow = request.POST.get('part_processFlow')
+            edit_part_obj.Img = request.FILES.get('part_Img')
+            edit_part_obj.otherField1 = request.POST.get('part_otherField1')
+            edit_part_obj.otherField2 = request.POST.get('part_otherField2')
+            edit_part_obj.save()
+            return redirect('/standardKnowNInfo/standardProcess/')
+        else:
+            error_msg = '零件类型不能为空'
+    part_obj = models.Part.objects.get(id=edit_id)
+    return render(request, 'old/edit_part.html', {'part': part_obj, 'error_msg': error_msg})
+
+def search_part(request):
+    search = request.GET.get('part_search')
+    all_part_obj = models.Part.objects.filter(partType__icontains=search).all()
+    error_msg = ''
+    tab_name = 'part'
+    return render(request, 'standard_knowledge_and_information/standard_process.html', {'part_list': all_part_obj,"tab_name" : tab_name})
+
+# Feat
+
+def feat_list(request):
+    all_feat = models.Feat.objects.all()
+    return render(request, 'standard_knowledge_and_information/standard_process.html', {'feat_list': all_feat})
+
+def add_feat(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_feat = request.POST.get('feat_featID')
+        if new_feat:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_new_fitTolerance_obj = models.Feat.objects.create(
+                                                      featID=new_feat,
+                                                      featType=request.POST.get('feat_featType'),
+                                                      featMat=request.POST.get('feat_featMat'),
+                                                      geoDim=request.POST.get('feat_geoDim'),
+                                                      precision=request.POST.get('feat_precision'),
+                                                      processFlow=request.POST.get('feat_processFlow'),
+                                                      Img=request.FILES.get('feat_Img'),
+                                                      otherField1=request.POST.get('feat_otherField1'),
+                                                      otherField2=request.POST.get('feat_otherField2'),
+                                               )
+
+            return redirect('/standardKnowNInfo/standardProcess/')
+        else:
+            error_msg = '关联的特征不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_feat.html', { 'error_msg': error_msg})
+
+def delete_feat(request, del_id):
+    models.Feat.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/standardProcess/')
+
+def edit_feat(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('feat_featID')
+        if new_name:
+            edit_feat_obj = models.Feat.objects.get(id=edit_id)
+            edit_feat_obj.featID = new_name
+            edit_feat_obj.featType = request.POST.get('feat_featType')
+            edit_feat_obj.featMat = request.POST.get('feat_featMat')
+            edit_feat_obj.geoDim = request.POST.get('feat_geoDim')
+            edit_feat_obj.precision = request.POST.get('feat_precision')
+            edit_feat_obj.processFlow = request.POST.get('feat_processFlow')
+            edit_feat_obj.Img = request.FILES.get('feat_Img')
+            edit_feat_obj.otherField1 = request.POST.get('feat_otherField1')
+            edit_feat_obj.otherField2 = request.POST.get('feat_otherField2')
+            edit_feat_obj.save()
+            return redirect('/standardKnowNInfo/standardProcess/')
+        else:
+            error_msg = '关联的特征不能为空'
+    feat_obj = models.Feat.objects.get(id=edit_id)
+    return render(request, 'old/edit_feat.html', {'feat': feat_obj, 'error_msg': error_msg})
+
+def search_feat(request):
+    search = request.GET.get('feat_search')
+    all_feat_obj = models.Feat.objects.filter(featID__icontains=search).all()
+    error_msg = ''
+    tab_name = 'feat'
+    return render(request, 'standard_knowledge_and_information/standard_process.html', {'feat_list': all_feat_obj,"tab_name" : tab_name})
+
+
+# MaterialDesignation
+
+def materialDesignation_list(request):
+    all_materialDesignation = models.MaterialDesignation.objects.all()
+    return render(request, 'standard_knowledge_and_information/material.html', {'materialDesignation_list': all_materialDesignation})
+
+def add_materialDesignation(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_materialDesignation = request.POST.get('materialDesignation_GBName')
+        if new_materialDesignation:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_new_fitTolerance_obj = models.MaterialDesignation.objects.create(
+                                                      GBName=new_materialDesignation,
+                                                      matType1=request.POST.get('materialDesignation_matType1'),
+                                                      matType2=request.POST.get('materialDesignation_matType2'),
+                                                      matName=request.POST.get('materialDesignation_matName'),
+                                                      ASTM=request.POST.get('materialDesignation_ASTM'),
+                                                      SAE=request.POST.get('materialDesignation_SAE'),
+                                                      desc=request.POST.get('materialDesignation_desc'),
+                                                      Img=request.FILES.get('materialDesignation_Img'),
+                                                      otherField1=request.POST.get('materialDesignation_otherField1'),
+                                                      otherField2=request.POST.get('materialDesignation_otherField2'),
+                                               )
+
+            return redirect('/standardKnowNInfo/material/')
+        else:
+            error_msg = '材料名称不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_materialDesignation.html', { 'error_msg': error_msg})
+
+def delete_materialDesignation(request, del_id):
+    models.MaterialDesignation.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/material/')
+
+def edit_materialDesignation(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('materialDesignation_GBName')
+        if new_name:
+            edit_materialDesignation_obj = models.MaterialDesignation.objects.get(id=edit_id)
+            edit_materialDesignation_obj.GBName = new_name
+            edit_materialDesignation_obj.matType1 = request.POST.get('materialDesignation_matType1')
+            edit_materialDesignation_obj.matType2 = request.POST.get('materialDesignation_matType2')
+            edit_materialDesignation_obj.matName = request.POST.get('materialDesignation_matName')
+            edit_materialDesignation_obj.ASTM = request.POST.get('materialDesignation_ASTM')
+            edit_materialDesignation_obj.SAE = request.POST.get('materialDesignation_SAE')
+            edit_materialDesignation_obj.desc = request.POST.get('materialDesignation_desc')
+            edit_materialDesignation_obj.Img = request.FILES.get('materialDesignation_Img')
+            edit_materialDesignation_obj.otherField1 = request.POST.get('materialDesignation_otherField1')
+            edit_materialDesignation_obj.otherField2 = request.POST.get('materialDesignation_otherField2')
+            edit_materialDesignation_obj.save()
+            return redirect('/standardKnowNInfo/material/')
+        else:
+            error_msg = '材料名称不能为空'
+    materialDesignation_obj = models.MaterialDesignation.objects.get(id=edit_id)
+    return render(request, 'old/edit_materialDesignation.html', {'materialDesignation': materialDesignation_obj, 'error_msg': error_msg})
+
+def search_materialDesignation(request):
+    search = request.GET.get('materialDesignation_search')
+    all_materialDesignation_obj = models.MaterialDesignation.objects.filter(GBName__icontains=search).all()
+    error_msg = ''
+    tab_name = 'materialDesignation'
+    return render(request, 'standard_knowledge_and_information/material.html', {'materialDesignation_list': all_materialDesignation_obj,"tab_name" : tab_name})
+
+# MaterialMachinability
+
+def materialMachinability_list(request):
+    all_materialMachinability = models.MaterialMachinability.objects.all()
+    return render(request, 'standard_knowledge_and_information/material.html', {'materialMachinability_list': all_materialMachinability})
+
+def add_materialMachinability(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_materialMachinability = request.POST.get('materialMachinability_materialName')
+        if new_materialMachinability:
+            # img_file=request.FILES.get('cutter_cutterImg')
+            new_new_fitTolerance_obj = models.MaterialMachinability.objects.create(
+                                                      materialName=new_materialMachinability,
+                                                      Strength=request.POST.get('materialMachinability_Strength'),
+                                                      hardness=request.POST.get('materialMachinability_hardness'),
+                                                      therConduct=request.POST.get('materialMachinability_therConduct'),
+                                                      hardening=request.POST.get('materialMachinability_hardening'),
+                                                      affinity=request.POST.get('materialMachinability_affinity'),
+                                                      otherField1=request.POST.get('materialMachinability_otherField1'),
+                                                      otherField2=request.POST.get('materialMachinability_otherField2'),
+                                               )
+
+            return redirect('/standardKnowNInfo/material/')
+        else:
+            error_msg = '材料名称不能为空'
+    #books = models.Book.objects.all()
+    return render(request, 'old/add_materialMachinability.html', { 'error_msg': error_msg})
+
+def delete_materialMachinability(request, del_id):
+    models.MaterialMachinability.objects.get(id=del_id).delete()
+    return redirect('/standardKnowNInfo/material/')
+
+def edit_materialMachinability(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('materialMachinability_materialName')
+        if new_name:
+            edit_materialMachinability_obj = models.MaterialMachinability.objects.get(id=edit_id)
+            edit_materialMachinability_obj.materialName = new_name
+            edit_materialMachinability_obj.Strength = request.POST.get('materialMachinability_Strength')
+            edit_materialMachinability_obj.hardness = request.POST.get('materialMachinability_hardness')
+            edit_materialMachinability_obj.therConduct = request.POST.get('materialMachinability_therConduct')
+            edit_materialMachinability_obj.hardening = request.POST.get('materialMachinability_hardening')
+            edit_materialMachinability_obj.affinity = request.POST.get('materialMachinability_affinity')
+            edit_materialMachinability_obj.otherField1 = request.POST.get('materialMachinability_otherField1')
+            edit_materialMachinability_obj.otherField2 = request.POST.get('materialMachinability_otherField2')
+            edit_materialMachinability_obj.save()
+            return redirect('/standardKnowNInfo/material/')
+        else:
+            error_msg = '材料名称不能为空'
+    materialMachinability_obj = models.MaterialMachinability.objects.get(id=edit_id)
+    return render(request, 'old/edit_materialMachinability.html', {'materialMachinability': materialMachinability_obj, 'error_msg': error_msg})
+
+def search_materialMachinability(request):
+    search = request.GET.get('materialMachinability_search')
+    all_materialMachinability_obj = models.MaterialMachinability.objects.filter(materialName__icontains=search).all()
+    error_msg = ''
+    tab_name = 'materialMachinability'
+    return render(request, 'standard_knowledge_and_information/material.html', {'materialMachinability_list': all_materialMachinability_obj,"tab_name" : tab_name})
 
 
 
@@ -609,6 +1040,7 @@ def search_Feature(request):
 def ManuCapRule_list(request):
     all_ManuCapRule = models.ManuCapRule.objects.all()
     return render(request, 'process_Check/manufacturing_ability.html', {'ManuCapRule_list': all_ManuCapRule})
+
 
 
 # def add_rule_search_Feature_para(request,featType):

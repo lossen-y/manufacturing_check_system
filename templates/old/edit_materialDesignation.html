@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑材料牌号数据
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">材料牌号管理页面</h1>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑材料牌号数据</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_materialDesignation' materialDesignation.id %}" enctype="multipart/form-data" method="post">
+
+                <div class="form-group">
+                    <label for="materialDesignation-GBName" class="col-sm-2 control-label">材料名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialDesignation-GBName" name="materialDesignation_GBName"
+                               placeholder="材料名称" value="{{ materialDesignation.GBName }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialDesignation-matType1" class="col-sm-2 control-label">材料大类</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialDesignation-matType1" placeholder="材料大类"
+                               name="materialDesignation_matType1" value="{{ materialDesignation.matType1 }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialDesignation-matType2" class="col-sm-2 control-label">材料小类</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialDesignation-matType2" placeholder="材料小类"
+                               name="materialDesignation_matType2" value="{{ materialDesignation.matType2 }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialDesignation-matName" class="col-sm-2 control-label">材料别名</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialDesignation-matName" placeholder="材料别名"
+                               name="materialDesignation_matName" value="{{ materialDesignation.matName }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialDesignation-ASTM" class="col-sm-2 control-label">ASTM</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialDesignation-ASTM" placeholder="ASTM"
+                               name="materialDesignation_ASTM" value="{{ materialDesignation.ASTM }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialDesignation-SAE" class="col-sm-2 control-label">SAE</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialDesignation-SAE" placeholder="SAE"
+                               name="materialDesignation_SAE" value="{{ materialDesignation.SAE }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialDesignation-desc" class="col-sm-2 control-label">描述</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialDesignation-desc" placeholder="描述"
+                               name="materialDesignation_desc" value="{{ materialDesignation.desc }}">
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label for="materialDesignation-otherField1" class="col-sm-2 control-label">其他字段1</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="materialDesignation-otherField1" placeholder="其他字段1"
+                               name="materialDesignation_otherField1" value="{{ materialDesignation.otherField1 }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialDesignation-otherField2" class="col-sm-2 control-label">其他字段2</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="materialDesignation-otherField2" placeholder="其他字段2"
+                                  name="materialDesignation_otherField2" rows="5" >{{ materialDesignation.otherField2 }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialDesignation-Img" class="col-sm-2 control-label">示意图</label>
+                    <input type="file" id="oneimg" name="materialDesignation_Img">
+
+                    {% if materialDesignation.Img %}
+                    <div style="width: 300px; height: 200px; display: flex; justify-content: flex-end;" id="preview">
+                        <img src="{{ materialDesignation.Img.url }}" alt="{{ materialDesignation.Img }}" style="width: 100%; height: 100%;">
+                    </div>
+                {% else %}
+                    <p>请上传对应图片</p>
+                        <div style="width: 300px; height: 200px; display: flex; justify-content: flex-end;" id="preview">
+                        <img style="width: 100%; height: 100%;">
+                    </div>
+                {% endif %}
+
+                </div>
+
+                <script>
+                    const uploadInput = document.getElementById('oneimg');
+                    const preview = document.getElementById('preview');
+
+                    uploadInput.addEventListener('change', function (event) {
+                      const file = event.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+
+                        reader.addEventListener('load', function () {
+                          preview.innerHTML = `<img src="${reader.result}" alt="预览图">`;
+                        });
+
+                        reader.readAsDataURL(file);
+                      } else {
+                        preview.innerHTML = '暂无预览';
+                      }
+                    });
+                  </script>
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block cutter_list %}
+    active
+{% endblock cutter_list %}

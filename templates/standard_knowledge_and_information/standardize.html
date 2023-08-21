@@ -6,81 +6,628 @@
 
 {% block main %}
     <h2 class="page-header" style="border-bottom: none">标准化知识和信息|标准化知识和信息</h2>
+    <script>
+        function changeForm(newFormName) {
+            // 获取表单元素
+            console.log("这是输出的消息");
+            var form = document.getElementById(newFormName);
+            // 提交表单
+            form.submit();
+        }
+    </script>
+
     <ul id="myTab" class="nav nav-tabs">
-        <li class="active"><a href="#precision" data-toggle="tab">尺寸精度标准</a></li>
-        <li><a href="#fitTolerance" data-toggle="tab">公差配合标准</a></li>
-        <li><a href="#apert" data-toggle="tab">标准孔径</a></li>
+
+        <li class="{% if tab_name == 'precision' %}active{% endif %}" >
+            <a href="#precision" data-toggle="tab"  id = 'precisionLink' onclick="changeForm('precision_form')" >尺寸精度标准 </a>
+        </li>
+
+        <li class="{% if tab_name == 'fitTolerance' %}active{% endif %}" >
+            <a href="#fitTolerance" data-toggle="tab" onclick="changeForm('fitTolerance_form')" >公差配合标准 </a>
+        </li>
+
+        <li class="{% if tab_name == 'apert' %}active{% endif %}">
+            <a href="#apert" data-toggle="tab" onclick="changeForm('apert_form')">标准孔</a>
+        </li>
+
+        <li class="{% if tab_name == 'prio' %}active{% endif %}">
+            <a href="#prio" data-toggle="tab" onclick="changeForm('prio_form')">优先配合</a>
+        </li>
+
 
     </ul>
+
     <div id="myTabContent" class="tab-content">
         {#标签1：尺寸精度#}
-        <div class="tab-pane fade in active" id="precision">
-
+        <div class="{% if tab_name == 'precision' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}" id="precision">
             <div class="panel panel-primary">
-                <!-- Default panel contents -->
-                <div class="panel-heading">作者列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+            <!-- Default panel contents -->
+                <div class="panel-heading">基本偏差表<i class="fa fa-thumb-tack pull-right"></i></div>
                 <div class="panel-body">
                     <div class="row" style="margin-bottom: 15px">
-                        <div class="col-md-4">
+                        <div class="col-md-4" >
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">搜索</button>
-                                </span>
+                                <form style="width:400px;display:inline" action="/search_precision/" method="get" id="precision_form">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="precision_search" placeholder="基准">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
                             </div><!-- /input-group -->
                         </div><!-- /.col-md-4 -->
                         <div class="col-md-3 pull-right">
-                            <a href="{% url 'add_author' %}" class="btn btn-success pull-right"><i
-                                    class="fa fa-plus fa-fw"></i>添加作者</a>
-                            <button class="btn btn-success pull-right" data-toggle="modal" data-target="#myModal">新增
-                            </button>
+                            <a href="{% url 'add_precision' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加基本偏差</a>
+
                         </div>
 
                     </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
+		                {#display: -webkit-box;#}
+                        {#/* 限制再一个块元素再文本显示的行数 */#}
+                        {#-webkit-line-clamp: 2;#}
+                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
+                        {#-webkit-box-orient: vertical;#}
 
-                    <table class="table table-bordered">
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>id</th>
-                            <th>作者名字</th>
-                            <th>作品</th>
-                            <th>操作</th>
+                            <th>数据操作</th>
+                            <th>基准</th>
+                            <th>公称尺寸下界</th>
+                            <th>公称尺寸上界</th>
+                            <th>公差等级</th>
+                            <th>基本偏差数值</th>
+                            <th>其他字段1</th>
+                            <th>其他字段2</th>
+
                         </tr>
                         </thead>
                         <tbody>
-                        {% for author in author_list %}
+                        {% for precision in precision_list %}
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ author.id }}</td>
-                                <td>{{ author.name }}</td>
-                                <td>
-                                    {% for book in author.book.all %}
-                                        《{{ book.title }}》&nbsp;
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    <a class="btn btn-danger" href="{% url 'delete_author' author.id %}"><i
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_precision' precision.id %}"><i
                                             class="fa fa-trash-o fa-fw"></i>删除</a>
-                                    <a class="btn btn-info" href="{% url 'edit_author' author.id %}"><i
-                                            class="fa fa-pencil fa-fw"></i>编辑</a>
+                                    <a class="btn btn-info" href="{% url 'edit_precision' precision.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
                                 </td>
+                                <td>{{ precision.basic }}</td>
+                                <td>{{ precision.nomiSizeL }}</td>
+                                <td>{{ precision.nomiSizeR }}</td>
+                                <td>{{ precision.tolGrade }}</td>
+                                <td>{{ precision.basicDevNum }}</td>
+                                <td>{{ precision.otherField1 }}</td>
+                                <td>{{ precision.otherField2 }}</td>
+
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
 
+            </div>
+
+        </div>
+
+        {#标签2：公差配合#}
+        <div class="{% if tab_name == 'fitTolerance' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}" id="fitTolerance"  >
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">公差等差表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_fitTolerance/" method="get" id="fitTolerance_form">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="fitTolerance_search" placeholder="精度等级">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_fitTolerance' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加公差等级</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
+		                {#display: -webkit-box;#}
+                        {#/* 限制再一个块元素再文本显示的行数 */#}
+                        {#-webkit-line-clamp: 2;#}
+                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
+                        {#-webkit-box-orient: vertical;#}
+
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>精度等级</th>
+                            <th>公称尺寸下界</th>
+                            <th>公称尺寸上界</th>
+                            <th>公差值</th>
+                            <th>其他字段1</th>
+                            <th>其他字段2</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for fitTolerance in fitTolerance_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_fitTolerance' fitTolerance.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_fitTolerance' fitTolerance.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ fitTolerance.Class }}</td>
+                                <td>{{ fitTolerance.nomiSizeL }}</td>
+                                <td>{{ fitTolerance.nomiSizeR }}</td>
+                                <td>{{ fitTolerance.tolNum }}</td>
+                                <td>{{ fitTolerance.otherField1 }}</td>
+                                <td>{{ fitTolerance.otherField2 }}</td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
                 </div>
 
             </div>
         </div>
-        {#标签2：公差配合#}
-        <div class="tab-pane fade" id="fitTolerance">
-            <p>公差配合something</p>
-        </div>
+
         {#标签3：标准孔径#}
-        <div class="tab-pane fade" id="apert">
-            <p>标准孔径something</p>
+        <div class="{% if tab_name == 'apert' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}"  id="apert">
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">标准孔列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_apert/" method="get" id="apert_form">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="apert_search" placeholder="标准孔编号">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_apert' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加孔</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
+		                {#display: -webkit-box;#}
+                        {#/* 限制再一个块元素再文本显示的行数 */#}
+                        {#-webkit-line-clamp: 2;#}
+                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
+                        {#-webkit-box-orient: vertical;#}
+
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>孔类型名</th>
+                            <th>标准孔径</th>
+                            <th>示意图片</th>
+                            <th>excel文件模板</th>
+                            <th>其他字段</th>
+                            <th>角度头备注</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for apert in apert_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_apert' apert.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_apert' apert.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ apert.apertType }}</td>
+                                <td>{{ apert.standard_apert }}</td>
+                                <td>{{ apert.apertImg }}</td>
+                                <td>{{ apert.excel_apertfile }}</td>
+                                <td>{{ apert.otherFields }}</td>
+                                <td>{{ apert.apertRemark }}</td>
+
+
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
+
+            </div>
         </div>
+
+        {#标签4：优先配合#}
+        <div class="{% if tab_name == 'prio' %}tab-pane fade in active{% else %}tab-pane fade{% endif %}" id="prio"  >
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">优先配合表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-md-4" >
+                            <div class="input-group">
+                                <form style="width:400px;display:inline" action="/search_prio/" method="get" id="prio_form">
+                                <input style="width:300px;float:left;" class="form-control" type="text" name="prio_search" placeholder="基准">
+                                    <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+                                </form>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-md-4 -->
+                        <div class="col-md-3 pull-right">
+                            <a href="{% url 'add_prio' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加优先配合</a>
+
+                        </div>
+
+                    </div><!-- /.row -->
+                    <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 10px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:60px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 300px;
+                    }
+                    td{
+                        font-size: 10px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 300px;
+                        min-width:60px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+                        {#/* 将对象作为弹性伸缩盒子模型显示 */#}
+		                {#display: -webkit-box;#}
+                        {#/* 限制再一个块元素再文本显示的行数 */#}
+                        {#-webkit-line-clamp: 2;#}
+                        {#/* 设置或检索伸缩盒对象的子元素的排列方式 */#}
+                        {#-webkit-box-orient: vertical;#}
+
+                    }
+                    td.buttentest{
+                        width: 200px;
+                        max-width: 300px;
+                    }
+                    a{
+                        {#text-decoration:none; color: #ffffff; font-size: 20px;//超链接的文字字体大小为20像素#}
+                        {#font-size: 10px;#}
+                        {#height: 30px;#}
+                        {#width: 20px;#}
+
+                    }
+                    {#i{font-size: 10px;}#}
+
+                    </style>
+                <div style="width:100%; height:100%; overflow:scroll;">
+                    <table class="table table-bordered" id="table">
+                        <thead>
+                        <tr>
+                            <th>数据操作</th>
+                            <th>基准</th>
+                            <th>基准孔代号</th>
+                            <th>轴公差代号</th>
+                            <th>配合类型</th>
+                            <th>其他字段1</th>
+                            <th>其他字段2</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for prio in prio_list %}
+                            <tr>
+                                <td class="buttentest">
+                                    <a class="btn btn-danger" href="{% url 'delete_prio' prio.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>删除</a>
+                                    <a class="btn btn-info" href="{% url 'edit_prio' prio.id %}"><i
+                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                </td>
+                                <td>{{ prio.basic }}</td>
+                                <td>{{ prio.holeTol }}</td>
+                                <td>{{ prio.shaftTol }}</td>
+                                <td>{{ prio.fitType }}</td>
+                                <td>{{ prio.otherField1 }}</td>
+                                <td>{{ prio.otherField2 }}</td>
+
+
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">
+                        var tTD;
+                        var table = document.getElementById("table");
+                        console.log(table.rows[0].cells)
+                        for (i = 0; i < table.rows[0].cells.length; i++) {
+                            table.rows[0].cells[i].onmousedown = function() {
+                                tTD = this;
+                                if (event.offsetX > tTD.offsetWidth - 10) {
+                                    tTD.mouseDown = true;
+                                    tTD.oldX = event.x;
+                                    tTD.oldWidth = tTD.offsetWidth;
+                                }
+                            };
+                            table.rows[0].cells[i].onmouseup = function() {
+                                if (tTD == undefined) tTD = this;
+                                tTD.mouseDown = false;
+                                tTD.style.cursor = 'default';
+                            };
+                            table.rows[0].cells[i].onmousemove = function() {
+                                if (event.offsetX > this.offsetWidth - 10)
+                                    this.style.cursor = 'col-resize';
+                                else
+                                    this.style.cursor = 'default';
+                                if (tTD == undefined) tTD = this;
+                                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                                    tTD.style.cursor = 'default';
+                                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                                    tTD.style.width = tTD.width;
+                                    tTD.style.cursor = 'col-resize';
+                                    table = tTD;
+                                    while (table.tagName != 'TABLE') table = table.parentElement;
+                                    for (j = 0; j < table.rows.length; j++) {
+                                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                                    }
+                                }
+                            };
+                        }
+                </script>
+                </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 {% endblock main %}
