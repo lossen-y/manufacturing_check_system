@@ -324,7 +324,6 @@ class TableFunction(models.Model):
     def __str__(self):
         return self.name
 
-
 class Feature(models.Model):
     '''
     特征结构表
@@ -358,5 +357,59 @@ class Rule(models.Model):
     imgPath = models.TextField(null=True, unique=False)  # 示意图片路径
     script = models.TextField(null=True, unique=False)  # 脚本
     remark = models.TextField(null=True, unique=False)  # 备注
+
+    def __str__(self):
+        return self.name
+
+# class PMI(models.Model):
+#     '''
+#     PMI标注表
+#     '''
+#     id = models.AutoField(primary_key=True)
+#     PMIType = models.CharField(max_length=128, null=False, unique=False)  # 标注类型
+#     paraDef = models.TextField(null=True, unique=False)  # 参数化定义，用json格式表示
+#     remark = models.TextField(null=True, unique=False)  # 备注
+#
+#     def __str__(self):
+#         return self.PMIType
+
+class DataDictionary(models.Model):
+    '''
+    数据字典
+    '''
+    id = models.AutoField(primary_key=True)
+    item = models.CharField(max_length=128, null=False, unique=True)  # 数据字典
+    type = models.CharField(max_length=128, null=False, unique=False)  # 数据字典类型
+    remark = models.TextField(null=True, unique=False)  # 描述
+
+    def __str__(self):
+        return self.item
+
+class ScriptFunction(models.Model):
+    '''
+    脚本函数表
+    '''
+    id = models.AutoField(primary_key=True)
+    functionName = models.CharField(max_length=128, null=True, unique=True)  # 规则函数名
+    inputPara = models.TextField(null=True, unique=False)   # 输入参数
+    outputPara = models.TextField(null=True, unique=False)  # 返回参数
+    formula = models.TextField(null=True, unique=False)  # 函数表达式
+    remark = models.TextField(null=True, unique=False)  # 备注
+
+    def __str__(self):
+        return self.name
+
+class PMIRule(models.Model):
+    '''
+    PMI审查规则表
+    '''
+    id = models.AutoField(primary_key=True)    # 规则编号
+    name = models.CharField(max_length=128, null=True, unique=True)  # 规则名称
+    ruleType = models.CharField(max_length=128, null=True, unique=False)  # 规则类型
+    annoType = models.CharField(max_length=128, null=True, unique=False)  # 规则对应标注的类型
+    script = models.TextField(null=True, unique=False)  # 脚本
+    content = models.TextField(null=True, unique=False)  # 知识描述
+    PMIImg=models.FileField(null=True, unique=False)  #规则图片
+
     def __str__(self):
         return self.name
