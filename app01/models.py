@@ -390,9 +390,10 @@ class ScriptFunction(models.Model):
     脚本函数表
     '''
     id = models.AutoField(primary_key=True)
-    functionName = models.CharField(max_length=128, null=True, unique=True)  # 规则函数名
-    inputPara = models.TextField(null=True, unique=False)   # 输入参数
-    outputPara = models.TextField(null=True, unique=False)  # 返回参数
+    functionName = models.CharField(max_length=128, null=True, unique=True)  # 脚本函数名称
+    functionHead = models.CharField(max_length=128, null=True, unique=True)  # 函数头
+    inputPara = models.TextField(null=True, unique=False)   # 输入参数,以逗号的形式隔开
+    outputPara = models.TextField(null=True, unique=False)  # 返回类型
     formula = models.TextField(null=True, unique=False)  # 函数表达式
     remark = models.TextField(null=True, unique=False)  # 备注
 

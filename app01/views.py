@@ -1,6 +1,7 @@
 import json
 
 from django.contrib import auth
+from django.core import serializers
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -1536,6 +1537,43 @@ def change_dataDictionary(request):
     return redirect('/scriptFunction/data_dictionary/')
 
 
+#搜索数据字典
+def search_dataDictionary(request):
+    content = request.POST.get('content')
+    all_dataDictionary_obj = models.DataDictionary.objects.filter(item__icontains=content) | \
+                             models.DataDictionary.objects.filter(type__icontains=content) | \
+                             models.DataDictionary.objects.filter(remark__icontains=content)
+
+    json_data = serializers.serialize('json', all_dataDictionary_obj)
+    print(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+#搜索规则配置的内容
+def search_script_supporter(request):
+    content = request.POST.get("searchContent")
+    type = request.POST.get("searchType")
+    if type == "数据字典":
+        all_obj = models.DataDictionary.objects.filter(item__icontains=content) | \
+                  models.DataDictionary.objects.filter(type__icontains=content) | \
+                  models.DataDictionary.objects.filter(remark__icontains=content)
+    elif type == "规则参数":
+        all_obj = models.KnowledgeParaTable.objects.filter(ruleid__icontains=content) | \
+                  models.KnowledgeParaTable.objects.filter(name__icontains=content) | \
+                  models.KnowledgeParaTable.objects.filter(paraType__icontains=content) | \
+                  models.KnowledgeParaTable.objects.filter(tableFunction__icontains=content) | \
+                  models.KnowledgeParaTable.objects.filter(remark__icontains=content)
+    elif type == "查表函数":
+        all_obj = models.TableFunction.objects.filter(name__icontains=content) | \
+                  models.TableFunction.objects.filter(functionName__icontains=content) | \
+                  models.TableFunction.objects.filter(remark__icontains=content)
+    elif type == "脚本函数":
+        all_obj = models.ScriptFunction.objects.filter(functionName__icontains=content) | \
+                  models.ScriptFunction.objects.filter(formula__icontains=content) | \
+                  models.ScriptFunction.objects.filter(remark__icontains=content)
+    json_data = serializers.serialize('json', all_obj)
+    print(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
 def table_function(request):
     all_tablaFuction = models.TableFunction.objects.all()
     return render(request, 'rule_configuration/table_function.html', {'TableFunction_list': all_tablaFuction})
@@ -1556,8 +1594,10 @@ def script_function(request):
         return render(request, 'rule_configuration/script_function.html', {'ScriptFunction_list': script_function})
 
 
-def delete_scriptFunction(request, del_id):
-    models.ScriptFunction.objects.get(functionName=del_id).delete()
+def delete_scriptFunction(request):
+    if request.method == "GET":
+        del_id = request.GET.get("id")
+        models.ScriptFunction.objects.get(id=del_id).delete()
     return redirect('/scriptFunction/script_function/')
 
 
@@ -1572,28 +1612,31 @@ def add_scriptFunction(request):
                                                      inputPara=request.POST.get('scriptFunction_inputPara'),
                                                      outputPara=request.POST.get('scriptFunction_outputPara'),
                                                      formula=request.POST.get('scriptFunction_formula'),
-                                                     remark=request.POST.get('scriptFunction_remark'), )
+                                                     remark=request.POST.get('scriptFunction_remark'),
+                                                     functionHead=request.POST.get('scriptFunction_functionHead'))
             return redirect('/scriptFunction/script_function/')
         else:
             error_msg = '函数名不能为空'
     return render(request, 'old/add_scriptFunction.html', {'error_msg': error_msg})
 
 
-def edit_scriptFunction(request, edit_id):
+def edit_scriptFunction(request):
     error_msg = ''
     if request.method == 'POST':
-        new_name = request.POST.get('scriptFunction_name')
-        if new_name:
-            scriptFunction_obj = models.ScriptFunction.objects.get(id=edit_id)
-            scriptFunction_obj.name = request.POST.get('scriptFunction_name')
+        ids = request.POST.get('scriptFunction_id')
+        if ids:
+            scriptFunction_obj = models.ScriptFunction.objects.get(id=ids)
+            scriptFunction_obj.functionName = request.POST.get('scriptFunction_name')
             scriptFunction_obj.inputPara = request.POST.get('scriptFunction_inputPara')
             scriptFunction_obj.outputPara = request.POST.get('scriptFunction_outputPara')
             scriptFunction_obj.formula = request.POST.get('scriptFunction_formula')
             scriptFunction_obj.remark = request.POST.get('scriptFunction_remark')
+            scriptFunction_obj.functionHead = request.POST.get('scriptFunction_functionHead')
             scriptFunction_obj.save()
             return redirect('/scriptFunction/script_function/')
         else:
             error_msg = '函数名不能为空'
-    scriptFunction_obj = models.ScriptFunction.objects.get(functionName=edit_id)
+    edit_id = request.GET.get('id')
+    scriptFunction_obj = models.ScriptFunction.objects.get(id=edit_id)
     return render(request, 'old/edit_scriptFunction.html',
                   {'scriptFunction': scriptFunction_obj, 'error_msg': error_msg})

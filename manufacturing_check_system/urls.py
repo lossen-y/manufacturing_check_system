@@ -59,6 +59,8 @@ urlpatterns = [
                   url(r'^processCheck/spacePosition/', views.space_position, name='space_Position'),
                   url(r'^processCheck/strucMachinability/', views.structural_machinability,
                       name='structural_machinability'),
+                  # 脚本函数的关键词搜索
+                  url(r'^search_script_supporter/', views.search_script_supporter, name='search_script_supporter'),
 
                   # 制造资源
                   url(r'^standardKnowNInfo/standardStruction/', views.standard_struction, name='standard_struction'),
@@ -73,11 +75,12 @@ urlpatterns = [
                   url(r'^scriptFunction/data_dictionary/$', views.data_dictionary, name='data_dictionary'),
                   url(r'^delete_dataDictionary/([0-9]+)/$', views.delete_dataDictionary, name='delete_dataDictionary'),
                   url(r'^change_dataDictionary/$', views.change_dataDictionary, name='change_dataDictionary'),
+                  url(r'^data_Dictionary_search/$', views.search_dataDictionary, name='search_dataDictionary'),
                   # 脚本函数
                   url(r'^scriptFunction/script_function/$', views.script_function, name='script_function'),
-                  url(r'^delete_scriptFunction/([0-9]+)/$', views.delete_scriptFunction, name='delete_scriptFunction'),
+                  url(r'^delete_scriptFunction/$', views.delete_scriptFunction, name='delete_scriptFunction'),
                   url(r'^add_scriptFunction/$', views.add_scriptFunction, name='add_scriptFunction'),
-                  url(r'^edit_scriptFunction/([0-9]+)/$', views.edit_scriptFunction, name='edit_scriptFunction'),
+                  url(r'^edit_scriptFunction/$', views.edit_scriptFunction, name='edit_scriptFunction'),
                   # 机床相关的对应关系
                   url(r'^add_mach/$', views.add_mach, name='add_mach'),
                   url(r'^search_mach/$', views.search_mach, name='search_mach'),
