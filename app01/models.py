@@ -326,35 +326,45 @@ class TableFunction(models.Model):
 
 class Feature(models.Model):
     '''
-    特征结构表
+    特征表
     '''
     id = models.AutoField(primary_key=True)
-    classFirst = models.CharField(max_length=128, null=False, unique=False)  # 特征大类
-    classSecond = models.CharField(max_length=128, null=True, unique=False)  # 特征小类
+    classFirst = models.CharField(max_length=128, null=False, unique=False)  # 特征大类，写死，（孔、口框、槽、凸台、筋、加工面、轮廓）
+    classSecond = models.CharField(max_length=128, null=True, unique=True)  # 特征小类
     # classID = models.CharField(max_length=128, null=True, unique=False) #特征编号
     # classDes=models.TextField(null=True, unique=False)   # 特征描述
-    paraDef = models.TextField(null=True, unique=False)   # 参数化定义
+    # paraDef = models.TextField(null=True, unique=False)   # 参数化定义
     imgPath = models.FileField(null=True, unique=False)  # 示意图片
     remark = models.TextField(null=True, unique=False)  # 备注
 
     def __str__(self):
         return self.classSecond
 
+class FeaturePara(models.Model):
+    '''
+    特征参数化定义表（特征属性表）
+    '''
+    id = models.AutoField(primary_key=True)
+    parameter = models.ForeignKey(to='DataDictionary', to_field='item', on_delete=models.CASCADE)  # 参数(特征属性)
+    value = models.CharField(max_length=128, null=True, unique=False)  # 参数的取值
+    featureID = models.ForeignKey(to='Feature', on_delete=models.CASCADE) #对应的特征编号
+    remark = models.TextField(null=True, unique=False)  # 备注
+
 class Rule(models.Model):
     '''
     审查规则表(总表)
     '''
-    id = models.AutoField(primary_key=True)    # 规则编号
+    id = models.AutoField(primary_key=True) # 规则编号
     name = models.CharField(max_length=128, null=True, unique=True)  # 规则名称
     ruleTypeFirst = models.CharField(max_length=128, null=True, unique=False)  # 规则大类
     ruleTypeSecond = models.CharField(max_length=128, null=True, unique=False)  # 规则小类
-    content = models.TextField(null=True, unique=False)  # 规则特定字段
+    #content = models.TextField(null=True, unique=False)  # 规则特定字段
     manuType = models.CharField(max_length=128, null=True, unique=False)  # 加工方式
     featTypeFirst = models.CharField(max_length=128, null=True, unique=False)  # 特征大类
     featTypeSecond = models.CharField(max_length=128, null=True, unique=False)  # 特征小类
     featPro = models.CharField(max_length=128, null=True, unique=False)  # 特征属性
     content = models.TextField(null=True, unique=False)  # 知识描述
-    imgPath = models.TextField(null=True, unique=False)  # 示意图片路径
+    img=models.FileField(null=True, unique=False)  #规则图片
     script = models.TextField(null=True, unique=False)  # 脚本
     remark = models.TextField(null=True, unique=False)  # 备注
 

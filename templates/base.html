@@ -52,16 +52,16 @@
         <div class="nav nav-sidebar ">
             {#建模质量#}
             <div class="nav-item">
-                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white"
-                   href="#pp1">建模质量审查知识</a>
+                <a class="list-group-item" style="background-color: #4682B4; color: white"
+                   href="{% url 'PMI_annotation' %}">PMI标注审查知识</a>
                 <ul class="collapse list-group" id="pp1" style="margin-bottom: 0px;">
                     <li class="collapse list-group-item"><a href="{% url 'PMI_annotation' %}">PMI标注</a></li>
                 </ul>
             </div>
             {#工艺性审查#}
             <div class="nav-item">
-                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white"
-                   href="#pp2">工艺性审查知识</a>
+                <a class="list-group-item" style="background-color: #4682B4; color: white"
+                   href="{% url 'process_check' %}">工艺性审查知识</a>
                 <ul class="collapse list-group" id="pp2" style="margin-bottom: 0px">
                     <li class="collapse list-group-item"><a href="{% url 'manufacturing_ability' %}">制造能力</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'space_Position' %}">空间位置</a></li>

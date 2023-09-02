@@ -55,6 +55,15 @@ urlpatterns = [
                   # 工艺性审查知识
                   # url(r'^processCheck/manuAbility/', views.manufacturing_ability_mat, name='manufacturing_ability'),
                   # url(r'^processCheck/manuAbility/', views.manufacturing_ability_acc, name='manufacturing_ability'),
+                  url(r'^processCheck/', views.process_check, name='process_check'),
+                  url(r'^delete_processCheck/', views.delete_process_check, name='delete_process_check'),
+                  url(r'^edit_processCheck/', views.edit_process_check, name='edit_process_check'),
+                  url(r'^add_processCheck/', views.add_process_check, name='add_process_check'),
+
+
+
+
+
                   url(r'^processCheck/manuAbility/', views.manufacturing_ability, name='manufacturing_ability'),
                   url(r'^processCheck/spacePosition/', views.space_position, name='space_Position'),
                   url(r'^processCheck/strucMachinability/', views.structural_machinability,
@@ -171,6 +180,7 @@ urlpatterns = [
                   url(r'^search_Feature/$', views.search_Feature, name='search_Feature'),
                   url(r'^delete_Feature/([0-9]+)/$', views.delete_Feature, name='delete_Feature'),
                   url(r'^edit_Feature/([0-9]+)/$', views.edit_Feature, name='edit_Feature'),
+                  url(r'^search_feature_second/$', views.search_feature_second, name='search_feature_second'),
 
                   # 制造能力规则相关的对应关系
                   # url(r'^standardKnowNInfo/resource/', views.cutter_list, name='standardKnowNInfo'),

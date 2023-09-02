@@ -34,7 +34,7 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>编号</th>
+                            <th style="display: none">编号</th>
                             <th>规则名称</th>
                             <th>规则类型</th>
                             <th>对应标注类型</th>
@@ -45,7 +45,7 @@
                         <tbody>
                         {% for PMI_rule in PMI_rule_list %}
                             <tr>
-                                <td>{{ PMI_rule.id }}</td>
+                                <td style="display: none">{{ PMI_rule.id }}</td>
                                 <td>{{ PMI_rule.name }}</td>
                                 <td>{{ PMI_rule.ruleType }}</td>
                                 <td>{{ PMI_rule.annoType }}</td>

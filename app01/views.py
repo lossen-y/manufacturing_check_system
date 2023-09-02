@@ -1102,6 +1102,15 @@ def search_Feature(request):
                   {'Feature_list': all_Feature_obj})
 
 
+def search_feature_second(request):
+    feature = request.POST.get('feature')
+    if feature:
+        all_feature_second_obj = models.Feature.objects.filter(classFirst__icontains=feature)
+        json_data = serializers.serialize('json', all_feature_second_obj)
+        print(json_data)
+        return HttpResponse(json_data, content_type="application/json")
+
+
 def ManuCapRule_list(request):
     all_ManuCapRule = models.ManuCapRule.objects.all()
     return render(request, 'process_Check/manufacturing_ability.html', {'ManuCapRule_list': all_ManuCapRule})
@@ -1441,6 +1450,84 @@ def edit_PMIRule(request, edit_id):
     return render(request, 'old/edit_PMIRule.html', {'PMIRule': PMIRule_obj, 'error_msg': error_msg})
 
 
+def process_check(request):
+    print('yes')
+    if request.method == 'GET':
+        if request.GET.get('content') == None:
+            process_check_rule = models.Rule.objects.all()
+            return render(request, 'process_Check/process_check.html', {'process_check_rule_list': process_check_rule})
+        contents = request.GET.get('content')
+        process_check_rule = models.Rule.objects.filter(name__icontains=contents) | \
+                             models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
+                             models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
+                             models.Rule.objects.filter(content__icontains=contents) | \
+                             models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
+                             models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
+                             models.Rule.objects.filter(featPro__icontains=contents) | \
+                             models.Rule.objects.filter(remark__icontains=contents)
+        return render(request, 'process_Check/process_check.html', {'process_check_rule_list': process_check_rule})
+
+
+def delete_process_check(request):
+    if request.method == "GET":
+        del_id = request.GET.get("id")
+        models.Rule.objects.get(id=del_id).delete()
+    return redirect('/processCheck/')
+
+
+def add_process_check(request):
+    error_msg = ''
+    if request.method == 'POST':
+        process_check_name = request.POST.get("rule_name")
+        # print(request.POST.get('PMIRule_script'))
+        if process_check_name:
+            new_process_check_obj = \
+                models.Rule.objects.create(name=process_check_name,
+                                           ruleTypeFirst=request.POST.get('rule_ruleTypeFirst'),
+                                           ruleTypeSecond=request.POST.get('rule_ruleTypeSecond'),
+                                           manuType=request.POST.get('rule_manuType'),
+                                           featTypeFirst=request.POST.get('rule_featTypeFirst'),
+                                           featTypeSecond=request.POST.get('rule_featTypeSecond'),
+                                           featPro=request.POST.get('rule_featPro'),
+                                           content=request.POST.get('rule_content'),
+                                           img=request.FILES.get('rule_Img_file'),
+                                           script=request.POST.get('rule_script'),
+                                           remark=request.POST.get('rule_remark')
+                                           )
+            return redirect('/processCheck/')
+        else:
+            error_msg = '函数名不能为空'
+    return render(request, 'old/add_process_check.html', {'error_msg': error_msg})
+
+
+def edit_process_check(request):
+    error_msg = ''
+    if request.method == 'POST':
+        edit_id = request.POST.get('rule_id')
+        if edit_id:
+            rule_obj = models.Rule.objects.get(id=edit_id)
+            rule_obj.name = request.POST.get('rule_name')
+            rule_obj.ruleTypeFirst = request.POST.get('rule_ruleTypeFirst')
+            rule_obj.ruleTypeSecond = request.POST.get('rule_ruleTypeSecond')
+            rule_obj.manuType = request.POST.get('rule_manuType')
+            rule_obj.featTypeFirst = request.POST.get('rule_featTypeFirst')
+            rule_obj.featTypeSecond = request.POST.get('rule_featTypeSecond')
+            rule_obj.featPro = request.POST.get('rule_featPro')
+            rule_obj.content = request.POST.get('rule_content')
+            rule_obj.script = request.POST.get('rule_script')
+            rule_obj.remark = request.POST.get('rule_remark')
+
+            if request.FILES.get('rule_Img_file'):
+                rule_obj.img = request.FILES.get('rule_Img_file')
+            rule_obj.save()
+            return redirect('/processCheck/')
+        else:
+            error_msg = '规则名不能为空'
+
+    rule_obj = models.Rule.objects.get(id=request.GET.get("id"))
+    return render(request, 'old/edit_process_check.html', {'rule_obj': rule_obj, 'error_msg': error_msg})
+
+
 def manufacturing_ability(request):
     all_mat_ManuCapRule = models.ManuCapRule.objects.filter(captype__icontains="材料").all()
     all_acc_ManuCapRule = models.ManuCapRule.objects.filter(captype__icontains="精度").all()
@@ -1537,7 +1624,7 @@ def change_dataDictionary(request):
     return redirect('/scriptFunction/data_dictionary/')
 
 
-#搜索数据字典
+# 搜索数据字典
 def search_dataDictionary(request):
     content = request.POST.get('content')
     all_dataDictionary_obj = models.DataDictionary.objects.filter(item__icontains=content) | \
@@ -1548,7 +1635,20 @@ def search_dataDictionary(request):
     print(json_data)
     return HttpResponse(json_data, content_type="application/json")
 
-#搜索规则配置的内容
+
+# 搜索特征属性
+def search_feature_pro(request):
+    content = request.POST.get("content")
+
+    all_obj = models.DataDictionary.objects.filter(item__icontains=content, type="特征属性") | \
+              models.DataDictionary.objects.filter(remark__icontains=content, type="特征属性")
+
+    json_data = serializers.serialize('json', all_obj)
+    print(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+
+# 搜索规则配置的内容
 def search_script_supporter(request):
     content = request.POST.get("searchContent")
     type = request.POST.get("searchType")
@@ -1573,6 +1673,7 @@ def search_script_supporter(request):
     json_data = serializers.serialize('json', all_obj)
     print(json_data)
     return HttpResponse(json_data, content_type="application/json")
+
 
 def table_function(request):
     all_tablaFuction = models.TableFunction.objects.all()
