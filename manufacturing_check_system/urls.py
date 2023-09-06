@@ -27,6 +27,7 @@ urlpatterns = [
                   url(r'^index/', views.index, name='index'),
                   url(r'^$', views.login, name='login'),
                   url(r'^changePassword/', views.change_password, name='change_password'),
+                  url(r'^knowledge_detail/', views.knowledge_detail, name='knowledge_detail'),
 
                   # 出版社相关的对应关系
                   url(r'^publisher_list/$', views.publisher_list, name='publisher_list'),
@@ -59,10 +60,6 @@ urlpatterns = [
                   url(r'^delete_processCheck/', views.delete_process_check, name='delete_process_check'),
                   url(r'^edit_processCheck/', views.edit_process_check, name='edit_process_check'),
                   url(r'^add_processCheck/', views.add_process_check, name='add_process_check'),
-
-
-
-
 
                   url(r'^processCheck/manuAbility/', views.manufacturing_ability, name='manufacturing_ability'),
                   url(r'^processCheck/spacePosition/', views.space_position, name='space_Position'),

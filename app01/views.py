@@ -1378,7 +1378,7 @@ def login(request):
         user = auth.authenticate(request, username=username, password=password)
         # 验证如果用户不为空
         if user is not None:
-            return render(request, 'index.html')
+            return render(request, 'knowledge_search.html')
         else:
             # 返回登录失败信息
             error_msg = '用户名或密码错误'
@@ -1389,9 +1389,38 @@ def login(request):
 
 
 def index(request):
-    return render(request, 'index.html')
+    if request.method == 'GET':
+        return render(request, 'knowledge_search.html')
+    type = request.POST.get('type')
+    contents = request.POST.get('search_content')
+    if contents == "":
+        return render(request, 'knowledge_search.html')
+    if type == "工艺性审查知识":
+        obj = models.Rule.objects.filter(name__icontains=contents) | \
+              models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
+              models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
+              models.Rule.objects.filter(content__icontains=contents) | \
+              models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
+              models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
+              models.Rule.objects.filter(featPro__icontains=contents) | \
+              models.Rule.objects.filter(remark__icontains=contents)
+    elif type == "PMI标注审查知识":
+        obj = models.PMIRule.objects.filter(content__icontains=contents) | \
+              models.PMIRule.objects.filter(name__icontains=contents) | \
+              models.PMIRule.objects.filter(ruleType__icontains=contents) | \
+              models.PMIRule.objects.filter(annoType__icontains=contents)
+    return render(request, 'knowledge_search.html', {'obj': obj, 'type':type, 'content':contents})
 
-
+def knowledge_detail(request):
+    if request.method == 'GET':
+        type = request.GET.get('type')
+        content = request.GET.get('content')
+        id = request.GET.get('id')
+        if type == "工艺性审查知识":
+            obj = models.Rule.objects.get(id=id)
+        else:
+            obj = models.PMIRule.objects.get(id=id)
+    return render(request, 'knowledge_detail.html', {'obj':obj, 'type':type, 'content':content})
 def PMI_annotation(request):
     if request.method == 'GET':
         if request.GET.get('content') == None:
