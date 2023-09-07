@@ -354,8 +354,10 @@ class Rule(models.Model):
     '''
     审查规则表(总表)
     '''
-    id = models.AutoField(primary_key=True) # 规则编号
+    id = models.AutoField(primary_key=True) # 规则编号,用于存储的
+    code = models.CharField(max_length=128, null=True, unique=True) # 规则的编码
     name = models.CharField(max_length=128, null=True, unique=True)  # 规则名称
+    ruleClass = models.CharField(max_length=128, null=False, unique=False) #规则等级（零件级、特征级）
     ruleTypeFirst = models.CharField(max_length=128, null=True, unique=False)  # 规则大类
     ruleTypeSecond = models.CharField(max_length=128, null=True, unique=False)  # 规则小类
     #content = models.TextField(null=True, unique=False)  # 规则特定字段
@@ -415,6 +417,7 @@ class PMIRule(models.Model):
     PMI审查规则表
     '''
     id = models.AutoField(primary_key=True)    # 规则编号
+    code = models.CharField(max_length=128, null=True, unique=True)  # 规则的编码
     name = models.CharField(max_length=128, null=True, unique=True)  # 规则名称
     ruleType = models.CharField(max_length=128, null=True, unique=False)  # 规则类型
     annoType = models.CharField(max_length=128, null=True, unique=False)  # 规则对应标注的类型

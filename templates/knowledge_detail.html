@@ -8,17 +8,21 @@
         <form class="form-horizontal" id="forms" action="{% url 'index' %}" method="post">
             <input type="hidden" name="type" value="{{ type }}">
             <input type="hidden" name="search_content" value="{{ content }}">
+            <input type="hidden" name="class" value="{{ class }}">
             <input type="hidden" name="s" value="{{ obj }}">
             <a style="font-size: 20px" onclick="document.getElementById('forms').submit();">返回</a>
             {% csrf_token %}
         </form>
         <div class="panel-body">
             {% if type == "工艺性审查知识" %}
-                <p style="font-size: 30px">{{ obj.name }}</p>
+                <p style="font-size: 30px">【{{ obj.code }}】{{ obj.name }}</p>
                 <div style="float:left; width: 50%">
+                    <p style="font-size: 15px">
+                        <b>【规则等级】</b>{{ obj.ruleClass }}</p>
                     <p style="font-size: 15px">
                         <b>【规则类型】</b>{{ type }}-{{ obj.ruleTypeFirst }}-{{ obj.ruleTypeSecond }}</p>
                     <p style="font-size: 15px"><b>【特征】</b>{{ obj.featTypeFirst }}-{{ obj.featTypeSecond }}</p>
+                    <p style="font-size: 15px"><b>【特征属性】</b>{{ obj.featPro }}</p>
                     <p style="font-size: 15px"><b>【加工方式】</b>{{ obj.manuType }}</p>
                     <p style=" font-size: 15px"><b>【规则描述】</b></p>
                     <p>&emsp;&emsp;{{ obj.content }}</p>
@@ -36,7 +40,7 @@
                 </div>
             {% endif %}
             {% if type == "PMI标注审查知识" %}
-                <p style=" font-size: 30px">{{ obj.name }}</p>
+                <p style=" font-size: 30px">【{{ obj.code }}】{{ obj.name }}</p>
                 <div style="width: 50%; float:left;">
                     <p style=" font-size: 15px"><b>【规则类型】</b>{{ type }}-{{ obj.ruleType }}</p>
 
@@ -49,11 +53,11 @@
                     <pre>{{ obj.script }}</pre>
                 </div>
                 <div style="width: 50%; float:right;">
-                <p style=" font-size: 15px"><b>【示意图】</b></p>
-                {% if obj.PMIImg %}
-                    <img src="{{ obj.PMIImg.url }}" alt="{{ obj.PMIImg }}"
-                         style="width:100%; object-fit: contain">
-                {% endif %}
+                    <p style=" font-size: 15px"><b>【示意图】</b></p>
+                    {% if obj.PMIImg %}
+                        <img src="{{ obj.PMIImg.url }}" alt="{{ obj.PMIImg }}"
+                             style="width:100%; object-fit: contain">
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

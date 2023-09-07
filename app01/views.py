@@ -1393,35 +1393,46 @@ def index(request):
         return render(request, 'knowledge_search.html')
     type = request.POST.get('type')
     contents = request.POST.get('search_content')
+    classes = request.POST.get('class')
     # if contents == "":
     #     return render(request, 'knowledge_search.html')
     if type == "工艺性审查知识":
-        obj = models.Rule.objects.filter(name__icontains=contents) | \
-              models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
-              models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
-              models.Rule.objects.filter(content__icontains=contents) | \
-              models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
-              models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
-              models.Rule.objects.filter(featPro__icontains=contents) | \
-              models.Rule.objects.filter(remark__icontains=contents)
+        if classes != "全部":
+            obj = models.Rule.objects.filter(name__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(ruleTypeFirst__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(ruleTypeSecond__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(content__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(featTypeFirst__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(featTypeSecond__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(featPro__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(remark__icontains=contents, ruleClass=classes)
+        else:
+            obj = models.Rule.objects.filter(name__icontains=contents) | \
+                  models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
+                  models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
+                  models.Rule.objects.filter(content__icontains=contents) | \
+                  models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
+                  models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
+                  models.Rule.objects.filter(featPro__icontains=contents) | \
+                  models.Rule.objects.filter(remark__icontains=contents)
     elif type == "PMI标注审查知识":
         obj = models.PMIRule.objects.filter(content__icontains=contents) | \
               models.PMIRule.objects.filter(name__icontains=contents) | \
               models.PMIRule.objects.filter(ruleType__icontains=contents) | \
               models.PMIRule.objects.filter(annoType__icontains=contents)
-    return render(request, 'knowledge_search.html', {'obj': obj, 'type': type, 'content': contents})
-
+    return render(request, 'knowledge_search.html', {'obj': obj, 'type': type, 'content': contents, 'class': classes})
 
 def knowledge_detail(request):
     if request.method == 'GET':
         type = request.GET.get('type')
         content = request.GET.get('content')
+        classes = request.GET.get('class')
         id = request.GET.get('id')
         if type == "工艺性审查知识":
             obj = models.Rule.objects.get(id=id)
         else:
             obj = models.PMIRule.objects.get(id=id)
-    return render(request, 'knowledge_detail.html', {'obj': obj, 'type': type, 'content': content})
+    return render(request, 'knowledge_detail.html', {'obj': obj, 'type': type, 'content': content,'class':classes})
 
 
 def PMI_annotation(request):
@@ -1443,13 +1454,28 @@ def delete_PMIRule(request, del_id):
     return redirect('/modelQuality/PMI/')
 
 
+annotationCode = {"尺寸公差": "DT", "直线度": "ST", "平面度": "FL", "圆度": "CI", "圆柱度": "CY", "线轮廓度": "PL",
+                  "面轮廓度": "PS", "垂直度": "PE", "平行度": "PA", "对称度": "SY", "位置度": "PO", "同轴度": "CO",
+                  "圆跳动": "CR", "全跳动": "TR"}
+
+
 def add_PMIRule(request):
     error_msg = ''
     if request.method == 'POST':
         new_PMIRule = request.POST.get('PMIRule_name')
         print(request.POST.get('PMIRule_script'))
         if new_PMIRule:
+            # 建立编码
+            tempRule = models.PMIRule.objects.filter(annoType=request.POST.get('PMIRule_annoType')).order_by(
+                '-code').values('code').first()
+            if tempRule == None:
+                num = 1
+            else:
+                print(tempRule['code'])
+                num = int(tempRule['code'].split('-')[-1]) + 1
+            code = 'AC-' + annotationCode[request.POST.get('PMIRule_annoType')] + "-" + str(num)
             new_PMIRule_obj = models.PMIRule.objects.create(name=new_PMIRule,
+                                                            code=code,
                                                             ruleType=request.POST.get('PMIRule_ruleType'),
                                                             annoType=request.POST.get('PMIRule_annoType'),
                                                             content=request.POST.get('PMIRule_content'),
@@ -1490,6 +1516,7 @@ def process_check(request):
             return render(request, 'process_Check/process_check.html', {'process_check_rule_list': process_check_rule})
         contents = request.GET.get('content')
         process_check_rule = models.Rule.objects.filter(name__icontains=contents) | \
+                             models.Rule.objects.filter(ruleClass__icontains=contents) | \
                              models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
                              models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
                              models.Rule.objects.filter(content__icontains=contents) | \
@@ -1507,14 +1534,38 @@ def delete_process_check(request):
     return redirect('/processCheck/')
 
 
+classCode = {'零件级': "P", "特征级": "F"}
+featureCode = {"孔": "H",
+               "槽": "S",
+               "口框": "MF",
+               "凸台": "CP",
+               "筋": "T",
+               "加工面": "MS",
+               "轮廓": "C",
+               }
+
+
 def add_process_check(request):
     error_msg = ''
     if request.method == 'POST':
         process_check_name = request.POST.get("rule_name")
-        # print(request.POST.get('PMIRule_script'))
         if process_check_name:
+
+            # 建立编码
+            tempRule = models.Rule.objects.filter(ruleClass=request.POST.get('rule_ruleClass'), \
+                                                  featTypeFirst=request.POST.get('rule_featTypeFirst')).order_by(
+                '-code').values('code').first()
+            if tempRule == None:
+                num = 1
+            else:
+                print(tempRule['code'])
+                num = int(tempRule['code'].split('-')[-1]) + 1
+            code = 'PC-' + classCode[request.POST.get('rule_ruleClass')] + "-" + featureCode[ \
+                request.POST.get('rule_featTypeFirst')] + "-" + str(num)
             new_process_check_obj = \
                 models.Rule.objects.create(name=process_check_name,
+                                           code=code,
+                                           ruleClass=request.POST.get('rule_ruleClass'),
                                            ruleTypeFirst=request.POST.get('rule_ruleTypeFirst'),
                                            ruleTypeSecond=request.POST.get('rule_ruleTypeSecond'),
                                            manuType=request.POST.get('rule_manuType'),
@@ -1539,6 +1590,7 @@ def edit_process_check(request):
         if edit_id:
             rule_obj = models.Rule.objects.get(id=edit_id)
             rule_obj.name = request.POST.get('rule_name')
+            rule_obj.ruleClass = request.POST.get('rule_ruleClass')
             rule_obj.ruleTypeFirst = request.POST.get('rule_ruleTypeFirst')
             rule_obj.ruleTypeSecond = request.POST.get('rule_ruleTypeSecond')
             rule_obj.manuType = request.POST.get('rule_manuType')

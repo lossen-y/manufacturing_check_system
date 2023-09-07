@@ -8,7 +8,7 @@
     <h1 class="page-header">工艺性审查规则管理页面</h1>
     {# PMI审查规则框 #}
     <div class="panel panel-primary">
-        <div class="panel-heading">添加工艺性审查规则</div>
+        <div class="panel-heading">编辑工艺性审查规则:&ensp;{{ rule_obj.code }}</div>
         <div class="panel-body">
             <form class="form-horizontal" action="{% url 'edit_process_check' %}" enctype="multipart/form-data"
                   method="post">
@@ -19,7 +19,7 @@
                         <p style="color: red;">{{ error_msg }}</p>
                     </div>
                 </div>
-                <h4 style="clear:both; margin-left: 15px; font-weight: bold">基本信息:</h4>
+                <h4 style="clear:both; margin-left: 15px; font-weight: bold">基本信息</h4>
                 <div class="form-group" id="Rule-basicInfo" style="width:60%;float:left;">
                     {# 规则id，不显示 #}
                     <div class="form-group">
@@ -35,6 +35,21 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="rule_name" name="rule_name"
                                    placeholder="规则名称" value="{{ rule_obj.name }}">
+                        </div>
+                    </div>
+                    {# 规则等级 #}
+                    <div class="form-group">
+                        <label for="rule_ruleClass" class="col-sm-2 control-label">规则等级</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="rule-ruleClass" data-live-search="true"
+                                    name="rule_ruleClass">
+                                <option value="零件级"
+                                        {% if rule_obj.ruleClass == "零件级" %} selected {% endif %}>零件级
+                                </option>
+                                <option value="特征级" {% if rule_obj.ruleClass == "特征级" %}
+                                        selected {% endif %}>特征级
+                                </option>
+                            </select>
                         </div>
                     </div>
                     {# 知识描述 #}
@@ -226,8 +241,8 @@
                                style="height:100%; overflow:scroll; margin-top: 10px;">
                             <thead>
                             <tr>
+                                <th>中文名</th>
                                 <th>数据项</th>
-                                <th>描述</th>
                             </tr>
                             </thead>
                             <tbody id="tbody1">
@@ -349,10 +364,12 @@
                     document.getElementById("rule-featTypeSecond").innerHTML = htmlstr
                 });
         }
+
         //展开脚本搜索
-        function showScriptEditor(){
+        function showScriptEditor() {
             document.getElementById("scriptEditor").style.display = "block";
         }
+
         //图片提示
         const uploadInput = document.getElementById('oneimg');
         uploadInput.addEventListener('change', function (event) {
@@ -426,8 +443,8 @@
                     for (var i = 0; i < result.length; i++) {
 
                         htmlstr += "<tr>";
-                        htmlstr += "<td>" + result[i]["fields"]["item"] + "</td>";
                         htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                        htmlstr += "<td>" + result[i]["fields"]["item"] + "</td>";
                         htmlstr += "</tr>";
                     }
                     document.getElementById("tbody1").innerHTML = htmlstr
@@ -440,7 +457,7 @@
                             }
                             document.getElementById("featProEditor-copyBtn").style.display = 'none'
                             para1 = this.firstElementChild.innerHTML
-                            if (para1 != "数据项") {
+                            if (para1 != "中文名") {
                                 //高亮
                                 this.style.background = 'yellow'
                                 document.getElementById("featProEditor-copyBtn").style.display = 'inline-block'

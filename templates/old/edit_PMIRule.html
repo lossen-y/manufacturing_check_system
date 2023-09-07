@@ -8,7 +8,7 @@
     <h1 class="page-header">PMI审查规则管理页面</h1>
     {# PMI审查规则框 #}
     <div class="panel panel-primary">
-        <div class="panel-heading">编辑PMI审查规则</div>
+        <div class="panel-heading">编辑PMI审查规则:&ensp;{{ PMIRule.code }}</div>
         <div class="panel-body">
             <form class="form-horizontal" action="{% url 'edit_PMIRule' PMIRule.id %}" enctype="multipart/form-data"
                   method="post">

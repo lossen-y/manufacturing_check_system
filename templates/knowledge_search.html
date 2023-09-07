@@ -18,9 +18,20 @@
                             PMI标注审查知识
                         </option>
                     </select>
+                    <select class="form-control" name="class" style="width: 10%; display: inline-block">
+                        <option value="全部" {% if class == "全部" %} selected {% endif %}>
+                            全部
+                        </option>
+                        <option value="零件级" {% if class == "零件级" %} selected {% endif %}>
+                            零件级
+                        </option>
+                        <option value="特征级" {% if class == "特征级" %} selected {% endif %}>
+                            特征级
+                        </option>
 
+                    </select>
                     <input type="text" class="form-control" id="search_content"
-                           name="search_content" style="width: 70%; display: inline-block" value="{{ content }}">
+                           name="search_content" style="width: 60%; display: inline-block" value="{{ content }}">
 
                     <button type="submit" class="btn btn-success">搜索</button>
                 </div>
@@ -35,12 +46,13 @@
                 {% for obj_item in obj %}
                     <div style="margin-top:20px;">
                         <div style="width: 70%; height:150px; float:left;">
-                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}"
-                               style="font-size: 20px">{{ obj_item.name }}</a>
+                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}&class={{ class }}"
+                               style="font-size: 20px">【{{ obj_item.code }}】{{ obj_item.name }}</a>
+                            <p>【规则等级】{{ obj_item.ruleClass }}</p>
                             <p>【规则类型】{{ obj_item.ruleTypeFirst }}-{{ obj_item.ruleTypeSecond }}</p>
                             <p>【特征】{{ obj_item.featTypeFirst }}-{{ obj_item.featTypeSecond }}</p>
                             <p>【规则描述】{{ obj_item.content }}</p>
-                            <p>【备注】{{ obj_item.remark }}</p>
+                            {#                            <p>【备注】{{ obj_item.remark }}</p>#}
                         </div>
                         <div style="width: 30%; height:150px; float: right;">
                             {% if obj_item.img %}
@@ -57,7 +69,8 @@
                 {% for obj_item in obj %}
                     <div style="margin-top:30px;">
                         <div style="width: 70%; height:150px; float:left;">
-                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}" style="font-size: 20px">{{ obj_item.name }}</a>
+                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}&class={{ class }}"
+                               style="font-size: 20px">【{{ obj_item.code }}】{{ obj_item.name }}</a>
                             <p>【标注类型】{{ obj_item.annoType }}</p>
                             <p>【规则类型】{{ obj_item.ruleType }}</p>
                             <p>【描述】{{ obj_item.content }}</p>
