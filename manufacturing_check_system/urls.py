@@ -75,6 +75,10 @@ urlpatterns = [
                   url(r'^standardKnowNInfo/resource/$', views.resource, name='resource'),
                   url(r'^standardKnowNInfo/standardize/', views.standardize, name='standardize'),
 
+                  # 规则参数
+                  url(r'^scriptFunction/rule_parameter/$', views.rule_parameter, name='rule_parameter'),
+                  url(r'^delete_ruleParameter/([0-9]+)/$', views.delete_ruleParameter, name='delete_ruleParameter'),
+                  url(r'^change_ruleParameter/$', views.change_ruleParameter, name='change_ruleParameter'),
                   # 查表函数
                   url(r'^scriptFunction/table_function/$', views.table_function, name='table_function'),
                   # 数据字典
