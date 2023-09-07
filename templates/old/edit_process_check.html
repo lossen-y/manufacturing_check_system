@@ -1,0 +1,606 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑工艺性审查规则
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">工艺性审查规则管理页面</h1>
+    {# PMI审查规则框 #}
+    <div class="panel panel-primary">
+        <div class="panel-heading">添加工艺性审查规则</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_process_check' %}" enctype="multipart/form-data"
+                  method="post">
+                <div class="form-group" style="text-align:left; margin-left: 0">
+                    <div style="clear:both;">
+                        <button type="button" class="btn btn-info " onclick="showScriptEditor()">脚本修改</button>
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                <h4 style="clear:both; margin-left: 15px; font-weight: bold">基本信息:</h4>
+                <div class="form-group" id="Rule-basicInfo" style="width:60%;float:left;">
+                    {# 规则id，不显示 #}
+                    <div class="form-group">
+                        <label for="rule_id" class="col-sm-2 control-label" style="display: none">规则id</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="rule_id" name="rule_id" style="display: none"
+                                   placeholder="规则名称" value="{{ rule_obj.id }}">
+                        </div>
+                    </div>
+                    {# 规则名称 #}
+                    <div class="form-group">
+                        <label for="rule_name" class="col-sm-2 control-label">规则名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="rule_name" name="rule_name"
+                                   placeholder="规则名称" value="{{ rule_obj.name }}">
+                        </div>
+                    </div>
+                    {# 知识描述 #}
+                    <div class="form-group">
+                        <label for="rule-content" class="col-sm-2 control-label">规则描述</label>
+                        <div class="col-sm-10">
+                            <textarea type="text" class="form-control" id="rule-content" placeholder="规则描述"
+                                      name="rule_content" rows="2">{{ rule_obj.content }}</textarea>
+                        </div>
+                    </div>
+
+                    {#规则大类 #}
+                    <div class="form-group">
+                        <label for="rule-ruleTypeFirst" class="col-sm-2 control-label">规则大类</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="rule-ruleTypeFirst" data-live-search="true"
+                                    name="rule_ruleTypeFirst">
+                                <option value="制造能力"
+                                        {% if rule_obj.ruleTypeFirst == "制造能力" %} selected {% endif %}>制造能力
+                                </option>
+                                <option value="空间位置" {% if rule_obj.ruleTypeFirst == "空间位置" %}
+                                        selected {% endif %}>空间位置
+                                </option>
+                                <option value="结构工艺性" {% if rule_obj.ruleTypeFirst == "结构工艺性" %}
+                                        selected {% endif %}>
+                                    结构工艺性
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    {#规则小类 #}
+                    <div class="form-group">
+                        <label for="rule-ruleTypeSecond" class="col-sm-2 control-label">规则小类</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="rule-ruleTypeSecond" name="rule_ruleTypeSecond">
+                                {% if rule_obj.ruleTypeFirst == "制造能力" %}
+                                    <option value="零件材料" {% if rule_obj.ruleTypeSecond == "零件材料" %}
+                                            selected {% endif %}>零件材料
+                                    </option>
+                                    <option value="精度" {% if rule_obj.ruleTypeSecond == "精度" %}
+                                            selected {% endif %}>精度
+                                    </option>
+                                    <option value="尺寸加工能力" {% if rule_obj.ruleTypeSecond == "尺寸加工能力" %}
+                                            selected {% endif %}>尺寸加工能力
+                                    </option>
+                                {% endif %}
+                                {% if rule_obj.ruleTypeFirst == "空间位置" %}
+                                    <option value="可达性" {% if rule_obj.ruleTypeSecond == "可达性" %}
+                                            selected {% endif %}>可达性
+                                    </option>
+                                    <option value="合理性" {% if rule_obj.ruleTypeSecond == "合理性" %}
+                                            selected {% endif %}>合理性
+                                    </option>
+                                {% endif %}
+                                {% if rule_obj.ruleTypeFirst == "结构工艺性" %}
+                                    <option value="加工工艺相关结构"
+                                            {% if rule_obj.ruleTypeSecond == "加工工艺相关结构" %}
+                                            selected {% endif %}>加工工艺相关结构
+                                    </option>
+                                    <option value="辅助加工相关结构"
+                                            {% if rule_obj.ruleTypeSecond == "辅助加工相关结构" %}
+                                            selected {% endif %}>辅助加工相关结构
+                                    </option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    {# 备注 #}
+                    <div class="form-group">
+                        <label for="rule-remark" class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-10">
+                            <textarea type="text" class="form-control" id="rule-remark" placeholder="备注"
+                                      name="rule_remark" rows="2">{{ rule_obj.remark }}</textarea>
+                        </div>
+                    </div>
+                    {# 知识脚本 #}
+                    <div class="form-group">
+                        <label for="rule-scripts" class="col-sm-2 control-label">脚本</label>
+                        <div class="col-sm-10">
+                        <textarea class="form-control" id="rule_scripts" placeholder="通过脚本编辑器生成"
+                                  name="rule_script" rows="8" readonly='readonly'>{{ rule_obj.script }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                {# 图片 #}
+                <div class="form-group" id="rule-Img" style="width:40%; float:right;">
+                    <label for="rule-Img" class="col-sm-2 control-label">示意图</label>
+                    <input type="file" id="oneimg" name="rule_Img_file">
+                    <div style="clear:both;"></div>
+                    {% if rule_obj.img %}
+                        <div style="margin-top: 10px; display: inline-block; clear: both"
+                             id="preview">
+                            <img src="{{ rule_obj.img.url }}" alt="{{ rule_obj.img }}"
+                                 style="width: 100%; height: 100%; object-fit: contain">
+                        </div>
+                    {% else %}
+                        {#                        <p style="color: red">请上传对应图片</p>#}
+                        <div style="margin-top: 10px; display: inline-block; clear: both"
+                             id="preview">
+                            <img style="width: 100%; height: 100%; object-fit: contain">
+                        </div>
+                    {% endif %}
+                </div>
+                <div style="clear: both"></div>
+                <hr/>
+                <h4 style="clear:both; margin-left:15px; font-weight: bold">特征信息:</h4>
+                <div class="form-group" style="width: 50%; float:left;">
+                    {#加工方式#}
+                    <div class="form-group">
+                        <label for="rule-manuType" class="col-sm-2 control-label">加工方式</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" data-live-search="true" name="rule_manuType">
+                                <option value="车" {% if rule_obj.manuType == "车" %} selected {% endif %}>车</option>
+                                <option value="铣" {% if rule_obj.manuType == "铣" %} selected {% endif %}>铣</option>
+                                <option value="刨" {% if rule_obj.manuType == "刨" %} selected {% endif %}>刨</option>
+                                <option value="磨" {% if rule_obj.manuType == "磨" %} selected {% endif %}>磨</option>
+                                <option value="钻" {% if rule_obj.manuType == "钻" %} selected {% endif %}>钻</option>
+                                <option value="扩" {% if rule_obj.manuType == "扩" %} selected {% endif %}>扩</option>
+                                <option value="铰" {% if rule_obj.manuType == "铰" %} selected {% endif %}>铰</option>
+                                <option value="镗" {% if rule_obj.manuType == "镗" %} selected {% endif %}>镗</option>
+                            </select>
+                        </div>
+                    </div>
+                    {#特征大类#}
+                    <div class="form-group">
+                        <label for="rule-featTypeFirst" class="col-sm-2 control-label">特征大类</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="rule-featTypeFirst" data-live-search="true"
+                                    name="rule_featTypeFirst">
+                                <option value="孔" {% if rule_obj.featTypeFirst == "孔" %} selected {% endif %}>孔
+                                </option>
+                                <option value="口框" {% if rule_obj.featTypeFirst == "口框" %} selected {% endif %}>口框
+                                </option>
+                                <option value="槽" {% if rule_obj.featTypeFirst == "槽" %} selected {% endif %}>槽
+                                </option>
+                                <option value="凸台" {% if rule_obj.featTypeFirst == "凸台" %} selected {% endif %}>凸台
+                                </option>
+                                <option value="筋" {% if rule_obj.featTypeFirst == "筋" %} selected {% endif %}>筋
+                                </option>
+                                <option value="加工面" {% if rule_obj.featTypeFirst == "加工面" %} selected {% endif %}>
+                                    加工面
+                                </option>
+                                <option value="轮廓" {% if rule_obj.featTypeFirst == "轮廓" %} selected {% endif %}>轮廓
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    {#特征小类 #}
+                    <div class="form-group">
+                        <label for="rule-featTypeSecond" class="col-sm-2 control-label">特征小类</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="rule-featTypeSecond" name="rule_featTypeSecond">
+
+                            </select>
+                            <input style="display: none" value="{{ rule_obj.featTypeSecond }}" id="tempFeatTypeSecond">
+                        </div>
+                    </div>
+                    {# 特征属性 #}
+                    <div class="form-group">
+                        <label for="rule-featPro" class="col-sm-2 control-label">特征属性</label>
+                        <div class="col-sm-10">
+                            <textarea type="text" class="form-control" id="rule-featPro" name="rule_featPro"
+                                      placeholder="特征属性" rows="2">{{ rule_obj.featPro }}</textarea>
+                        </div>
+                    </div>
+                    <p style="font-size: 20px; color: red; display: none" id="featPro-copyNote"></p>
+                </div>
+                <div id="rule-featProEdiotr" style="width: 48%; float: right">
+                    <h4 style="clear:both;">特征属性搜索</h4>
+                    <div style="float: left; width:60%">
+                        <input type="text" class="form-control" placeholder="Search for..."
+                               id="featProEditor-input"
+                               style="float: left;" name="featProEditor_input">
+                    </div>
+                    <div style="float: left;width:15%">
+                        <button class="btn btn-info" type="button" id="featProEditor-secrchBtn"
+                                onclick="featProSearch()">搜索
+                        </button>
+                    </div>
+                    <div style="float: right; width:15%">
+                        <button class="btn btn-success" type="button" id="featProEditor-copyBtn"
+                                style="display: none"
+                                onclick="featProCopy()">添加
+                        </button>
+                    </div>
+                    <div style="clear: both"></div>
+                    <div style="height:300px; overflow:scroll;">
+                        <table class="table table-bordered" id="featProEditor-resultTable"
+                               style="height:100%; overflow:scroll; margin-top: 10px;">
+                            <thead>
+                            <tr>
+                                <th>数据项</th>
+                                <th>描述</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody1">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+    {# 脚本编辑器框 #}
+    <div class="panel panel-primary" id="scriptEditor" style="display: none">
+        {# title #}
+        <div class="panel-heading"><h3 class="panel-title">脚本编辑器</h3></div>
+        {# 脚本辅助复合框 #}
+        <div class="panel-body">
+            {# 编辑界面 #}
+            <div style="width:55%;float:left;">
+                {# 按钮 #}
+                <button class="btn btn-success" type="button" data-toggle="tooltip" title="生成脚本代码"
+                        id="genScriptBtn" onclick="genscript()">生成脚本代码
+                </button>
+                <div style="clear: both"></div>
+                {# if then #}
+                <div class="form-group" style="margin-top: 10px">
+                    <label for="rule_script_if_1" class="col-sm-2 control-label">If前提</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="rule_script_if_1" placeholder="If前提"
+                               name="rule_script_if_1">
+                    </div>
+                    <label for="rule_script_then_1" class="col-sm-2 control-label">Then结论</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="rule_script_then_1" placeholder="Then结论"
+                               name="rule_script_then_1">
+                    </div>
+                </div>
+                {# 新增if then #}
+                <div class="form-group">
+                    <button class="btn btn-info" type="button" data-toggle="tooltip" title="新增"
+                            id="addCenterIpGrpBtn"
+                            onclick="addCenterIpGrp(this)" style=""><span
+                            class="glyphicon glyphicon-plus"></span>新增If-Then
+                    </button>
+                </div>
+                <p style="font-size: 20px; color: red; display: none" id="scriptSupporter-copyNote">已复制到剪切板！</p>
+            </div>
+            {# 辅助界面 #}
+            <div style="width:45%; float:right;">
+                <h4>关键词搜索</h4>
+                {# 类型搜索 #}
+                <div style="float: left;width:25%">
+                    <select class="form-control" name="scriptSupporter_typeChoice" id="scriptSupporter-typeChoice"
+                            style="float: left;">
+                        <option value="数据字典" selected>数据字典</option>
+                        <option value="规则参数">规则参数</option>
+                        <option value="查表函数">查表函数</option>
+                        <option value="脚本函数">脚本函数</option>
+                    </select>
+                </div>
+                <div style="float: left; width:60%">
+                    <input type="text" class="form-control" placeholder="Search for..." id="scriptSupporter-input"
+                           style="float: left;" name="scriptSupporter_input">
+                </div>
+                <div style="float: left;width:15%">
+                    <button class="btn btn-info" type="button" id="scriptSupporter-secrchBtn"
+                            onclick="scriptSupporterSearch()">搜索
+                    </button>
+                </div>
+                <div style="clear: both"></div>
+                <div style="height:300px; overflow:scroll;">
+                    <table class="table table-bordered" id="scriptSupporter-resultTable"
+                           style="height:100%; overflow:scroll; margin-top: 10px;">
+                        <thead>
+                        <tr>
+                            <th style="width: 50%">参数</th>
+                            <th>描述</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody">
+
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-success" type="button" id="scriptSupporter-copyBtn" style="display: none"
+                        onclick="scriptSupporterCopy()">复制
+                </button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var rowCount = 1;//(资源)行数默认1行
+        var para1 = "数据项";//特征属性搜索框的选择结果
+        var para = "参数"; //脚本编辑器关键词搜索框的选择结果
+        const preview = document.getElementById('preview');
+
+        var resultTableRows = document.getElementsByTagName('tr')
+
+        //初始化时加载特征小类
+        window.onload = function () {
+            var featTypeTemp = document.getElementById('rule-featTypeFirst').value;
+            $.post("/search_feature_second/", {
+                    "feature": featTypeTemp,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                }, //post函数到后端
+                function (result, status) { //回调函数
+                    var htmlstr = "";
+                    for (var i = 0; i < result.length; i++) {
+                        htmlstr += "<option value = " + result[i]["fields"]["classSecond"];
+                        //alert(document.getElementById("tempFeatTypeSecond").value)
+                        if (result[i]["fields"]["classSecond"] == document.getElementById("tempFeatTypeSecond").value) {
+                            htmlstr += " selected";
+                        }
+                        htmlstr += ">" + result[i]["fields"]["classSecond"] + "</option>";
+                    }
+                    //alert(htmlstr)
+                    document.getElementById("rule-featTypeSecond").innerHTML = htmlstr
+                });
+        }
+        //展开脚本搜索
+        function showScriptEditor(){
+            document.getElementById("scriptEditor").style.display = "block";
+        }
+        //图片提示
+        const uploadInput = document.getElementById('oneimg');
+        uploadInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.addEventListener('load', function () {
+                    preview.innerHTML = `<img src="${reader.result}" alt="预览图" style="width: 100%; height: 100%; object-fit: contain">`;
+                });
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '暂无预览';
+            }
+        });
+
+        //展示规则小类
+        const ruleTypeInput = document.getElementById('rule-ruleTypeFirst');
+        ruleTypeInput.addEventListener('change', function (event) {
+            var ruleType = ruleTypeInput.value;
+            var htmlStr = '';
+            if (ruleType == '制造能力') {
+                htmlStr += "<option value = \"零件材料\">零件材料</option>";
+                htmlStr += "<option value = \"精度\">精度</option>";
+                htmlStr += "<option value = \"尺寸加工能力\">尺寸加工能力</option>";
+
+            }
+            if (ruleType == '空间位置') {
+                htmlStr += "<option value = \"可达性\">可达性</option>";
+                htmlStr += "<option value = \"合理性\">合理性</option>";
+            }
+            if (ruleType == '结构工艺性') {
+                htmlStr += "<option value = \"加工工艺相关结构\">加工工艺相关结构</option>";
+                htmlStr += "<option value = \"辅助加工相关结构\">辅助加工相关结构</option>";
+            }
+
+            document.getElementById("rule-ruleTypeSecond").innerHTML = htmlStr;
+        })
+
+        //展示特征小类
+        const featTypeInput = document.getElementById('rule-featTypeFirst');
+        featTypeInput.addEventListener('click', function (event) {
+            var featType = featTypeInput.value;
+
+            $.post("/search_feature_second/", {
+                    "feature": featType,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                }, //post函数到后端
+                function (result, status) { //回调函数
+                    var htmlstr = "";
+                    for (var i = 0; i < result.length; i++) {
+                        htmlstr += "<option value = " + result[i]["fields"]["classSecond"] + ">" + result[i]["fields"]["classSecond"] + "</option>";
+                    }
+                    document.getElementById("rule-featTypeSecond").innerHTML = htmlstr
+                });
+        })
+
+        //特征属性搜索结果
+        function featProSearch() {
+            {#alert(rowCount);#}
+            var content = $("#featProEditor-input").val();
+
+            $.post("/data_Dictionary_search/", {
+                    "content": content,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                }, //post函数到后端
+                function (result, status) { //回调函数
+                    var htmlstr = "";
+
+                    for (var i = 0; i < result.length; i++) {
+
+                        htmlstr += "<tr>";
+                        htmlstr += "<td>" + result[i]["fields"]["item"] + "</td>";
+                        htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                        htmlstr += "</tr>";
+                    }
+                    document.getElementById("tbody1").innerHTML = htmlstr
+                    var resultTableRows = document.getElementById("tbody1").getElementsByTagName("tr")
+                    for (var i = 0; i < resultTableRows.length; i++) {
+                        resultTableRows[i].addEventListener("click", function () {
+                            //先全部清空
+                            for (var j = 0; j < resultTableRows.length; j++) {
+                                resultTableRows[j].style.background = 'white'
+                            }
+                            document.getElementById("featProEditor-copyBtn").style.display = 'none'
+                            para1 = this.firstElementChild.innerHTML
+                            if (para1 != "数据项") {
+                                //高亮
+                                this.style.background = 'yellow'
+                                document.getElementById("featProEditor-copyBtn").style.display = 'inline-block'
+                            }
+                        })
+                    }
+                });
+        }
+
+        //复制para1(特征属性选择结果)到选择框中
+        function featProCopy() {
+            var inputParaTemp = $("#rule-featPro").val();
+            if (para1 != "数据项") {
+                if (inputParaTemp == "") {
+                    inputParaTemp += para1;
+                } else {
+                    inputParaTemp += "," + para1;
+                }
+
+                document.getElementById("rule-featPro").value = inputParaTemp;
+                document.getElementById("featPro-copyNote").style.display = 'inline-block';
+                document.getElementById("featPro-copyNote").innerHTML = "添加成功！"
+                t = setTimeout('copyNoteDisappear1()', 3000);
+            }
+        }
+
+        //属性搜索的copyNote消失
+        function copyNoteDisappear1() {
+            document.getElementById("featPro-copyNote").style.display = 'none'
+            document.getElementById("featProEditor-copyBtn").style.display = 'none'
+        }
+
+        //添加脚本编辑器的if then
+        function addCenterIpGrp(obj) {
+            rowCount++;
+            //alert(rowCount);
+            html =
+                '<div style="clear: both;"></div>' +
+                '<div class="form-group" style="margin-top:10px;">' +
+                '<label for="rule-script" class="col-sm-2 control-label">If前提</label>' +
+                '<div class="col-sm-10">' +
+                '<input class="form-control" id="rule_script_if_' + rowCount +
+                '" placeholder="If前提" name="rule_script_if_' + rowCount + '" ></div>' +
+                '<label for="rule-script" class="col-sm-2 control-label">Then结论</label>' +
+                '<div class="col-sm-10">' +
+                '<input class="form-control" id="rule_script_then_' + rowCount +
+                '" placeholder="Then结论" name="rule_script_if_' + rowCount + '" >' +
+                '<button class="btn btn-danger" type="button" data-toggle="tooltip" title="删除" id="delCenterIpGrp"><span class="glyphicon glyphicon-minus"></span>删除行</button>' +
+                '</div>' +
+                '</div>'
+            obj.insertAdjacentHTML('beforebegin', html)
+
+            $(document).on('click', '#delCenterIpGrp', function () {
+
+                var el = this.parentNode.parentNode;
+                el.parentNode.removeChild(el)
+            })
+        }
+
+        //生成脚本
+        function genscript() {
+            var scripts = ""
+            //var ruleArray = new Array();
+            for (var i = 1; i <= rowCount; i++) {
+                if (document.getElementById('rule_script_if_' + i) != null) {
+                    var script_if = document.getElementById('rule_script_if_' + i).value;
+                    var script_then = document.getElementById('rule_script_then_' + i).value;
+                    scripts += "if(" + script_if + "){\n    " + script_then + "}" + "\n"
+                }
+            }
+            var obj = document.getElementById('rule_scripts');
+            obj.value = scripts;
+
+            alert("脚本生成成功！")
+            //document.getElementById("scriptEditor").style.display = "none";
+
+        }
+
+        //脚本编辑器的关键词搜索
+        function scriptSupporterSearch() {
+            {#alert(rowCount);#}
+            var searchType = $("#scriptSupporter-typeChoice").val(); //搜索类型
+            var searchContent = $("#scriptSupporter-input").val(); //搜索内容
+
+            $.post("/search_script_supporter/", {
+                    "searchType": searchType,
+                    "searchContent": searchContent,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                }, //post函数到后端
+                function (result, status) { //回调函数
+                    var htmlstr = "";
+                    if (searchType == "数据字典") {
+                        for (var i = 0; i < result.length; i++) {
+                            htmlstr += "<tr>";
+                            htmlstr += "<td>" + result[i]["fields"]["item"] + "</td>";
+                            htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                            htmlstr += "</tr>";
+                        }
+                    }
+                    if (searchType == "规则参数") {
+                        for (var i = 0; i < result.length; i++) {
+                            htmlstr += "<tr>";
+                            htmlstr += "<td>" + result[i]["fields"]["name"] + "</td>";
+                            htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                            htmlstr += "</tr>";
+                        }
+                    }
+                    if (searchType == "查表函数") {
+                        for (var i = 0; i < result.length; i++) {
+                            htmlstr += "<tr>";
+                            htmlstr += "<td>" + result[i]["fields"]["functionName"] + "</td>";
+                            htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                            htmlstr += "</tr>";
+                        }
+                    }
+                    if (searchType == "脚本函数") {
+                        for (var i = 0; i < result.length; i++) {
+                            htmlstr += "<tr>";
+                            htmlstr += "<td>" + result[i]["fields"]["formula"] + "</td>";
+                            htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                            htmlstr += "</tr>";
+                        }
+                    }
+
+
+                    document.getElementById("tbody").innerHTML = htmlstr
+                    var resultTableRows = document.getElementsByTagName('tr')
+                    for (var i = 0; i < resultTableRows.length; i++) {
+                        resultTableRows[i].addEventListener("click", function () {
+                            //先全部清空
+                            for (var j = 0; j < resultTableRows.length; j++) {
+                                resultTableRows[j].style.background = 'white'
+                            }
+                            document.getElementById("scriptSupporter-copyBtn").style.display = 'none'
+                            para = this.firstElementChild.innerText
+                            if (para != "参数") {
+                                //高亮
+                                this.style.background = 'yellow'
+                                document.getElementById("scriptSupporter-copyBtn").style.display = 'inline-block'
+                            }
+                        })
+                    }
+                });
+        }
+
+        //复制关键词搜索内容到剪切板
+        function scriptSupporterCopy() {
+            navigator.clipboard.writeText(para)
+            document.getElementById("scriptSupporter-copyNote").style.display = 'inline-block'
+            t = setTimeout('copyNoteDisappear2()', 3000)
+        }
+
+        //关键词搜索的copyNote消失
+        function copyNoteDisappear2() {
+            document.getElementById("scriptSupporter-copyBtn").style.display = 'none'
+            document.getElementById("scriptSupporter-copyNote").style.display = 'none'
+        }
+    </script>
+{% endblock main %}
+
+{% block ManuCapRule_list %}
+    active
+{% endblock ManuCapRule_list %}

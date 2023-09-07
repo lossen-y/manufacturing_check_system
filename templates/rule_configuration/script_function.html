@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    规则配置|脚本函数
+{% endblock title %}
+
+{% block main %}
+    <h2 class="page-header" style="border-bottom: none">规则配置|脚本函数</h2>
+    <div id="myTabContent" class="tab-content">
+        {# 总表 #}
+        <div class="panel panel-primary" style="height: 100%; width: 60%; float:left;">
+            <!-- Default panel contents -->
+            <div class="panel-heading">脚本函数列表<i class="fa fa-thumb-tack pull-right"></i></div>
+            <div class="panel-body">
+                <div class="row" style="margin-bottom: 15px">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for..." id="searchInput">
+                            <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="secrch-Btn"
+                                            onclick="search()">搜索</button>
+                                </span>
+                            <a href="{% url 'script_function' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-refresh fa-fw"></i>刷新</a>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-md-4 -->
+                    <div class="col-md-3 pull-right">
+                        <a href="{% url 'add_scriptFunction' %}" class="btn btn-success pull-right"><i
+                                class="fa fa-plus fa-fw"></i>添加</a>
+                        <a class="btn btn-info pull-right" onclick="edit()"><i class="fa fa-pencil fa-fw"></i>修改</a>
+                        <a class="btn btn-danger pull-right" onclick="deletes()"><i class="fa fa-trash-o fa-fw"></i>删除</a>
+                    </div>
+
+
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th style="display: none">编号</th>
+                        <th>函数名</th>
+                        <th>描述</th>
+                        <th>函数表达式</th>
+                        <th style="display: none">形参</th>
+                        <th style="display: none">返回值</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for scriptFunction in ScriptFunction_list %}
+                        <tr>
+                            <td style="display: none">{{ scriptFunction.id }}</td>
+                            <td>{{ scriptFunction.functionName }}</td>
+                            <td>{{ scriptFunction.remark }}</td>
+                            <td>{{ scriptFunction.formula }}</td>
+                            <td style="display: none">{{ scriptFunction.inputPara }}</td>
+                            <td style="display: none">{{ scriptFunction.outputPara }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {# 编辑器 #}
+        <div class="panel panel-primary" style="width: 39%; float: right">
+            <div class="panel-heading">具体信息<i class="fa fa-thumb-tack pull-right"></i></div>
+            <div class="panel-body">
+                <form class="form-horizontal" enctype="multipart/form-data"
+                      method="post">
+                    {# 函数名 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-name" class="col-sm-2 control-label">函数名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="scriptFunction-name" readonly="readonly"
+                                   name="scriptFunction_name">
+                        </div>
+                    </div>
+
+                    {# 描述 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-remark" class="col-sm-2 control-label">描述</label>
+                        <div class="col-sm-10">
+                            <textarea type="text" class="form-control" id="scriptFunction-remark" readonly="readonly"
+                                      name="scriptFunction_remark" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <hr/>
+                    {# 函数 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-formula" class="col-sm-2 control-label">表达式</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="scriptFunction-formula" readonly="readonly"
+                                   name="scriptFunction_formula">
+                        </div>
+                    </div>
+
+                    {# 输入参数 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-inputPara" class="col-sm-2 control-label">形参</label>
+                        <div class="col-sm-10">
+                            <textarea type="text" class="form-control" id="scriptFunction-inputPara" readonly="readonly"
+                                      name="scriptFunction_inputPara" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    {# 返回类型 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-outputPara" class="col-sm-2 control-label">返回值</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="scriptFunction-outputPara" readonly="readonly"
+                                   name="scriptFunction_outputPara">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        var chosenId = -1
+        var rows = document.getElementsByTagName("tr")
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function () {
+                //先全部清空
+                for (var j = 0; j < rows.length; j++) {
+                    rows[j].style.background = 'white'
+                }
+                chosenId = this.firstElementChild.innerHTML
+                if (chosenId != "编号") {
+                    //高亮
+                    this.style.background = 'yellow'
+
+                    document.getElementById("scriptFunction-name").value = this.cells[1].innerText
+                    document.getElementById("scriptFunction-remark").value = this.cells[2].innerText
+                    document.getElementById("scriptFunction-formula").value = this.cells[3].innerText
+                    document.getElementById("scriptFunction-inputPara").value = this.cells[4].innerText
+                    document.getElementById("scriptFunction-outputPara").value = this.cells[5].innerText
+                }
+            })
+        }
+
+        function edit() {
+            if (chosenId != -1) {
+                location.href = '/edit_scriptFunction?id=' + chosenId
+            }
+        }
+
+        function deletes() {
+            if (chosenId != -1) {
+                location.href = '/delete_scriptFunction?id=' + chosenId
+            }
+        }
+
+        function search() {
+            var searchContent = document.getElementById("searchInput").value;
+            location.href = "/scriptFunction/script_function?content=" + searchContent
+        }
+    </script>
+{% endblock main %}

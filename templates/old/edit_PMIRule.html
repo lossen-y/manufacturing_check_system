@@ -1,0 +1,395 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    管理系统|编辑PMI标注审查规则
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">PMI审查规则管理页面</h1>
+    {# PMI审查规则框 #}
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑PMI审查规则</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url 'edit_PMIRule' PMIRule.id %}" enctype="multipart/form-data"
+                  method="post">
+                <div class="form-group" style="text-align:left; margin-left: 0">
+                    <div style="clear:both;">
+                        <button type="button" class="btn btn-info " onclick="showScriptEditor()">脚本修改</button>
+
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                <div id="PMIRule-basicInfo" style="width:60%;float:left;">
+                    {# 规则名称 #}
+                    <div class="form-group">
+                        <label for="PMIRule_name" class="col-sm-2 control-label">规则名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="PMIRule_name" name="PMIRule_name"
+                                   placeholder="规则名称" value="{{ PMIRule.name }}">
+                        </div>
+                    </div>
+                    {# 规则类型 #}
+                    <div class="form-group">
+                        <label for="PMIRule-ruleType" class="col-sm-2 control-label">规则类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" data-live-search="true" name="PMIRule_ruleType">
+                                <option value="审查"
+                                        {% if "审查" == PMIRule.ruleType %} selected {% endif %} > 审查
+                                </option>
+                                <option value="建议"
+                                        {% if "建议" == PMIRule.ruleType %} selected {% endif %} > 建议
+                                </option>
+                                <option value="询问"
+                                        {% if "询问" == PMIRule.ruleType %} selected {% endif %} > 询问
+                                </option>
+                                >询问</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    {# 标注类型 #}
+                    <div class="form-group">
+                        <label for="PMIRule-annoType" class="col-sm-2 control-label">标注类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="PMIRule_annoType">
+                                <option value="尺寸公差"{% if "尺寸公差" == PMIRule.annoType %}
+                                        selected {% endif %} >尺寸公差
+                                </option>
+                                <option value="直线度"{% if "直线度" == PMIRule.annoType %}
+                                        selected {% endif %}>直线度
+                                </option>
+                                <option value="平面度"{% if "平面度" == PMIRule.annoType %}
+                                        selected {% endif %}>平面度
+                                </option>
+                                <option value="圆度"{% if "圆度" == PMIRule.annoType %}
+                                        selected {% endif %}>圆度
+                                </option>
+                                <option value="圆柱度"{% if "圆柱度" == PMIRule.annoType %}
+                                        selected {% endif %}>圆柱度
+                                </option>
+                                <option value="线轮廓度"{% if "线轮廓度" == PMIRule.annoType %}
+                                        selected {% endif %}>线轮廓度
+                                </option>
+                                <option value="面轮廓度"{% if "面轮廓度" == PMIRule.annoType %}
+                                        selected {% endif %}>面轮廓度
+                                </option>
+                                <option value="垂直度"{% if "垂直度" == PMIRule.annoType %}
+                                        selected {% endif %}>垂直度
+                                </option>
+                                <option value="平行度"{% if "平行度" == PMIRule.annoType %}
+                                        selected {% endif %}>平行度
+                                </option>
+                                <option value="对称度"{% if "对称度" == PMIRule.annoType %}
+                                        selected {% endif %}>对称度
+                                </option>
+                                <option value="位置度"{% if "位置度" == PMIRule.annoType %}
+                                        selected {% endif %}>位置度
+                                </option>
+                                <option value="同轴度"{% if "同轴度" == PMIRule.annoType %}
+                                        selected {% endif %}>同轴度
+                                </option>
+                                <option value="圆跳动"{% if "圆跳动" == PMIRule.annoType %}
+                                        selected {% endif %}>圆跳动
+                                </option>
+                                <option value="全跳动"{% if "全跳动" == PMIRule.annoType %}
+                                        selected {% endif %}>全跳动
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    {# 知识描述 #}
+                    <div class="form-group">
+                        <label for="PMIRule-content" class="col-sm-2 control-label">知识描述</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="PMIRule-content" placeholder="知识描述" rows="2"
+                                   name="PMIRule_content" value="{{ PMIRule.content }}">
+                        </div>
+                    </div>
+                    {# 知识脚本 #}
+                    <div class="form-group">
+                        <label for="PMIRule-scripts" class="col-sm-2 control-label">脚本</label>
+                        <div class="col-sm-10">
+                        <textarea class="form-control" id="PMIRule_scripts" placeholder="脚本"
+                                  name="PMIRule_script" rows="10" readonly='readonly'>{{ PMIRule.script }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="PMIRule-Img" style="width:40%; float:right;">
+                    {# 图片 #}
+                    <label for="PMIRule-Img" class="col-sm-2 control-label">示意图</label>
+                    <input type="file" id="oneimg" name="PMIRule_Img_file">
+                    <div style="clear:both;"></div>
+                    {% if PMIRule.PMIImg %}
+                        <div style="margin-top: 10px; display: inline-block; clear: both"
+                             id="preview">
+                            <img src="{{ PMIRule.PMIImg.url }}" alt="{{ PMIRule.PMIImg }}"
+                                 style="width: 100%; height: 100%; object-fit: contain">
+                        </div>
+                    {% else %}
+                        {#                        <p style="color: red">请上传对应图片</p>#}
+                        <div style="margin-top: 10px; display: inline-block; clear: both"
+                             id="preview">
+                            <img style="width: 100%; height: 100%; object-fit: contain">
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+    {# 脚本编辑器框 #}
+    <div class="panel panel-primary" style="display: none" id="scriptEditor">
+        {# title #}
+        <div class="panel-heading"><h3 class="panel-title">脚本编辑器</h3></div>
+        {# 脚本辅助复合框 #}
+        <div class="panel-body">
+            {# 编辑界面 #}
+            <div style="width:55%;float:left;">
+                {# 按钮 #}
+                <button class="btn btn-success" type="button" data-toggle="tooltip" title="生成脚本代码"
+                        id="genScriptBtn" onclick="genscript()">生成脚本代码
+                </button>
+                <div style="clear: both"></div>
+                {# if then #}
+                <div class="form-group" style="margin-top: 10px">
+                    <label for="PMIRule_script_if_1" class="col-sm-2 control-label">If前提</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="PMIRule_script_if_1" placeholder="If前提"
+                               name="PMIRule_script_if_1">
+                    </div>
+                    <label for="PMIRule_script_then_1" class="col-sm-2 control-label">Then结论</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="PMIRule_script_then_1" placeholder="Then结论"
+                               name="PMIRule_script_then_1">
+                    </div>
+                </div>
+                {# 新增if then #}
+                <div class="form-group">
+                    <button class="btn btn-info" type="button" data-toggle="tooltip" title="新增"
+                            id="addCenterIpGrpBtn"
+                            onclick="addCenterIpGrp(this)" style=""><span
+                            class="glyphicon glyphicon-plus"></span>新增If-Then
+                    </button>
+                </div>
+                <p style="font-size: 20px; color: red; display: none" id="scriptSupporter-copyNote">已复制！</p>
+            </div>
+            {# 辅助界面 #}
+            <div style="width:45%; float:right;">
+                <h4>关键词搜索</h4>
+                {# 类型搜索 #}
+                <div style="float: left;width:25%">
+                    <select class="form-control" name="scriptSupporter_typeChoice" id="scriptSupporter-typeChoice"
+                            style="float: left;">
+                        <option value="数据字典" selected>数据字典</option>
+                        <option value="规则参数">规则参数</option>
+                        <option value="查表函数">查表函数</option>
+                        <option value="脚本函数">脚本函数</option>
+                    </select>
+                </div>
+                <div style="float: left; width:60%">
+                    <input type="text" class="form-control" placeholder="Search for..." id="scriptSupporter-input"
+                           style="float: left;" name="scriptSupporter_input">
+                </div>
+                <div style="float: left;width:15%">
+                    <button class="btn btn-info" type="button" id="scriptSupporter-secrchBtn"
+                            onclick="scriptSupporterSearch()">搜索
+                    </button>
+                </div>
+                <div style="clear: both"></div>
+                <div style="height:300px; overflow:scroll;">
+                    <table class="table table-bordered" id="scriptSupporter-resultTable"
+                           style="height:100%; overflow:scroll; margin-top: 10px;">
+                        <thead>
+                        <tr>
+                            <th style="width: 50%">参数</th>
+                            <th>描述</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody">
+
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-success" type="button" id="scriptSupporter-copyBtn" style="display: none"
+                        onclick="scriptSupporterCopy()">复制
+                </button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var rowCount = 1;//(资源)行数默认1行
+        var para = "0";
+        //添加脚本输入框项
+        const uploadInput = document.getElementById('oneimg');
+        const preview = document.getElementById('preview');
+        var resultTableRows = document.getElementsByTagName('tr')
+        //图片提示
+        uploadInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.addEventListener('load', function () {
+                    preview.innerHTML = `<img src="${reader.result}" alt="预览图" style="width: 100%; height: 100%; object-fit: contain">`;
+                });
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '暂无预览';
+            }
+        });
+        //高亮并将结果存储到para里头
+        for (var i = 0; i < resultTableRows.length; i++) {
+            resultTableRows[i].addEventListener("click", function () {
+                //先全部清空
+                for (var j = 0; j < resultTableRows.length; j++) {
+                    resultTableRows[j].style.background = 'white'
+                }
+                document.getElementById("scriptSupporter-copyBtn").style.display = 'none'
+                para = this.firstElementChild.innerHTML
+                if (para != "参数") {
+                    //高亮
+                    this.style.background = 'yellow'
+                    document.getElementById("scriptSupporter-copyBtn").style.display = 'inline-block'
+                }
+            })
+        }
+
+        //添加if then
+        function addCenterIpGrp(obj) {
+            rowCount++;
+            //alert(rowCount);
+            html =
+                '<div style="clear: both;"></div>' +
+                '<div class="form-group" style="margin-top:10px;">' +
+                '<label for="PMIRule-script" class="col-sm-2 control-label">If前提</label>' +
+                '<div class="col-sm-10">' +
+                '<input class="form-control" id="PMIRule_script_if_' + rowCount +
+                '" placeholder="If前提" name="PMIRule_script_if_' + rowCount + '" ></div>' +
+                '<label for="PMIRule-script" class="col-sm-2 control-label">Then结论</label>' +
+                '<div class="col-sm-10">' +
+                '<input class="form-control" id="PMIRule_script_then_' + rowCount +
+                '" placeholder="Then结论" name="PMIRule_script_if_' + rowCount + '" >' +
+                '<button class="btn btn-danger" type="button" data-toggle="tooltip" title="删除" id="delCenterIpGrp"><span class="glyphicon glyphicon-minus"></span>删除行</button>' +
+                '</div>' +
+                '</div>'
+            obj.insertAdjacentHTML('beforebegin', html)
+
+            $(document).on('click', '#delCenterIpGrp', function () {
+
+                var el = this.parentNode.parentNode;
+                el.parentNode.removeChild(el)
+            })
+        }
+
+        //生成脚本
+        function genscript() {
+            var scripts = ""
+            //var ruleArray = new Array();
+            for (var i = 1; i <= rowCount; i++) {
+                if (document.getElementById('PMIRule_script_if_' + i) != null) {
+                    var script_if = document.getElementById('PMIRule_script_if_' + i).value;
+                    var script_then = document.getElementById('PMIRule_script_then_' + i).value;
+                    scripts += "if(" + script_if + "){\n    " + script_then + "}" + "\n"
+                }
+            }
+            var obj = document.getElementById('PMIRule_scripts');
+            obj.value = scripts;
+
+            alert("脚本生成成功！")
+            document.getElementById("scriptEditor").style.display = "none";
+
+        }
+
+        //复制para的内容到剪切板
+        function scriptSupporterCopy() {
+            navigator.clipboard.writeText(para)
+            document.getElementById("scriptSupporter-copyNote").style.display = 'inline-block'
+            t = setTimeout('copyNoteDisappear()', 3000)
+        }
+
+        //copyNote消失
+        function copyNoteDisappear() {
+            document.getElementById("scriptSupporter-copyNote").style.display = 'none'
+            document.getElementById("scriptSupporter-copyBtn").style.display = 'none'
+        }
+
+        //关键词搜索
+        function scriptSupporterSearch() {
+            {#alert(rowCount);#}
+            var searchType = $("#scriptSupporter-typeChoice").val(); //搜索类型
+            var searchContent = $("#scriptSupporter-input").val(); //搜索内容
+
+            $.post("/search_script_supporter/", {
+                    "searchType": searchType,
+                    "searchContent": searchContent,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                }, //post函数到后端
+                function (result, status) { //回调函数
+                    var htmlstr = "";
+                    if (searchType == "数据字典") {
+                        for (var i = 0; i < result.length; i++) {
+                            htmlstr += "<tr>";
+                            htmlstr += "<td>" + result[i]["fields"]["item"]+ "</td>";
+                            htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                            htmlstr += "</tr>";
+                        }
+                    }
+                    if (searchType == "规则参数") {
+                        for (var i = 0; i < result.length; i++) {
+                            htmlstr += "<tr>";
+                            htmlstr += "<td>" + result[i]["fields"]["name"] + "</td>";
+                            htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                            htmlstr += "</tr>";
+                        }
+                    }
+                    if (searchType == "查表函数") {
+                        for (var i = 0; i < result.length; i++) {
+                            htmlstr += "<tr>";
+                            htmlstr += "<td>" + result[i]["fields"]["functionName"] + "</td>";
+                            htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                            htmlstr += "</tr>";
+                        }
+                    }
+                    if (searchType == "脚本函数") {
+                        for (var i = 0; i < result.length; i++) {
+                            htmlstr += "<tr>";
+                            htmlstr += "<td>" + result[i]["fields"]["formula"]+ "</td>";
+                            htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                            htmlstr += "</tr>";
+                        }
+                    }
+
+
+                    document.getElementById("tbody").innerHTML = htmlstr
+                    var resultTableRows = document.getElementsByTagName('tr')
+                    for (var i = 0; i < resultTableRows.length; i++) {
+                        resultTableRows[i].addEventListener("click", function () {
+                            //先全部清空
+                            for (var j = 0; j < resultTableRows.length; j++) {
+                                resultTableRows[j].style.background = 'white'
+                            }
+                            document.getElementById("scriptSupporter-copyBtn").style.display = 'none'
+                            para = this.firstElementChild.innerText
+                            if (para != "参数") {
+                                //高亮
+                                this.style.background = 'yellow'
+                                document.getElementById("scriptSupporter-copyBtn").style.display = 'inline-block'
+                            }
+                        })
+                    }
+                });
+        }
+        //展开脚本搜索
+        function showScriptEditor(){
+            document.getElementById("scriptEditor").style.display = "block";
+        }
+    </script>
+{% endblock main %}
+
+{% block ManuCapRule_list %}
+    active
+{% endblock ManuCapRule_list %}

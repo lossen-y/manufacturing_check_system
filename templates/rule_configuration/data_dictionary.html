@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    规则配置|数据字典
+{% endblock title %}
+
+{% block main %}
+    <h2 class="page-header" style="border-bottom: none">规则配置|数据字典</h2>
+    <div id="myTabContent" class="tab-content">
+        {# 总表 #}
+        <div class="panel panel-primary" style="width: 60%; float: left">
+            <!-- Default panel contents -->
+            <div class="panel-heading">数据字典<i class="fa fa-thumb-tack pull-right"></i></div>
+            <div class="panel-body">
+                <div class="row" style="margin-bottom: 15px">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for..." id="searchInput">
+                            <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="secrch-Btn"
+                                            onclick="search()">搜索</button>
+                            </span>
+                            <a href="{% url 'data_dictionary' %}" class="btn btn-success pull-right">刷新</a>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-md-4 -->
+                    <div class="col-md-3 pull-right">
+
+                        <a class="btn btn-danger" onclick="deletes()"><i class="fa fa-trash-o fa-fw"></i>删除</a>
+                    </div>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th style="display: none">编号</th>
+                        <th>数据项</th>
+                        <th>类型</th>
+                        <th>描述</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dataDictionary in DataDictionary_list %}
+                        <tr>
+                            <td style="display: none">{{ dataDictionary.id }}</td>
+                            <td>{{ dataDictionary.item }}</td>
+                            <td>{{ dataDictionary.type }}</td>
+                            <td>{{ dataDictionary.remark }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {# 编辑器 #}
+        <div class="panel panel-primary" style="width: 38%; float: right">
+            <div class="panel-heading">编辑器<i class="fa fa-thumb-tack pull-right"></i></div>
+            <div class="panel-body">
+                <form class="form-horizontal" action="{% url 'change_dataDictionary' %}" enctype="multipart/form-data"
+                      method="post">
+                    {% csrf_token %}
+                    {# 数据项 #}
+                    <div class="form-group">
+                        <label for="dataDictionary-item" class="col-sm-2 control-label">数据项</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="dataDictionary-item" placeholder="数据项"
+                                   name="dataDictionary_item">
+                        </div>
+                    </div>
+
+                    {# 数据类型 #}
+                    <div class="form-group">
+                        <label for="dataDictionary-type" class="col-sm-2 control-label">类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="dataDictionary_type" id="dataDictionary-type">
+                                <option value="特征">特征</option>
+                                <option value="特征属性">特征属性</option>
+                                <option value="专有名词">专有名词</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {# 描述 #}
+                    <div class="form-group">
+                        <label for="dataDictionary-remark" class="col-sm-2 control-label">描述</label>
+                        <div class="col-sm-10">
+                            <textarea type="text" class="form-control" id="dataDictionary-remark" placeholder="描述"
+                                      name="dataDictionary_remark" rows = "5"></textarea>
+                        </div>
+                    </div>
+
+                    {# 按钮 #}
+                    <div class="form-group" style="text-align:left; margin-left: 0">
+                        <div class=" col-sm-10" style="display: inline-block">
+                            <button type="submit" class="btn btn-success">提交</button>
+                            <p style="color: red;">{{ error_msg }}</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        var chosenId = -1
+        var rows = document.getElementsByTagName("tr")
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function () {
+                //先全部清空
+                for (var j = 0; j < rows.length; j++) {
+                    rows[j].style.background = 'white'
+                }
+                chosenId = this.firstElementChild.innerHTML
+                if (chosenId != "编号") {
+                    //高亮
+                    this.style.background = 'yellow'
+
+                    document.getElementById("dataDictionary-item").value = this.cells[1].innerText
+                    document.getElementById("dataDictionary-type").value = this.cells[2].innerText
+                    document.getElementById("dataDictionary-remark").value = this.cells[3].innerText
+                }
+
+            })
+        }
+
+        function deletes() {
+            if (chosenId != -1) {
+                location.href = '/delete_dataDictionary/' + chosenId + '/'
+            }
+        }
+
+        function search() {
+            var searchContent = document.getElementById("searchInput").value;
+            location.href = "/scriptFunction/data_dictionary?content=" + searchContent
+        }
+    </script>
+{% endblock main %}

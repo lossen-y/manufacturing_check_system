@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    可制造性审查知识管理系统
+{% endblock title %}
+{% block main %}
+    <div class="panel ">
+        <div class="panel-heading">
+            <h1 style="Text-align:center">可制造性审查知识搜索</h1>
+            <form class="form-horizontal" action="{% url 'index' %}" method="post">
+
+                <div class="form-group" style="text-align: center;">
+                    <select class="form-control" name="type" style="width: 15%; display: inline-block">
+                        <option value="工艺性审查知识" {% if type == "工艺性审查知识" %} selected {% endif %}>
+                            工艺性审查知识
+                        </option>
+                        <option value="PMI标注审查知识" {% if type == "PMI标注审查知识" %} selected {% endif %}>
+                            PMI标注审查知识
+                        </option>
+                    </select>
+
+                    <input type="text" class="form-control" id="search_content"
+                           name="search_content" style="width: 70%; display: inline-block" value="{{ content }}">
+
+                    <button type="submit" class="btn btn-success">搜索</button>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+        <div style="margin-bottom: -30px">
+            <h3 style="font-weight: bold">搜索结果：</h3>
+        </div>
+        <div class="panel-body">
+            {% if type == '工艺性审查知识' %}
+                {% for obj_item in obj %}
+                    <div style="margin-top:20px;">
+                        <div style="width: 70%; height:150px; float:left;">
+                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}"
+                               style="font-size: 20px">{{ obj_item.name }}</a>
+                            <p>【规则类型】{{ obj_item.ruleTypeFirst }}-{{ obj_item.ruleTypeSecond }}</p>
+                            <p>【特征】{{ obj_item.featTypeFirst }}-{{ obj_item.featTypeSecond }}</p>
+                            <p>【规则描述】{{ obj_item.content }}</p>
+                            <p>【备注】{{ obj_item.remark }}</p>
+                        </div>
+                        <div style="width: 30%; height:150px; float: right;">
+                            {% if obj_item.img %}
+                                <img src="{{ obj_item.img.url }}" alt="{{ obj_item.img }}"
+                                     style="width: 100%; height: 100%; object-fit: contain">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                {% endfor %}
+            {% endif %}
+
+            {% if type == 'PMI标注审查知识' %}
+                {% for obj_item in obj %}
+                    <div style="margin-top:30px;">
+                        <div style="width: 70%; height:150px; float:left;">
+                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}" style="font-size: 20px">{{ obj_item.name }}</a>
+                            <p>【标注类型】{{ obj_item.annoType }}</p>
+                            <p>【规则类型】{{ obj_item.ruleType }}</p>
+                            <p>【描述】{{ obj_item.content }}</p>
+                        </div>
+                        <div style="width: 30%; height:150px; float: right;">
+                            {% if obj_item.PMIImg %}
+                                <img src="{{ obj_item.PMIImg.url }}" alt="{{ obj_item.PMIImg }}"
+                                     style="width: 100%; height: 100%; object-fit: contain">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock main %}
