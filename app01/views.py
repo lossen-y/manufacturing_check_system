@@ -1393,8 +1393,8 @@ def index(request):
         return render(request, 'knowledge_search.html')
     type = request.POST.get('type')
     contents = request.POST.get('search_content')
-    if contents == "":
-        return render(request, 'knowledge_search.html')
+    # if contents == "":
+    #     return render(request, 'knowledge_search.html')
     if type == "工艺性审查知识":
         obj = models.Rule.objects.filter(name__icontains=contents) | \
               models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
