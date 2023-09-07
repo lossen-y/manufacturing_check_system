@@ -1409,7 +1409,8 @@ def index(request):
               models.PMIRule.objects.filter(name__icontains=contents) | \
               models.PMIRule.objects.filter(ruleType__icontains=contents) | \
               models.PMIRule.objects.filter(annoType__icontains=contents)
-    return render(request, 'knowledge_search.html', {'obj': obj, 'type':type, 'content':contents})
+    return render(request, 'knowledge_search.html', {'obj': obj, 'type': type, 'content': contents})
+
 
 def knowledge_detail(request):
     if request.method == 'GET':
@@ -1420,7 +1421,9 @@ def knowledge_detail(request):
             obj = models.Rule.objects.get(id=id)
         else:
             obj = models.PMIRule.objects.get(id=id)
-    return render(request, 'knowledge_detail.html', {'obj':obj, 'type':type, 'content':content})
+    return render(request, 'knowledge_detail.html', {'obj': obj, 'type': type, 'content': content})
+
+
 def PMI_annotation(request):
     if request.method == 'GET':
         if request.GET.get('content') == None:
@@ -1618,6 +1621,56 @@ def standardize(request):
     return render(request, 'standard_knowledge_and_information/standardize.html', {'author_list': all_author})
 
 
+def rule_parameter(request):
+    if request.method == 'GET':
+        if request.GET.get('content') == None:
+            rule_parameter = models.KnowledgeParaTable.objects.all()
+            return render(request, 'rule_configuration/rule_parameter.html', {'RuleParameter_list': rule_parameter})
+        contents = request.GET.get('content')
+        rule_parameter = models.KnowledgeParaTable.objects.filter(name__icontains=contents) | \
+                         models.KnowledgeParaTable.objects.filter(paraType__icontains=contents) | \
+                         models.KnowledgeParaTable.objects.filter(remark__icontains=contents)
+        return render(request, 'rule_configuration/rule_parameter.html', {'RuleParameter_list': rule_parameter})
+
+
+def delete_ruleParameter(request, del_id):
+    models.KnowledgeParaTable.objects.get(id=del_id).delete()
+    return redirect('/scriptFunction/rule_parameter/')
+
+
+def change_ruleParameter(request):
+    error_msg = ''
+    if request.method == 'POST':
+        name = request.POST.get('ruleParameter_name')
+        ruleParameter_obj = models.KnowledgeParaTable.objects.filter(name=name)
+        if ruleParameter_obj.exists():  # 修改
+            ruleParameter_obj = models.KnowledgeParaTable.objects.get(name=name)
+            ruleParameter_obj.paraType = request.POST.get('ruleParameter_paraType')
+            ruleParameter_obj.remark = request.POST.get('ruleParameter_remark')
+            if request.POST.get('ruleParameter_paraType') == '单值':
+                ruleParameter_obj.defaultValue = request.POST.get('ruleParameter_singleValue')
+            else:
+                ruleParameter_obj.defaultValue = '[' + request.POST.get(
+                    'ruleParameter_lowerValue') + ',' + request.POST.get('ruleParameter_upperValue') + ']'
+            ruleParameter_obj.save()
+        else:  # 更新
+            if request.POST.get('ruleParameter_paraType') == '单值':
+                ruleParameter_obj = \
+                    models.KnowledgeParaTable.objects.create(name=name,
+                                                             paraType=request.POST.get('ruleParameter_paraType'),
+                                                             remark=request.POST.get('ruleParameter_remark'),
+                                                             defaultValue=request.POST.get('ruleParameter_singleValue'))
+            else:
+                tempStr = '[' + request.POST.get('ruleParameter_lowerValue') + ',' + request.POST.get(
+                    'ruleParameter_upperValue') + ']'
+                ruleParameter_obj = \
+                    models.KnowledgeParaTable.objects.create(name=name,
+                                                             paraType=request.POST.get('ruleParameter_paraType'),
+                                                             remark=request.POST.get('ruleParameter_remark'),
+                                                             defaultValue=tempStr)
+    return redirect('/scriptFunction/rule_parameter/')
+
+
 def data_dictionary(request):
     if request.method == 'GET':
         if request.GET.get('content') == None:
@@ -1686,10 +1739,7 @@ def search_script_supporter(request):
                   models.DataDictionary.objects.filter(type__icontains=content) | \
                   models.DataDictionary.objects.filter(remark__icontains=content)
     elif type == "规则参数":
-        all_obj = models.KnowledgeParaTable.objects.filter(ruleid__icontains=content) | \
-                  models.KnowledgeParaTable.objects.filter(name__icontains=content) | \
-                  models.KnowledgeParaTable.objects.filter(paraType__icontains=content) | \
-                  models.KnowledgeParaTable.objects.filter(tableFunction__icontains=content) | \
+        all_obj = models.KnowledgeParaTable.objects.filter(name__icontains=content) | \
                   models.KnowledgeParaTable.objects.filter(remark__icontains=content)
     elif type == "查表函数":
         all_obj = models.TableFunction.objects.filter(name__icontains=content) | \

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    可制造性审查知识管理系统
+{% endblock title %}
+{% block main %}
+    <div class="panel">
+        <form class="form-horizontal" id="forms" action="{% url 'index' %}" method="post">
+            <input type="hidden" name="type" value="{{ type }}">
+            <input type="hidden" name="search_content" value="{{ content }}">
+            <input type="hidden" name="s" value="{{ obj }}">
+            <a style="font-size: 20px" onclick="document.getElementById('forms').submit();">返回</a>
+            {% csrf_token %}
+        </form>
+        <div class="panel-body">
+            {% if type == "工艺性审查知识" %}
+                <p style="font-size: 30px">{{ obj.name }}</p>
+                <div style="float:left; width: 50%">
+                    <p style="font-size: 15px">
+                        <b>【规则类型】</b>{{ type }}-{{ obj.ruleTypeFirst }}-{{ obj.ruleTypeSecond }}</p>
+                    <p style="font-size: 15px"><b>【特征】</b>{{ obj.featTypeFirst }}-{{ obj.featTypeSecond }}</p>
+                    <p style="font-size: 15px"><b>【加工方式】</b>{{ obj.manuType }}</p>
+                    <p style=" font-size: 15px"><b>【规则描述】</b></p>
+                    <p>&emsp;&emsp;{{ obj.content }}</p>
+                    <p style=" font-size: 15px"><b>【备注】</b></p>
+                    <p>&emsp;&emsp;{{ obj.remark }}</p>
+                    <p style="font-size: 15px"><b>【脚本】</b></p>
+                    <pre>{{ obj.script }}</pre>
+                </div>
+                <div style="float:right; width: 50%">
+                    <p style=" font-size: 15px"><b>【示意图】</b></p>
+                    {% if obj.img %}
+                        <img src="{{ obj.img.url }}" alt="{{ obj.img }}"
+                             style="width: 100%; object-fit: contain">
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if type == "PMI标注审查知识" %}
+                <p style=" font-size: 30px">{{ obj.name }}</p>
+                <div style="width: 50%; float:left;">
+                    <p style=" font-size: 15px"><b>【规则类型】</b>{{ type }}-{{ obj.ruleType }}</p>
+
+                    <p style=" font-size: 15px"><b>【标注类型】</b>{{ obj.annoType }}</p>
+
+                    <p style=" font-size: 15px"><b>【规则描述】</b></p>
+                    <p>&emsp;&emsp;{{ obj.content }}</p>
+
+                    <p style="font-size: 15px"><b>【脚本】</b></p>
+                    <pre>{{ obj.script }}</pre>
+                </div>
+                <div style="width: 50%; float:right;">
+                <p style=" font-size: 15px"><b>【示意图】</b></p>
+                {% if obj.PMIImg %}
+                    <img src="{{ obj.PMIImg.url }}" alt="{{ obj.PMIImg }}"
+                         style="width:100%; object-fit: contain">
+                {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock main %}

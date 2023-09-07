@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    规则配置|编辑脚本函数
+{% endblock title %}
+
+{% block main %}
+    <h1 class="page-header">脚本函数管理页面</h1>
+    {# 脚本函数框 #}
+    <div class="panel panel-primary">
+        <div class="panel-heading">编辑脚本函数</div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="{% url "add_scriptFunction" %}" enctype="multipart/form-data"
+                  method="post">
+                <div class="form-group" style="text-align:left; margin-left: 0">
+                    <div style="clear:both;">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+                </div>
+                <div id="scriptFunction-basicInfo1" style="width: 50%; float: left">
+                    {# id,不显示 #}
+                    <input type="text" class="form-control" id="scriptFunction_id" name="scriptFunction_id"
+                           style="display: none">
+                    {# 函数名 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-name" class="col-sm-2 control-label">函数名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="scriptFunction-name" name="scriptFunction_name"
+                                   placeholder="函数名">
+                        </div>
+                    </div>
+                    {# 表达式 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-formula" class="col-sm-2 control-label">表达式</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="scriptFunction-formula"
+                                   placeholder="编辑器自动生成"
+                                   name="scriptFunction_formula" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+                <div id="scriptFunction-basicInfo2" style="width: 50%; float: right">
+                    {# 描述 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-remark" class="col-sm-2 control-label">描述</label>
+                        <div class="col-sm-10">
+                        <textarea class="form-control" id="scriptFunction-remark" placeholder="描述"
+                                  name="scriptFunction_remark" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="clear: both"/>
+
+                <div id="scriptFunction-scriptFunctionEdiotr" style="width: 48%; float: left">
+                    <h4 style="clear:both;">函数编辑界面</h4>
+                    <div style="clear: both">
+                        <button type="button" class="btn btn-success " onclick="formulaGenerate()">函数生成
+                        </button>
+                    </div>
+                    {# 函数符号 #}
+                    <div class="form-group" style="clear: both">
+                        <label for="scriptFunction-functionHead" class="col-sm-2 control-label">函数符号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="scriptFunction-functionHead"
+                                   name="scriptFunction_functionHead"
+                                   placeholder="函数符号" >
+                        </div>
+                    </div>
+                    {# 形参 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-inputParaTable" class="col-sm-2 control-label">形参</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="scriptFunction-inputPara"
+                                   name="scriptFunction_inputPara"
+                                   placeholder="函数符号" >
+                        </div>
+                    </div>
+                    {# 返回值 #}
+                    <div class="form-group">
+                        <label for="scriptFunction-outputPara" class="col-sm-2 control-label">返回值</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="scriptFunction-outputPara" data-live-search="true"
+                                    name="scriptFunction_outputPara">
+                                <option value="数值"> 数值 </option>
+                                <option value="bool"> bool </option>
+                                <option value="无返回"> 无返回值 </option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <p style="font-size: 20px; color: red; display: none" id="scriptSupporter-copyNote"></p>
+                </div>
+
+                <div id="scriptFunction-scriptFunctionEdiotr" style="width: 48%; float: right">
+                    <h4 style="clear:both;">形参搜索</h4>
+                    <div style="float: left; width:60%">
+                        <input type="text" class="form-control" placeholder="Search for..."
+                               id="inputParaSupporter-input"
+                               style="float: left;" name="inputParaSupporter_input">
+                    </div>
+                    <div style="float: left;width:15%">
+                        <button class="btn btn-info" type="button" id="inputParaSupporter-secrchBtn"
+                                onclick="inputParaSearch()">搜索
+                        </button>
+                    </div>
+                    <div style="float: right; width:15%">
+                        <button class="btn btn-success" type="button" id="inputParaSupporter-copyBtn"
+                                style="display: none"
+                                onclick="inputParaSupporterCopy()">添加
+                        </button>
+                    </div>
+                    <div style="clear: both"></div>
+                    <div style="height:300px; overflow:scroll;">
+                        <table class="table table-bordered" id="inputParaSupporter-resultTable"
+                               style="height:100%; overflow:scroll; margin-top: 10px;">
+                            <thead>
+                            <tr>
+                                <th>数据项</th>
+                                <th>描述</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+                            {% for dataDictionary in dataDictionary_list %}
+                                <tr>
+                                    <td>{{ dataDictionary.item }}</td>
+                                    <td>{{ dataDictionary.remark }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var para = "数据项";
+
+        //复制para搜索结果到剪切板
+        function inputParaSupporterCopy() {
+            var inputParaTemp = $("#scriptFunction-inputPara").val();
+            if (para != "数据项") {
+                if (document.getElementById("scriptFunction-inputPara").value == ''){
+                    inputParaTemp += para;
+                }else {
+                    inputParaTemp += ","+ para;
+                }
+
+                document.getElementById("scriptFunction-inputPara").value = inputParaTemp;
+                document.getElementById("scriptSupporter-copyNote").style.display = 'inline-block';
+                document.getElementById("scriptSupporter-copyNote").innerHTML = "添加成功！"
+                t = setTimeout('copyNoteDisappear()', 3000);
+            }
+
+
+        }
+
+        //copyNote消失
+        function copyNoteDisappear() {
+            document.getElementById("scriptSupporter-copyNote").style.display = 'none'
+            document.getElementById("inputParaSupporter-copyBtn").style.display = "none"
+        }
+
+        //查询搜索结果
+        function inputParaSearch() {
+            {#alert(rowCount);#}
+            var content = $("#inputParaSupporter-input").val();
+
+            $.post("/data_Dictionary_search/", {
+                    "content": content,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                }, //post函数到后端
+                function (result, status) { //回调函数
+                    var htmlstr = "";
+
+                    for (var i = 0; i < result.length; i++) {
+
+                        htmlstr += "<tr>";
+                        htmlstr += "<td>" + result[i]["fields"]["item"] + "</td>";
+                        htmlstr += "<td>" + result[i]["fields"]["remark"] + "</td>";
+                        htmlstr += "</tr>";
+                    }
+                    document.getElementById("tbody").innerHTML = htmlstr
+                    var resultTableRows = document.getElementsByTagName('tr')
+                    for (var i = 0; i < resultTableRows.length; i++) {
+                        resultTableRows[i].addEventListener("click", function () {
+                            //先全部清空
+                            for (var j = 0; j < resultTableRows.length; j++) {
+                                resultTableRows[j].style.background = 'white'
+                            }
+                            document.getElementById("inputParaSupporter-copyBtn").style.display = 'none'
+                            para = this.firstElementChild.innerHTML
+                            if (para != "数据项") {
+                                //高亮
+                                this.style.background = 'yellow'
+                                document.getElementById("inputParaSupporter-copyBtn").style.display = 'inline-block'
+                            }
+                        })
+                    }
+                });
+        }
+
+        //生成函数
+        function formulaGenerate() {
+            var head = document.getElementById("scriptFunction-functionHead").value;
+            var inputPara = document.getElementById("scriptFunction-inputPara").value;
+            var formula = head + "(" + inputPara + ")";
+            document.getElementById("scriptFunction-formula").value = formula;
+            document.getElementById("scriptSupporter-copyNote").style.display = 'inline-block';
+            document.getElementById("scriptSupporter-copyNote").innerHTML = "函数成功生成！"
+            t = setTimeout('copyNoteDisappear()', 3000);
+        }
+
+    </script>
+{% endblock main %}
+
+{% block ManuCapRule_list %}
+    active
+{% endblock ManuCapRule_list %}

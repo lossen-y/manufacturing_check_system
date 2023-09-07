@@ -299,11 +299,11 @@ class KnowledgeParaTable(models.Model):
     规则参数表
     '''
     id = models.AutoField(primary_key=True)
-    ruleid=models.ForeignKey(to='ManuCapRule',to_field='id',on_delete=models.CASCADE) # 规则id,多对一关系
-    name = models.CharField(max_length=128, null=False, unique=False)  # 参数名
+    #ruleid=models.ForeignKey(to='ManuCapRule',to_field='id',on_delete=models.CASCADE) # 规则id,多对一关系
+    name = models.CharField(max_length=128, null=False, unique=True)  # 参数名
     paraType=models.CharField(max_length=128, null=True, unique=False)  # 参数类型
     defaultValue = models.TextField(null=True, unique=False)  # 默认值
-    tableFunction = models.ForeignKey(to='TableFunction',to_field='name',null=True,on_delete=models.SET_NULL)  # 查表函数，外键多对一关系
+    #tableFunction = models.ForeignKey(to='TableFunction',to_field='name',null=True,on_delete=models.SET_NULL)  # 查表函数，外键多对一关系
     remark = models.TextField(null=True, unique=False)  # 备注
     def __str__(self):
         return self.name
