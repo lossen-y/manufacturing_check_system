@@ -324,14 +324,13 @@ class TableFunction(models.Model):
     def __str__(self):
         return self.name
 
-
 class Feature(models.Model):
     '''
-    特征结构表
+    特征表
     '''
     id = models.AutoField(primary_key=True)
-    classFirst = models.CharField(max_length=128, null=False, unique=False)  # 特征大类
-    classSecond = models.CharField(max_length=128, null=True, unique=False)  # 特征小类
+    classFirst = models.CharField(max_length=128, null=False, unique=False)  # 特征大类，写死，（孔、口框、槽、凸台、筋、加工面、轮廓）
+    classSecond = models.CharField(max_length=128, null=True, unique=True)  # 特征小类
     # classID = models.CharField(max_length=128, null=True, unique=False) #特征编号
     # classDes=models.TextField(null=True, unique=False)   # 特征描述
     paraDef = models.TextField(null=True, unique=False)   # 参数化定义
@@ -341,22 +340,87 @@ class Feature(models.Model):
     def __str__(self):
         return self.classSecond
 
+class FeaturePara(models.Model):
+    '''
+    特征参数化定义表（特征属性表）
+    '''
+    id = models.AutoField(primary_key=True)
+    parameter = models.ForeignKey(to='DataDictionary', to_field='item', on_delete=models.CASCADE)  # 参数(特征属性)
+    value = models.CharField(max_length=128, null=True, unique=False)  # 参数的取值
+    featureID = models.ForeignKey(to='Feature', on_delete=models.CASCADE) #对应的特征编号
+    remark = models.TextField(null=True, unique=False)  # 备注
+
 class Rule(models.Model):
     '''
     审查规则表(总表)
     '''
-    id = models.AutoField(primary_key=True)    # 规则编号
+    id = models.AutoField(primary_key=True) # 规则编号
     name = models.CharField(max_length=128, null=True, unique=True)  # 规则名称
     ruleTypeFirst = models.CharField(max_length=128, null=True, unique=False)  # 规则大类
     ruleTypeSecond = models.CharField(max_length=128, null=True, unique=False)  # 规则小类
-    content = models.TextField(null=True, unique=False)  # 规则特定字段
+    #content = models.TextField(null=True, unique=False)  # 规则特定字段
     manuType = models.CharField(max_length=128, null=True, unique=False)  # 加工方式
     featTypeFirst = models.CharField(max_length=128, null=True, unique=False)  # 特征大类
     featTypeSecond = models.CharField(max_length=128, null=True, unique=False)  # 特征小类
     featPro = models.CharField(max_length=128, null=True, unique=False)  # 特征属性
     content = models.TextField(null=True, unique=False)  # 知识描述
-    imgPath = models.TextField(null=True, unique=False)  # 示意图片路径
+    img=models.FileField(null=True, unique=False)  #规则图片
     script = models.TextField(null=True, unique=False)  # 脚本
     remark = models.TextField(null=True, unique=False)  # 备注
+
+    def __str__(self):
+        return self.name
+
+# class PMI(models.Model):
+#     '''
+#     PMI标注表
+#     '''
+#     id = models.AutoField(primary_key=True)
+#     PMIType = models.CharField(max_length=128, null=False, unique=False)  # 标注类型
+#     paraDef = models.TextField(null=True, unique=False)  # 参数化定义，用json格式表示
+#     remark = models.TextField(null=True, unique=False)  # 备注
+#
+#     def __str__(self):
+#         return self.PMIType
+
+class DataDictionary(models.Model):
+    '''
+    数据字典
+    '''
+    id = models.AutoField(primary_key=True)
+    item = models.CharField(max_length=128, null=False, unique=True)  # 数据字典
+    type = models.CharField(max_length=128, null=False, unique=False)  # 数据字典类型
+    remark = models.TextField(null=True, unique=False)  # 描述
+
+    def __str__(self):
+        return self.item
+
+class ScriptFunction(models.Model):
+    '''
+    脚本函数表
+    '''
+    id = models.AutoField(primary_key=True)
+    functionName = models.CharField(max_length=128, null=True, unique=True)  # 脚本函数名称
+    functionHead = models.CharField(max_length=128, null=True, unique=True)  # 函数头
+    inputPara = models.TextField(null=True, unique=False)   # 输入参数,以逗号的形式隔开
+    outputPara = models.TextField(null=True, unique=False)  # 返回类型
+    formula = models.TextField(null=True, unique=False)  # 函数表达式
+    remark = models.TextField(null=True, unique=False)  # 备注
+
+    def __str__(self):
+        return self.name
+
+class PMIRule(models.Model):
+    '''
+    PMI审查规则表
+    '''
+    id = models.AutoField(primary_key=True)    # 规则编号
+    name = models.CharField(max_length=128, null=True, unique=True)  # 规则名称
+    ruleType = models.CharField(max_length=128, null=True, unique=False)  # 规则类型
+    annoType = models.CharField(max_length=128, null=True, unique=False)  # 规则对应标注的类型
+    script = models.TextField(null=True, unique=False)  # 脚本
+    content = models.TextField(null=True, unique=False)  # 知识描述
+    PMIImg=models.FileField(null=True, unique=False)  #规则图片
+
     def __str__(self):
         return self.name

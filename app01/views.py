@@ -1,14 +1,12 @@
-from django.contrib import auth
-from django.shortcuts import render, redirect, HttpResponse
-from django.views import View
-from django.contrib.auth.models import User
-from app01 import models
-from django.contrib import messages
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
 import json
+
+from django.contrib import auth
+from django.core import serializers
+from django.shortcuts import render, redirect
+from django.views import View
+
+from app01 import models
+
 
 # =========Class Based View==================
 class AddPublisher(View):
@@ -41,13 +39,11 @@ def add_rule_search_Feature_para(request):
     featype = request.POST.get('featype')
     all_Feature_obj = models.Feature.objects.filter(classSecond__icontains=featype).first()
     error_msg = ''
-    json_str=all_Feature_obj.paraDef
-    #JSON解析
-    data=json.loads(json_str)
+    json_str = all_Feature_obj.paraDef
+    # JSON解析
+    data = json.loads(json_str)
     # print(data)
     # for para in data:
-
-
 
     return render(request, 'old/search_Feature.html', {'FeaturePara_list': data})
 
@@ -245,12 +241,15 @@ def search_cutter(request):
     all_cutter_obj = models.Cutter.objects.filter(name__icontains=search).all()
     error_msg = ''
     tab_name = 'tool'
-    return render(request, 'standard_knowledge_and_information/resource.html', {'cutter_list': all_cutter_obj,'tab_name': tab_name})
+    return render(request, 'standard_knowledge_and_information/resource.html',
+                  {'cutter_list': all_cutter_obj, 'tab_name': tab_name})
+
 
 # About fixtures
 def fixture_list(request):
     all_fixture = models.Fixture.objects.all()
     return render(request, 'standard_knowledge_and_information/resource.html', {'fixture_list': all_fixture})
+
 
 def add_fixture(request):
     error_msg = ''
@@ -259,29 +258,31 @@ def add_fixture(request):
         if new_fixture:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_fixture_obj = models.Fixture.objects.create(name=new_fixture,
-                                                          fixtureType=request.POST.get('fixture_fixtureType'),
-                                                          fixtureName=request.POST.get('fixture_fixtureName'),
-                                                          fixtureCode=request.POST.get('fixture_fixtureCode'),
-                                                          geoDim=request.POST.get('fixture_geoDim'),
-                                                          partType=request.POST.get('fixture_partType'),
-                                                          partStruct=request.POST.get('fixture_partStruct'),
-                                                          partMat=request.POST.get('fixture_partMat'),
-                                                          partSize=request.POST.get('fixture_partSize'),
-                                                          InterfaceDim=request.POST.get('fixture_InterfaceDim'),
-                                                          fixtureImg=request.FILES.get('fixture_fixtureImg'),
-                                                          fixtureRemark=request.POST.get('fixture_fixtureRemark'),
-                                                          otherFields=request.POST.get('fixture_otherFields'),
-                                               )
+                                                            fixtureType=request.POST.get('fixture_fixtureType'),
+                                                            fixtureName=request.POST.get('fixture_fixtureName'),
+                                                            fixtureCode=request.POST.get('fixture_fixtureCode'),
+                                                            geoDim=request.POST.get('fixture_geoDim'),
+                                                            partType=request.POST.get('fixture_partType'),
+                                                            partStruct=request.POST.get('fixture_partStruct'),
+                                                            partMat=request.POST.get('fixture_partMat'),
+                                                            partSize=request.POST.get('fixture_partSize'),
+                                                            InterfaceDim=request.POST.get('fixture_InterfaceDim'),
+                                                            fixtureImg=request.FILES.get('fixture_fixtureImg'),
+                                                            fixtureRemark=request.POST.get('fixture_fixtureRemark'),
+                                                            otherFields=request.POST.get('fixture_otherFields'),
+                                                            )
 
             return redirect('/standardKnowNInfo/resource/')
         else:
             error_msg = '工装名称不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_fixture.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_fixture.html', {'error_msg': error_msg})
+
 
 def delete_fixture(request, del_id):
     models.Fixture.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/resource/')
+
 
 def edit_fixture(request, edit_id):
     error_msg = ''
@@ -309,17 +310,21 @@ def edit_fixture(request, edit_id):
     fixture_obj = models.Fixture.objects.get(id=edit_id)
     return render(request, 'old/edit_fixture.html', {'fixture': fixture_obj, 'error_msg': error_msg})
 
+
 def search_fixture(request):
     search = request.GET.get('fixture_search')
     all_fixture_obj = models.Fixture.objects.filter(name__icontains=search).all()
     error_msg = ''
     tab_name = 'fixture'
-    return render(request, 'standard_knowledge_and_information/resource.html', {'fixture_list': all_fixture_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/resource.html',
+                  {'fixture_list': all_fixture_obj, "tab_name": tab_name})
+
 
 # Mach
 def mach_list(request):
     all_mach = models.Mach.objects.all()
     return render(request, 'standard_knowledge_and_information/resource.html', {'mach_list': all_mach})
+
 
 def add_mach(request):
     error_msg = ''
@@ -341,7 +346,8 @@ def add_mach(request):
                                                       PrecisionA=request.POST.get('mach_PrecisionA'),
                                                       PrecisionB=request.POST.get('mach_PrecisionB'),
                                                       PrecisionC=request.POST.get('mach_PrecisionC'),
-                                                      worktableSize_length=request.POST.get('mach_worktableSize_length'),
+                                                      worktableSize_length=request.POST.get(
+                                                          'mach_worktableSize_length'),
                                                       worktableSize_width=request.POST.get('mach_worktableSize_width'),
                                                       load=request.POST.get('mach_load'),
                                                       process=request.POST.get('mach_process'),
@@ -350,17 +356,19 @@ def add_mach(request):
                                                       machImg=request.FILES.get('mach_machImg'),
                                                       machRemark=request.POST.get('mach_machRemark'),
                                                       otherFields=request.POST.get('mach_otherFields'),
-                                               )
+                                                      )
 
             return redirect('/standardKnowNInfo/resource/')
         else:
             error_msg = '机床名称不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_mach.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_mach.html', {'error_msg': error_msg})
+
 
 def delete_mach(request, del_id):
     models.Mach.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/resource/')
+
 
 def edit_mach(request, edit_id):
     error_msg = ''
@@ -398,18 +406,22 @@ def edit_mach(request, edit_id):
     mach_obj = models.Mach.objects.get(id=edit_id)
     return render(request, 'old/edit_mach.html', {'mach': mach_obj, 'error_msg': error_msg})
 
+
 def search_mach(request):
     search = request.GET.get('mach_search')
     all_mach_obj = models.Mach.objects.filter(name__icontains=search).all()
     error_msg = ''
     tab_name = 'mach'
-    return render(request, 'standard_knowledge_and_information/resource.html', {'mach_list': all_mach_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/resource.html',
+                  {'mach_list': all_mach_obj, "tab_name": tab_name})
 
-#Head
+
+# Head
 
 def head_list(request):
     all_head = models.Head.objects.all()
     return render(request, 'standard_knowledge_and_information/resource.html', {'head_list': all_head})
+
 
 def add_head(request):
     error_msg = ''
@@ -427,17 +439,19 @@ def add_head(request):
                                                       headImg=request.FILES.get('head_headImg'),
                                                       headRemark=request.POST.get('head_headRemark'),
                                                       otherFields=request.POST.get('head_otherFields'),
-                                               )
+                                                      )
 
             return redirect('/standardKnowNInfo/resource/')
         else:
             error_msg = '角度头名称不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_head.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_head.html', {'error_msg': error_msg})
+
 
 def delete_head(request, del_id):
     models.Head.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/resource/')
+
 
 def edit_head(request, edit_id):
     error_msg = ''
@@ -462,18 +476,22 @@ def edit_head(request, edit_id):
     head_obj = models.Head.objects.get(id=edit_id)
     return render(request, 'old/edit_head.html', {'head': head_obj, 'error_msg': error_msg})
 
+
 def search_head(request):
     search = request.GET.get('head_search')
     all_head_obj = models.Head.objects.filter(name__icontains=search).all()
     error_msg = ''
     tab_name = 'head'
-    return render(request, 'standard_knowledge_and_information/resource.html', {'head_list': all_head_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/resource.html',
+                  {'head_list': all_head_obj, "tab_name": tab_name})
+
 
 # Apert 标准孔
 
 def apert_list(request):
     all_apert = models.Apert.objects.all()
     return render(request, 'standard_knowledge_and_information/standardize.html', {'apert_list': all_apert})
+
 
 def add_apert(request):
     error_msg = ''
@@ -482,23 +500,25 @@ def add_apert(request):
         if new_apert:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_apert_obj = models.Apert.objects.create(
-                                                      apertType=new_apert,
-                                                      standard_apert=request.POST.get('apert_standard_apert'),
-                                                      apertImg=request.FILES.get('apert_apertImg'),
-                                                      excel_apertfile=request.FILES.get('apert_excel_apertfile'),
-                                                      apertRemark=request.POST.get('apert_apertRemark'),
-                                                      otherFields=request.POST.get('apert_otherFields'),
-                                               )
+                apertType=new_apert,
+                standard_apert=request.POST.get('apert_standard_apert'),
+                apertImg=request.FILES.get('apert_apertImg'),
+                excel_apertfile=request.FILES.get('apert_excel_apertfile'),
+                apertRemark=request.POST.get('apert_apertRemark'),
+                otherFields=request.POST.get('apert_otherFields'),
+            )
 
             return redirect('/standardKnowNInfo/standardize/')
         else:
             error_msg = '孔名称不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_apert.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_apert.html', {'error_msg': error_msg})
+
 
 def delete_apert(request, del_id):
     models.Apert.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/standardize/')
+
 
 def edit_apert(request, edit_id):
     error_msg = ''
@@ -519,18 +539,22 @@ def edit_apert(request, edit_id):
     apert_obj = models.Apert.objects.get(id=edit_id)
     return render(request, 'old/edit_apert.html', {'apert': apert_obj, 'error_msg': error_msg})
 
+
 def search_apert(request):
     search = request.GET.get('apert_search')
     all_apert_obj = models.Apert.objects.filter(apertType__icontains=search).all()
     error_msg = ''
     tab_name = 'apert'
-    return render(request, 'standard_knowledge_and_information/standardize.html', {'apert_list': all_apert_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/standardize.html',
+                  {'apert_list': all_apert_obj, "tab_name": tab_name})
+
 
 # 下载apert excel文件
 # views.py
 from django.http import HttpResponse
 
 import os
+
 
 def download_excel(request, apert_id):
     print('1')
@@ -552,12 +576,12 @@ def download_excel(request, apert_id):
     return HttpResponse(status=404)
 
 
-
 # basic Precision 基本偏差表
 
 def precision_list(request):
     all_precision = models.Precision.objects.all()
     return render(request, 'standard_knowledge_and_information/standardize.html', {'precision_list': all_precision})
+
 
 def add_precision(request):
     error_msg = ''
@@ -566,24 +590,26 @@ def add_precision(request):
         if new_precision:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_new_precision_obj = models.Precision.objects.create(
-                                                      basic=new_precision,
-                                                      nomiSizeL=request.POST.get('precision_nomiSizeL'),
-                                                      nomiSizeR=request.POST.get('precision_nomiSizeR'),
-                                                      tolGrade=request.POST.get('precision_tolGrade'),
-                                                      basicDevNum=request.POST.get('precision_basicDevNum'),
-                                                      otherField1=request.POST.get('precision_otherField1'),
-                                                      otherField2 = request.POST.get('precision_otherField2'),
-                                               )
+                basic=new_precision,
+                nomiSizeL=request.POST.get('precision_nomiSizeL'),
+                nomiSizeR=request.POST.get('precision_nomiSizeR'),
+                tolGrade=request.POST.get('precision_tolGrade'),
+                basicDevNum=request.POST.get('precision_basicDevNum'),
+                otherField1=request.POST.get('precision_otherField1'),
+                otherField2=request.POST.get('precision_otherField2'),
+            )
 
             return redirect('/standardKnowNInfo/standardize/')
         else:
             error_msg = '基准名称不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_precision.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_precision.html', {'error_msg': error_msg})
+
 
 def delete_precision(request, del_id):
     models.Precision.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/standardize/')
+
 
 def edit_precision(request, edit_id):
     error_msg = ''
@@ -605,17 +631,22 @@ def edit_precision(request, edit_id):
     precision_obj = models.Precision.objects.get(id=edit_id)
     return render(request, 'old/edit_precision.html', {'precision': precision_obj, 'error_msg': error_msg})
 
+
 def search_precision(request):
     search = request.GET.get('precision_search')
     all_precision_obj = models.Precision.objects.filter(basic__icontains=search).all()
     error_msg = ''
     tab_name = 'precision'
-    return render(request, 'standard_knowledge_and_information/standardize.html', {'precision_list': all_precision_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/standardize.html',
+                  {'precision_list': all_precision_obj, "tab_name": tab_name})
+
 
 # FitTolerance
 def fitTolerance_list(request):
     all_fitTolerance = models.FitTolerance.objects.all()
-    return render(request, 'standard_knowledge_and_information/standardize.html', {'fitTolerance_list': all_fitTolerance})
+    return render(request, 'standard_knowledge_and_information/standardize.html',
+                  {'fitTolerance_list': all_fitTolerance})
+
 
 def add_fitTolerance(request):
     error_msg = ''
@@ -624,23 +655,25 @@ def add_fitTolerance(request):
         if new_fitTolerance:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_new_fitTolerance_obj = models.FitTolerance.objects.create(
-                                                      Class=new_fitTolerance,
-                                                      nomiSizeL=request.POST.get('fitTolerance_nomiSizeL'),
-                                                      nomiSizeR=request.POST.get('fitTolerance_nomiSizeR'),
-                                                      tolNum=request.POST.get('fitTolerance_tolNum'),
-                                                      otherField1=request.POST.get('fitTolerance_otherField1'),
-                                                      otherField2=request.POST.get('fitTolerance_otherField2'),
-                                               )
+                Class=new_fitTolerance,
+                nomiSizeL=request.POST.get('fitTolerance_nomiSizeL'),
+                nomiSizeR=request.POST.get('fitTolerance_nomiSizeR'),
+                tolNum=request.POST.get('fitTolerance_tolNum'),
+                otherField1=request.POST.get('fitTolerance_otherField1'),
+                otherField2=request.POST.get('fitTolerance_otherField2'),
+            )
 
             return redirect('/standardKnowNInfo/standardize/')
         else:
             error_msg = '精度等级不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_fitTolerance.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_fitTolerance.html', {'error_msg': error_msg})
+
 
 def delete_fitTolerance(request, del_id):
     models.FitTolerance.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/standardize/')
+
 
 def edit_fitTolerance(request, edit_id):
     error_msg = ''
@@ -661,17 +694,21 @@ def edit_fitTolerance(request, edit_id):
     fitTolerance_obj = models.FitTolerance.objects.get(id=edit_id)
     return render(request, 'old/edit_fitTolerance.html', {'fitTolerance': fitTolerance_obj, 'error_msg': error_msg})
 
+
 def search_fitTolerance(request):
     search = request.GET.get('fitTolerance_search')
     all_fitTolerance_obj = models.FitTolerance.objects.filter(Class__icontains=search).all()
     error_msg = ''
     tab_name = 'fitTolerance'
-    return render(request, 'standard_knowledge_and_information/standardize.html', {'fitTolerance_list': all_fitTolerance_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/standardize.html',
+                  {'fitTolerance_list': all_fitTolerance_obj, "tab_name": tab_name})
+
 
 # Prio
 def prio_list(request):
     all_prio = models.Prio.objects.all()
     return render(request, 'standard_knowledge_and_information/standardize.html', {'prio_list': all_prio})
+
 
 def add_prio(request):
     error_msg = ''
@@ -680,23 +717,25 @@ def add_prio(request):
         if new_prio:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_new_fitTolerance_obj = models.Prio.objects.create(
-                                                      basic=new_prio,
-                                                      holeTol=request.POST.get('prio_holeTol'),
-                                                      shaftTol=request.POST.get('prio_shaftTol'),
-                                                      fitType=request.POST.get('prio_fitType'),
-                                                      otherField1=request.POST.get('prio_otherField1'),
-                                                      otherField2=request.POST.get('prio_otherField2'),
-                                               )
+                basic=new_prio,
+                holeTol=request.POST.get('prio_holeTol'),
+                shaftTol=request.POST.get('prio_shaftTol'),
+                fitType=request.POST.get('prio_fitType'),
+                otherField1=request.POST.get('prio_otherField1'),
+                otherField2=request.POST.get('prio_otherField2'),
+            )
 
             return redirect('/standardKnowNInfo/standardize/')
         else:
             error_msg = '基准不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_prio.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_prio.html', {'error_msg': error_msg})
+
 
 def delete_prio(request, del_id):
     models.Prio.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/standardize/')
+
 
 def edit_prio(request, edit_id):
     error_msg = ''
@@ -717,19 +756,21 @@ def edit_prio(request, edit_id):
     prio_obj = models.Prio.objects.get(id=edit_id)
     return render(request, 'old/edit_prio.html', {'prio': prio_obj, 'error_msg': error_msg})
 
+
 def search_prio(request):
     search = request.GET.get('prio_search')
     all_prio_obj = models.Prio.objects.filter(basic__icontains=search).all()
     error_msg = ''
     tab_name = 'prio'
-    return render(request, 'standard_knowledge_and_information/standardize.html', {'prio_list': all_prio_obj,"tab_name" : tab_name})
-
+    return render(request, 'standard_knowledge_and_information/standardize.html',
+                  {'prio_list': all_prio_obj, "tab_name": tab_name})
 
 
 # Part
 def part_list(request):
     all_part = models.Part.objects.all()
     return render(request, 'standard_knowledge_and_information/standard_process.html', {'part_list': all_part})
+
 
 def add_part(request):
     error_msg = ''
@@ -738,28 +779,30 @@ def add_part(request):
         if new_part:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_new_fitTolerance_obj = models.Part.objects.create(
-                                                      partType=new_part,
-                                                      partStruct=request.POST.get('part_partStruct'),
-                                                      partMat=request.POST.get('part_partMat'),
-                                                      partSize=request.POST.get('part_partSize'),
-                                                      geoFix=request.POST.get('part_geoFix'),
-                                                      PMIInfo=request.POST.get('part_PMIInfo'),
-                                                      featType=request.POST.get('part_featType'),
-                                                      processFlow=request.POST.get('part_processFlow'),
-                                                      Img=request.FILES.get('part_Img'),
-                                                      otherField1=request.POST.get('part_otherField1'),
-                                                      otherField2=request.POST.get('part_otherField2'),
-                                               )
+                partType=new_part,
+                partStruct=request.POST.get('part_partStruct'),
+                partMat=request.POST.get('part_partMat'),
+                partSize=request.POST.get('part_partSize'),
+                geoFix=request.POST.get('part_geoFix'),
+                PMIInfo=request.POST.get('part_PMIInfo'),
+                featType=request.POST.get('part_featType'),
+                processFlow=request.POST.get('part_processFlow'),
+                Img=request.FILES.get('part_Img'),
+                otherField1=request.POST.get('part_otherField1'),
+                otherField2=request.POST.get('part_otherField2'),
+            )
 
             return redirect('/standardKnowNInfo/standardProcess/')
         else:
             error_msg = '零件类型不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_part.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_part.html', {'error_msg': error_msg})
+
 
 def delete_part(request, del_id):
     models.Part.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/standardProcess/')
+
 
 def edit_part(request, edit_id):
     error_msg = ''
@@ -785,18 +828,22 @@ def edit_part(request, edit_id):
     part_obj = models.Part.objects.get(id=edit_id)
     return render(request, 'old/edit_part.html', {'part': part_obj, 'error_msg': error_msg})
 
+
 def search_part(request):
     search = request.GET.get('part_search')
     all_part_obj = models.Part.objects.filter(partType__icontains=search).all()
     error_msg = ''
     tab_name = 'part'
-    return render(request, 'standard_knowledge_and_information/standard_process.html', {'part_list': all_part_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/standard_process.html',
+                  {'part_list': all_part_obj, "tab_name": tab_name})
+
 
 # Feat
 
 def feat_list(request):
     all_feat = models.Feat.objects.all()
     return render(request, 'standard_knowledge_and_information/standard_process.html', {'feat_list': all_feat})
+
 
 def add_feat(request):
     error_msg = ''
@@ -805,26 +852,28 @@ def add_feat(request):
         if new_feat:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_new_fitTolerance_obj = models.Feat.objects.create(
-                                                      featID=new_feat,
-                                                      featType=request.POST.get('feat_featType'),
-                                                      featMat=request.POST.get('feat_featMat'),
-                                                      geoDim=request.POST.get('feat_geoDim'),
-                                                      precision=request.POST.get('feat_precision'),
-                                                      processFlow=request.POST.get('feat_processFlow'),
-                                                      Img=request.FILES.get('feat_Img'),
-                                                      otherField1=request.POST.get('feat_otherField1'),
-                                                      otherField2=request.POST.get('feat_otherField2'),
-                                               )
+                featID=new_feat,
+                featType=request.POST.get('feat_featType'),
+                featMat=request.POST.get('feat_featMat'),
+                geoDim=request.POST.get('feat_geoDim'),
+                precision=request.POST.get('feat_precision'),
+                processFlow=request.POST.get('feat_processFlow'),
+                Img=request.FILES.get('feat_Img'),
+                otherField1=request.POST.get('feat_otherField1'),
+                otherField2=request.POST.get('feat_otherField2'),
+            )
 
             return redirect('/standardKnowNInfo/standardProcess/')
         else:
             error_msg = '关联的特征不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_feat.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_feat.html', {'error_msg': error_msg})
+
 
 def delete_feat(request, del_id):
     models.Feat.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/standardProcess/')
+
 
 def edit_feat(request, edit_id):
     error_msg = ''
@@ -848,19 +897,23 @@ def edit_feat(request, edit_id):
     feat_obj = models.Feat.objects.get(id=edit_id)
     return render(request, 'old/edit_feat.html', {'feat': feat_obj, 'error_msg': error_msg})
 
+
 def search_feat(request):
     search = request.GET.get('feat_search')
     all_feat_obj = models.Feat.objects.filter(featID__icontains=search).all()
     error_msg = ''
     tab_name = 'feat'
-    return render(request, 'standard_knowledge_and_information/standard_process.html', {'feat_list': all_feat_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/standard_process.html',
+                  {'feat_list': all_feat_obj, "tab_name": tab_name})
 
 
 # MaterialDesignation
 
 def materialDesignation_list(request):
     all_materialDesignation = models.MaterialDesignation.objects.all()
-    return render(request, 'standard_knowledge_and_information/material.html', {'materialDesignation_list': all_materialDesignation})
+    return render(request, 'standard_knowledge_and_information/material.html',
+                  {'materialDesignation_list': all_materialDesignation})
+
 
 def add_materialDesignation(request):
     error_msg = ''
@@ -869,27 +922,29 @@ def add_materialDesignation(request):
         if new_materialDesignation:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_new_fitTolerance_obj = models.MaterialDesignation.objects.create(
-                                                      GBName=new_materialDesignation,
-                                                      matType1=request.POST.get('materialDesignation_matType1'),
-                                                      matType2=request.POST.get('materialDesignation_matType2'),
-                                                      matName=request.POST.get('materialDesignation_matName'),
-                                                      ASTM=request.POST.get('materialDesignation_ASTM'),
-                                                      SAE=request.POST.get('materialDesignation_SAE'),
-                                                      desc=request.POST.get('materialDesignation_desc'),
-                                                      Img=request.FILES.get('materialDesignation_Img'),
-                                                      otherField1=request.POST.get('materialDesignation_otherField1'),
-                                                      otherField2=request.POST.get('materialDesignation_otherField2'),
-                                               )
+                GBName=new_materialDesignation,
+                matType1=request.POST.get('materialDesignation_matType1'),
+                matType2=request.POST.get('materialDesignation_matType2'),
+                matName=request.POST.get('materialDesignation_matName'),
+                ASTM=request.POST.get('materialDesignation_ASTM'),
+                SAE=request.POST.get('materialDesignation_SAE'),
+                desc=request.POST.get('materialDesignation_desc'),
+                Img=request.FILES.get('materialDesignation_Img'),
+                otherField1=request.POST.get('materialDesignation_otherField1'),
+                otherField2=request.POST.get('materialDesignation_otherField2'),
+            )
 
             return redirect('/standardKnowNInfo/material/')
         else:
             error_msg = '材料名称不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_materialDesignation.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_materialDesignation.html', {'error_msg': error_msg})
+
 
 def delete_materialDesignation(request, del_id):
     models.MaterialDesignation.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/material/')
+
 
 def edit_materialDesignation(request, edit_id):
     error_msg = ''
@@ -912,20 +967,26 @@ def edit_materialDesignation(request, edit_id):
         else:
             error_msg = '材料名称不能为空'
     materialDesignation_obj = models.MaterialDesignation.objects.get(id=edit_id)
-    return render(request, 'old/edit_materialDesignation.html', {'materialDesignation': materialDesignation_obj, 'error_msg': error_msg})
+    return render(request, 'old/edit_materialDesignation.html',
+                  {'materialDesignation': materialDesignation_obj, 'error_msg': error_msg})
+
 
 def search_materialDesignation(request):
     search = request.GET.get('materialDesignation_search')
     all_materialDesignation_obj = models.MaterialDesignation.objects.filter(GBName__icontains=search).all()
     error_msg = ''
     tab_name = 'materialDesignation'
-    return render(request, 'standard_knowledge_and_information/material.html', {'materialDesignation_list': all_materialDesignation_obj,"tab_name" : tab_name})
+    return render(request, 'standard_knowledge_and_information/material.html',
+                  {'materialDesignation_list': all_materialDesignation_obj, "tab_name": tab_name})
+
 
 # MaterialMachinability
 
 def materialMachinability_list(request):
     all_materialMachinability = models.MaterialMachinability.objects.all()
-    return render(request, 'standard_knowledge_and_information/material.html', {'materialMachinability_list': all_materialMachinability})
+    return render(request, 'standard_knowledge_and_information/material.html',
+                  {'materialMachinability_list': all_materialMachinability})
+
 
 def add_materialMachinability(request):
     error_msg = ''
@@ -934,25 +995,27 @@ def add_materialMachinability(request):
         if new_materialMachinability:
             # img_file=request.FILES.get('cutter_cutterImg')
             new_new_fitTolerance_obj = models.MaterialMachinability.objects.create(
-                                                      materialName=new_materialMachinability,
-                                                      Strength=request.POST.get('materialMachinability_Strength'),
-                                                      hardness=request.POST.get('materialMachinability_hardness'),
-                                                      therConduct=request.POST.get('materialMachinability_therConduct'),
-                                                      hardening=request.POST.get('materialMachinability_hardening'),
-                                                      affinity=request.POST.get('materialMachinability_affinity'),
-                                                      otherField1=request.POST.get('materialMachinability_otherField1'),
-                                                      otherField2=request.POST.get('materialMachinability_otherField2'),
-                                               )
+                materialName=new_materialMachinability,
+                Strength=request.POST.get('materialMachinability_Strength'),
+                hardness=request.POST.get('materialMachinability_hardness'),
+                therConduct=request.POST.get('materialMachinability_therConduct'),
+                hardening=request.POST.get('materialMachinability_hardening'),
+                affinity=request.POST.get('materialMachinability_affinity'),
+                otherField1=request.POST.get('materialMachinability_otherField1'),
+                otherField2=request.POST.get('materialMachinability_otherField2'),
+            )
 
             return redirect('/standardKnowNInfo/material/')
         else:
             error_msg = '材料名称不能为空'
-    #books = models.Book.objects.all()
-    return render(request, 'old/add_materialMachinability.html', { 'error_msg': error_msg})
+    # books = models.Book.objects.all()
+    return render(request, 'old/add_materialMachinability.html', {'error_msg': error_msg})
+
 
 def delete_materialMachinability(request, del_id):
     models.MaterialMachinability.objects.get(id=del_id).delete()
     return redirect('/standardKnowNInfo/material/')
+
 
 def edit_materialMachinability(request, edit_id):
     error_msg = ''
@@ -973,15 +1036,17 @@ def edit_materialMachinability(request, edit_id):
         else:
             error_msg = '材料名称不能为空'
     materialMachinability_obj = models.MaterialMachinability.objects.get(id=edit_id)
-    return render(request, 'old/edit_materialMachinability.html', {'materialMachinability': materialMachinability_obj, 'error_msg': error_msg})
+    return render(request, 'old/edit_materialMachinability.html',
+                  {'materialMachinability': materialMachinability_obj, 'error_msg': error_msg})
+
 
 def search_materialMachinability(request):
     search = request.GET.get('materialMachinability_search')
     all_materialMachinability_obj = models.MaterialMachinability.objects.filter(materialName__icontains=search).all()
     error_msg = ''
     tab_name = 'materialMachinability'
-    return render(request, 'standard_knowledge_and_information/material.html', {'materialMachinability_list': all_materialMachinability_obj,"tab_name" : tab_name})
-
+    return render(request, 'standard_knowledge_and_information/material.html',
+                  {'materialMachinability_list': all_materialMachinability_obj, "tab_name": tab_name})
 
 
 # Feature
@@ -1037,10 +1102,18 @@ def search_Feature(request):
                   {'Feature_list': all_Feature_obj})
 
 
+def search_feature_second(request):
+    feature = request.POST.get('feature')
+    if feature:
+        all_feature_second_obj = models.Feature.objects.filter(classFirst__icontains=feature)
+        json_data = serializers.serialize('json', all_feature_second_obj)
+        print(json_data)
+        return HttpResponse(json_data, content_type="application/json")
+
+
 def ManuCapRule_list(request):
     all_ManuCapRule = models.ManuCapRule.objects.all()
     return render(request, 'process_Check/manufacturing_ability.html', {'ManuCapRule_list': all_ManuCapRule})
-
 
 
 # def add_rule_search_Feature_para(request,featType):
@@ -1221,7 +1294,7 @@ def edit_KnowledgeParaTable(request, edit_id):
 
 def TableFunction_list(request):
     all_TableFunction = models.TableFunction.objects.all()
-    return render(request, 'script_and_function/table_function.html', {'TableFunction_list': all_TableFunction})
+    return render(request, 'rule_configuration/table_function.html', {'TableFunction_list': all_TableFunction})
 
 
 def add_TableFunction(request):
@@ -1241,7 +1314,7 @@ def add_TableFunction(request):
                                                                         remark=request.POST.get('TableFunction_remark')
                                                                         )
 
-            return redirect('/scripNFunction/table_function/')
+            return redirect('/scriptFunction/table_function/')
         else:
             error_msg = '数据库内表名不能为空'
     # books = models.Book.objects.all()
@@ -1250,7 +1323,7 @@ def add_TableFunction(request):
 
 def delete_TableFunction(request, del_id):
     models.TableFunction.objects.get(id=del_id).delete()
-    return redirect('/scripNFunction/table_function/')
+    return redirect('/scriptFunction/table_function/')
 
 
 def edit_TableFunction(request, edit_id):
@@ -1266,7 +1339,7 @@ def edit_TableFunction(request, edit_id):
             edit_TableFunction_obj.sql = request.POST.get('TableFunction_sql')
             edit_TableFunction_obj.remark = request.POST.get('TableFunction_remark')
             edit_TableFunction_obj.save()
-            return redirect('/scripNFunction/table_function/')
+            return redirect('/scriptFunction/table_function/')
         else:
             error_msg = '刀具名不能为空'
     TableFunction_obj = models.TableFunction.objects.get(id=edit_id)
@@ -1277,7 +1350,7 @@ def search_TableFunction(request):
     search = request.GET.get('TableFunction_search')
     all_TableFunction_obj = models.TableFunction.objects.filter(name__icontains=search).all()
     error_msg = ''
-    return render(request, 'script_and_function/table_function.html', {'TableFunction_list': all_TableFunction_obj})
+    return render(request, 'rule_configuration/table_function.html', {'TableFunction_list': all_TableFunction_obj})
 
 
 def change_password(request):
@@ -1305,7 +1378,7 @@ def login(request):
         user = auth.authenticate(request, username=username, password=password)
         # 验证如果用户不为空
         if user is not None:
-            return render(request, 'index.html')
+            return render(request, 'knowledge_search.html')
         else:
             # 返回登录失败信息
             error_msg = '用户名或密码错误'
@@ -1316,12 +1389,172 @@ def login(request):
 
 
 def index(request):
-    return render(request, 'index.html')
+    if request.method == 'GET':
+        return render(request, 'knowledge_search.html')
+    type = request.POST.get('type')
+    contents = request.POST.get('search_content')
+    if contents == "":
+        return render(request, 'knowledge_search.html')
+    if type == "工艺性审查知识":
+        obj = models.Rule.objects.filter(name__icontains=contents) | \
+              models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
+              models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
+              models.Rule.objects.filter(content__icontains=contents) | \
+              models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
+              models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
+              models.Rule.objects.filter(featPro__icontains=contents) | \
+              models.Rule.objects.filter(remark__icontains=contents)
+    elif type == "PMI标注审查知识":
+        obj = models.PMIRule.objects.filter(content__icontains=contents) | \
+              models.PMIRule.objects.filter(name__icontains=contents) | \
+              models.PMIRule.objects.filter(ruleType__icontains=contents) | \
+              models.PMIRule.objects.filter(annoType__icontains=contents)
+    return render(request, 'knowledge_search.html', {'obj': obj, 'type':type, 'content':contents})
 
-
+def knowledge_detail(request):
+    if request.method == 'GET':
+        type = request.GET.get('type')
+        content = request.GET.get('content')
+        id = request.GET.get('id')
+        if type == "工艺性审查知识":
+            obj = models.Rule.objects.get(id=id)
+        else:
+            obj = models.PMIRule.objects.get(id=id)
+    return render(request, 'knowledge_detail.html', {'obj':obj, 'type':type, 'content':content})
 def PMI_annotation(request):
-    all_author = models.Author.objects.all()
-    return render(request, 'model_quality/PMI_annotation.html', {'author_list': all_author})
+    if request.method == 'GET':
+        if request.GET.get('content') == None:
+            PMI_rule = models.PMIRule.objects.all()
+            return render(request, 'model_quality/PMI_annotation.html', {'PMI_rule_list': PMI_rule})
+        contents = request.GET.get('content')
+        PMI_rule1 = models.PMIRule.objects.filter(content__icontains=contents)
+        PMI_rule2 = models.PMIRule.objects.filter(name__icontains=contents)
+        PMI_rule3 = models.PMIRule.objects.filter(ruleType__icontains=contents)
+        PMI_rule4 = models.PMIRule.objects.filter(annoType__icontains=contents)
+        PMI_rule = PMI_rule1 | PMI_rule2 | PMI_rule3 | PMI_rule4
+        return render(request, 'model_quality/PMI_annotation.html', {'PMI_rule_list': PMI_rule})
+
+
+def delete_PMIRule(request, del_id):
+    models.PMIRule.objects.get(id=del_id).delete()
+    return redirect('/modelQuality/PMI/')
+
+
+def add_PMIRule(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_PMIRule = request.POST.get('PMIRule_name')
+        print(request.POST.get('PMIRule_script'))
+        if new_PMIRule:
+            new_PMIRule_obj = models.PMIRule.objects.create(name=new_PMIRule,
+                                                            ruleType=request.POST.get('PMIRule_ruleType'),
+                                                            annoType=request.POST.get('PMIRule_annoType'),
+                                                            content=request.POST.get('PMIRule_content'),
+                                                            script=request.POST.get('PMIRule_script'),
+                                                            PMIImg=request.FILES.get('PMIRule_Img_file'), )
+            return redirect('/modelQuality/PMI/')
+        else:
+            error_msg = '规则名称不能为空'
+    return render(request, 'old/add_PMIRule.html', {'error_msg': error_msg})
+
+
+def edit_PMIRule(request, edit_id):
+    error_msg = ''
+    if request.method == 'POST':
+        new_name = request.POST.get('PMIRule_name')
+        if new_name:
+            PMIRule_obj = models.PMIRule.objects.get(id=edit_id)
+            PMIRule_obj.name = request.POST.get('PMIRule_name')
+            PMIRule_obj.ruleType = request.POST.get('PMIRule_ruleType')
+            PMIRule_obj.annoType = request.POST.get('PMIRule_annoType')
+            PMIRule_obj.content = request.POST.get('PMIRule_content')
+            PMIRule_obj.script = request.POST.get('PMIRule_script')
+            if request.FILES.get('PMIRule_Img_file'):
+                PMIRule_obj.PMIImg = request.FILES.get('PMIRule_Img_file')
+            PMIRule_obj.save()
+            return redirect('/modelQuality/PMI/')
+        else:
+            error_msg = '刀具名不能为空'
+    PMIRule_obj = models.PMIRule.objects.get(id=edit_id)
+    return render(request, 'old/edit_PMIRule.html', {'PMIRule': PMIRule_obj, 'error_msg': error_msg})
+
+
+def process_check(request):
+    print('yes')
+    if request.method == 'GET':
+        if request.GET.get('content') == None:
+            process_check_rule = models.Rule.objects.all()
+            return render(request, 'process_Check/process_check.html', {'process_check_rule_list': process_check_rule})
+        contents = request.GET.get('content')
+        process_check_rule = models.Rule.objects.filter(name__icontains=contents) | \
+                             models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
+                             models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
+                             models.Rule.objects.filter(content__icontains=contents) | \
+                             models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
+                             models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
+                             models.Rule.objects.filter(featPro__icontains=contents) | \
+                             models.Rule.objects.filter(remark__icontains=contents)
+        return render(request, 'process_Check/process_check.html', {'process_check_rule_list': process_check_rule})
+
+
+def delete_process_check(request):
+    if request.method == "GET":
+        del_id = request.GET.get("id")
+        models.Rule.objects.get(id=del_id).delete()
+    return redirect('/processCheck/')
+
+
+def add_process_check(request):
+    error_msg = ''
+    if request.method == 'POST':
+        process_check_name = request.POST.get("rule_name")
+        # print(request.POST.get('PMIRule_script'))
+        if process_check_name:
+            new_process_check_obj = \
+                models.Rule.objects.create(name=process_check_name,
+                                           ruleTypeFirst=request.POST.get('rule_ruleTypeFirst'),
+                                           ruleTypeSecond=request.POST.get('rule_ruleTypeSecond'),
+                                           manuType=request.POST.get('rule_manuType'),
+                                           featTypeFirst=request.POST.get('rule_featTypeFirst'),
+                                           featTypeSecond=request.POST.get('rule_featTypeSecond'),
+                                           featPro=request.POST.get('rule_featPro'),
+                                           content=request.POST.get('rule_content'),
+                                           img=request.FILES.get('rule_Img_file'),
+                                           script=request.POST.get('rule_script'),
+                                           remark=request.POST.get('rule_remark')
+                                           )
+            return redirect('/processCheck/')
+        else:
+            error_msg = '函数名不能为空'
+    return render(request, 'old/add_process_check.html', {'error_msg': error_msg})
+
+
+def edit_process_check(request):
+    error_msg = ''
+    if request.method == 'POST':
+        edit_id = request.POST.get('rule_id')
+        if edit_id:
+            rule_obj = models.Rule.objects.get(id=edit_id)
+            rule_obj.name = request.POST.get('rule_name')
+            rule_obj.ruleTypeFirst = request.POST.get('rule_ruleTypeFirst')
+            rule_obj.ruleTypeSecond = request.POST.get('rule_ruleTypeSecond')
+            rule_obj.manuType = request.POST.get('rule_manuType')
+            rule_obj.featTypeFirst = request.POST.get('rule_featTypeFirst')
+            rule_obj.featTypeSecond = request.POST.get('rule_featTypeSecond')
+            rule_obj.featPro = request.POST.get('rule_featPro')
+            rule_obj.content = request.POST.get('rule_content')
+            rule_obj.script = request.POST.get('rule_script')
+            rule_obj.remark = request.POST.get('rule_remark')
+
+            if request.FILES.get('rule_Img_file'):
+                rule_obj.img = request.FILES.get('rule_Img_file')
+            rule_obj.save()
+            return redirect('/processCheck/')
+        else:
+            error_msg = '规则名不能为空'
+
+    rule_obj = models.Rule.objects.get(id=request.GET.get("id"))
+    return render(request, 'old/edit_process_check.html', {'rule_obj': rule_obj, 'error_msg': error_msg})
 
 
 def manufacturing_ability(request):
@@ -1385,6 +1618,155 @@ def standardize(request):
     return render(request, 'standard_knowledge_and_information/standardize.html', {'author_list': all_author})
 
 
+def data_dictionary(request):
+    if request.method == 'GET':
+        if request.GET.get('content') == None:
+            data_dictionary = models.DataDictionary.objects.all()
+            return render(request, 'rule_configuration/data_dictionary.html', {'DataDictionary_list': data_dictionary})
+        contents = request.GET.get('content')
+        data_dictionary1 = models.DataDictionary.objects.filter(item__icontains=contents)
+        data_dictionary2 = models.DataDictionary.objects.filter(type__icontains=contents)
+        data_dictionary3 = models.DataDictionary.objects.filter(remark__icontains=contents)
+        data_dictionary = data_dictionary1 | data_dictionary2 | data_dictionary3
+        return render(request, 'rule_configuration/data_dictionary.html', {'DataDictionary_list': data_dictionary})
+
+
+def delete_dataDictionary(request, del_id):
+    models.DataDictionary.objects.get(id=del_id).delete()
+    return redirect('/scriptFunction/data_dictionary/')
+
+
+def change_dataDictionary(request):
+    error_msg = ''
+    if request.method == 'POST':
+        item = request.POST.get('dataDictionary_item')
+        dataDictionary_obj = models.DataDictionary.objects.filter(item=item)
+        if dataDictionary_obj.exists():
+            dataDictionary_obj = models.DataDictionary.objects.get(item=item)
+            dataDictionary_obj.type = request.POST.get('dataDictionary_type')
+            dataDictionary_obj.remark = request.POST.get('dataDictionary_remark')
+            dataDictionary_obj.save()
+        else:
+            dataDictionary_obj = models.DataDictionary.objects.create(item=item,
+                                                                      type=request.POST.get('dataDictionary_type'),
+                                                                      remark=request.POST.get('dataDictionary_remark'))
+    return redirect('/scriptFunction/data_dictionary/')
+
+
+# 搜索数据字典
+def search_dataDictionary(request):
+    content = request.POST.get('content')
+    all_dataDictionary_obj = models.DataDictionary.objects.filter(item__icontains=content) | \
+                             models.DataDictionary.objects.filter(type__icontains=content) | \
+                             models.DataDictionary.objects.filter(remark__icontains=content)
+
+    json_data = serializers.serialize('json', all_dataDictionary_obj)
+    print(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+
+# 搜索特征属性
+def search_feature_pro(request):
+    content = request.POST.get("content")
+
+    all_obj = models.DataDictionary.objects.filter(item__icontains=content, type="特征属性") | \
+              models.DataDictionary.objects.filter(remark__icontains=content, type="特征属性")
+
+    json_data = serializers.serialize('json', all_obj)
+    print(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+
+# 搜索规则配置的内容
+def search_script_supporter(request):
+    content = request.POST.get("searchContent")
+    type = request.POST.get("searchType")
+    if type == "数据字典":
+        all_obj = models.DataDictionary.objects.filter(item__icontains=content) | \
+                  models.DataDictionary.objects.filter(type__icontains=content) | \
+                  models.DataDictionary.objects.filter(remark__icontains=content)
+    elif type == "规则参数":
+        all_obj = models.KnowledgeParaTable.objects.filter(ruleid__icontains=content) | \
+                  models.KnowledgeParaTable.objects.filter(name__icontains=content) | \
+                  models.KnowledgeParaTable.objects.filter(paraType__icontains=content) | \
+                  models.KnowledgeParaTable.objects.filter(tableFunction__icontains=content) | \
+                  models.KnowledgeParaTable.objects.filter(remark__icontains=content)
+    elif type == "查表函数":
+        all_obj = models.TableFunction.objects.filter(name__icontains=content) | \
+                  models.TableFunction.objects.filter(functionName__icontains=content) | \
+                  models.TableFunction.objects.filter(remark__icontains=content)
+    elif type == "脚本函数":
+        all_obj = models.ScriptFunction.objects.filter(functionName__icontains=content) | \
+                  models.ScriptFunction.objects.filter(formula__icontains=content) | \
+                  models.ScriptFunction.objects.filter(remark__icontains=content)
+    json_data = serializers.serialize('json', all_obj)
+    print(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+
 def table_function(request):
     all_tablaFuction = models.TableFunction.objects.all()
-    return render(request, 'script_and_function/table_function.html', {'TableFunction_list': all_tablaFuction})
+    return render(request, 'rule_configuration/table_function.html', {'TableFunction_list': all_tablaFuction})
+
+
+def script_function(request):
+    if request.method == 'GET':
+        if request.GET.get('content') == None:
+            script_function = models.ScriptFunction.objects.all()
+            return render(request, 'rule_configuration/script_function.html', {'ScriptFunction_list': script_function})
+        contents = request.GET.get('content')
+        script_function1 = models.ScriptFunction.objects.filter(functionName__icontains=contents)
+        script_function2 = models.ScriptFunction.objects.filter(inputPara__icontains=contents)
+        script_function3 = models.ScriptFunction.objects.filter(outputPara__icontains=contents)
+        script_function4 = models.ScriptFunction.objects.filter(formula__icontains=contents)
+        script_function5 = models.ScriptFunction.objects.filter(remark__icontains=contents)
+        script_function = script_function1 | script_function2 | script_function3 | script_function4 | script_function5
+        return render(request, 'rule_configuration/script_function.html', {'ScriptFunction_list': script_function})
+
+
+def delete_scriptFunction(request):
+    if request.method == "GET":
+        del_id = request.GET.get("id")
+        models.ScriptFunction.objects.get(id=del_id).delete()
+    return redirect('/scriptFunction/script_function/')
+
+
+def add_scriptFunction(request):
+    error_msg = ''
+    if request.method == 'POST':
+        new_scriptFunction = request.POST.get('scriptFunction_name')
+        # print(request.POST.get('PMIRule_script'))
+        if new_scriptFunction:
+            new_scriptFunction_obj = \
+                models.ScriptFunction.objects.create(functionName=new_scriptFunction,
+                                                     inputPara=request.POST.get('scriptFunction_inputPara'),
+                                                     outputPara=request.POST.get('scriptFunction_outputPara'),
+                                                     formula=request.POST.get('scriptFunction_formula'),
+                                                     remark=request.POST.get('scriptFunction_remark'),
+                                                     functionHead=request.POST.get('scriptFunction_functionHead'))
+            return redirect('/scriptFunction/script_function/')
+        else:
+            error_msg = '函数名不能为空'
+    return render(request, 'old/add_scriptFunction.html', {'error_msg': error_msg})
+
+
+def edit_scriptFunction(request):
+    error_msg = ''
+    if request.method == 'POST':
+        ids = request.POST.get('scriptFunction_id')
+        if ids:
+            scriptFunction_obj = models.ScriptFunction.objects.get(id=ids)
+            scriptFunction_obj.functionName = request.POST.get('scriptFunction_name')
+            scriptFunction_obj.inputPara = request.POST.get('scriptFunction_inputPara')
+            scriptFunction_obj.outputPara = request.POST.get('scriptFunction_outputPara')
+            scriptFunction_obj.formula = request.POST.get('scriptFunction_formula')
+            scriptFunction_obj.remark = request.POST.get('scriptFunction_remark')
+            scriptFunction_obj.functionHead = request.POST.get('scriptFunction_functionHead')
+            scriptFunction_obj.save()
+            return redirect('/scriptFunction/script_function/')
+        else:
+            error_msg = '函数名不能为空'
+    edit_id = request.GET.get('id')
+    scriptFunction_obj = models.ScriptFunction.objects.get(id=edit_id)
+    return render(request, 'old/edit_scriptFunction.html',
+                  {'scriptFunction': scriptFunction_obj, 'error_msg': error_msg})

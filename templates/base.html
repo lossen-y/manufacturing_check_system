@@ -52,16 +52,16 @@
         <div class="nav nav-sidebar ">
             {#建模质量#}
             <div class="nav-item">
-                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white"
-                   href="#pp1">建模质量审查知识</a>
+                <a class="list-group-item" style="background-color: #4682B4; color: white"
+                   href="{% url 'PMI_annotation' %}">PMI标注审查知识</a>
                 <ul class="collapse list-group" id="pp1" style="margin-bottom: 0px;">
                     <li class="collapse list-group-item"><a href="{% url 'PMI_annotation' %}">PMI标注</a></li>
                 </ul>
             </div>
             {#工艺性审查#}
             <div class="nav-item">
-                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white"
-                   href="#pp2">工艺性审查知识</a>
+                <a class="list-group-item" style="background-color: #4682B4; color: white"
+                   href="{% url 'process_check' %}">工艺性审查知识</a>
                 <ul class="collapse list-group" id="pp2" style="margin-bottom: 0px">
                     <li class="collapse list-group-item"><a href="{% url 'manufacturing_ability' %}">制造能力</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'space_Position' %}">空间位置</a></li>
@@ -84,10 +84,13 @@
 
             <div class="nav-item">
                 <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white "
-                   href="#pp4">函数与符号</a>
+                   href="#pp4">规则配置</a>
                 <ul class="collapse list-group" id="pp4" style="margin-bottom: 0px">
-                    <li class="collapse list-group-item"><a href="{% url 'table_function' %}">查表函数库</a></li>
-                    <li class="collapse list-group-item"><a href="{% url 'standardize' %}">规则参数库</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'data_dictionary' %}">数据字典</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'standardize' %}">规则参数</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'table_function' %}">查表函数</a></li>
+                    <li class="collapse list-group-item"><a href="{% url 'script_function' %}">脚本函数</a></li>
+{#                    <li class="collapse list-group-item"><a href="{% url 'script_function' %}">脚本函数</a></li>#}
                 </ul>
             </div>
         </div>
@@ -158,10 +161,10 @@
         var form = document.getElementById("table1")
         var alert = document.createElement("p")
         //密码不一致，提示
-        if (newPassword1 != newPassword2){
+        if (newPassword1 != newPassword2) {
             alert.innerText = "新密码不一致"
             alert.style.color = "red"
-        }else {//密码一致
+        } else {//密码一致
             $.ajax({
                 url: "changePassword/",
                 type: "POST",
@@ -174,7 +177,7 @@
                         alert.style.fontWeight = "bold"
                         alert.style.color = "blue"
                         alert.style.fontSize = "20px"
-                    }else {//密码不一致，标红
+                    } else {//密码不一致，标红
                         alert.style.color = "red"
                     }
                 }

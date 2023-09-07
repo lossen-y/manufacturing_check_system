@@ -6,76 +6,94 @@
 
 {% block main %}
     <h2 class="page-header" style="border-bottom: none">建模质量知识|PMI标注</h2>
-    <ul id="myTab" class="nav nav-tabs">
-        <li class="active"><a href="#annotationCorrection" data-toggle="tab">标注正确性</a></li>
-{#        <li><a href="#annotationCompleteness" data-toggle="tab">标注完备性</a></li>#}
-
-    </ul>
     <div id="myTabContent" class="tab-content">
-        {#标签1：正确性#}
-        <div class="tab-pane fade in active" id="annotationCorrection">
 
             <div class="panel panel-primary">
                 <!-- Default panel contents -->
-                <div class="panel-heading">作者列表 <i class="fa fa-thumb-tack pull-right"></i></div>
+                <div class="panel-heading">PMI标注规则 <i class="fa fa-thumb-tack pull-right"></i></div>
                 <div class="panel-body">
                     <div class="row" style="margin-bottom: 15px">
                         <div class="col-md-4">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for...">
+                                <input type="text" class="form-control" placeholder="Search for..." id="searchInput">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">搜索</button>
+                                    <button class="btn btn-default" type="button" id = "secrch-Btn" onclick="search()">搜索</button>
                                 </span>
+                                <a href="{% url 'PMI_annotation' %}" class="btn btn-success pull-right">刷新</a>
                             </div><!-- /input-group -->
                         </div><!-- /.col-md-4 -->
                         <div class="col-md-3 pull-right">
-                            <a href="{% url 'add_author' %}" class="btn btn-success pull-right"><i
-                                    class="fa fa-plus fa-fw"></i>添加作者</a>
-                            <button class="btn btn-success pull-right" data-toggle="modal" data-target="#myModal">新增
-                            </button>
+                            <a href="{% url 'add_PMIRule' %}" class="btn btn-success pull-right"><i
+                                    class="fa fa-plus fa-fw"></i>添加</a>
+                            <a class="btn btn-info" onclick="edit()" ><i class="fa fa-pencil fa-fw"></i>修改</a>
+                            <a class="btn btn-danger" onclick="deletes()"><i class="fa fa-trash-o fa-fw"></i>删除</a>
                         </div>
 
-                    </div><!-- /.row -->
+                    </div>
 
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>id</th>
-                            <th>作者名字</th>
-                            <th>作品</th>
-                            <th>操作</th>
+                            <th style="display: none">编号</th>
+                            <th>规则名称</th>
+                            <th>规则类型</th>
+                            <th>对应标注类型</th>
+                            <th>知识描述</th>
+{#                            <th>操作</th>#}
                         </tr>
                         </thead>
                         <tbody>
-                        {% for author in author_list %}
+                        {% for PMI_rule in PMI_rule_list %}
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ author.id }}</td>
-                                <td>{{ author.name }}</td>
-                                <td>
-                                    {% for book in author.book.all %}
-                                        《{{ book.title }}》&nbsp;
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    <a class="btn btn-danger" href="{% url 'delete_author' author.id %}"><i
-                                            class="fa fa-trash-o fa-fw"></i>删除</a>
-                                    <a class="btn btn-info" href="{% url 'edit_author' author.id %}"><i
-                                            class="fa fa-pencil fa-fw"></i>编辑</a>
-                                </td>
+                                <td style="display: none">{{ PMI_rule.id }}</td>
+                                <td>{{ PMI_rule.name }}</td>
+                                <td>{{ PMI_rule.ruleType }}</td>
+                                <td>{{ PMI_rule.annoType }}</td>
+                                <td>{{ PMI_rule.content }}</td>
+{#                                <td>#}
+{#                                    <a class="btn btn-danger" href="{% url 'delete_PMIRule' PMI_rule.id %}"><i#}
+{#                                            class="fa fa-trash-o fa-fw"></i>删除</a>#}
+{#                                    <a class="btn btn-info" href="{% url 'edit_PMIRule' PMI_rule.id %}"><i#}
+{#                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>#}
+{#                                </td>#}
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
 
                 </div>
-
             </div>
-        </div>
-        {#标签2：完备性#}
-{#        <div class="tab-pane fade" id="annotationCompleteness">#}
-{#            <p>完备性something</p>#}
-{#        </div>#}
     </div>
+    <script>
+        var chosenId = -1
+        var rows = document.getElementsByTagName("tr")
+
+        for (var i =0; i< rows.length; i++){
+            rows[i].addEventListener("click", function (){
+                //先全部清空
+                for (var j =0; j< rows.length; j++){
+                    rows[j].style.background = 'white'
+                }
+                chosenId = this.firstElementChild.innerHTML
+                if (chosenId != "编号"){
+                    //高亮
+                this.style.background = 'yellow'
+                }
+            })
+        }
+        function edit(){
+            if (chosenId != -1){
+                location.href =  '/edit_PMIRule/'+chosenId+'/'
+            }
+        }
+        function deletes() {
+            if (chosenId != -1){
+                location.href =  '/delete_PMIRule/'+chosenId+'/'
+            }
+        }
+        function search() {
+            var searchContent = document.getElementById("searchInput").value;
+            location.href = "/modelQuality/PMI?content=" + searchContent
+            }
+    </script>
 {% endblock main %}
