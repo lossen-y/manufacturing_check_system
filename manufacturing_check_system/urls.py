@@ -114,7 +114,7 @@ urlpatterns = [
                   # url(r'^resource/$', views.reource, name='book_list'),
                   url(r'^add_cutter/$', views.add_cutter, name='add_cutter'),
                   url(r'^search_cutter/$', views.search_cutter, name='search_cutter'),
-                  url(r'^delete_cutter/([0-9]+)/$', views.delete_cutter, name='delete_cutter'),
+                  url(r'^delete_cutter/', views.delete_cutter, name='delete_cutter'),
                   url(r'^edit_cutter/([0-9]+)/$', views.edit_cutter, name='edit_cutter'),
 
                   # 标准孔相关的对应关系

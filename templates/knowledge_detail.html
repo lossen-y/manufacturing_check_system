@@ -39,6 +39,7 @@
                     {% endif %}
                 </div>
             {% endif %}
+
             {% if type == "PMI标注审查知识" %}
                 <p style=" font-size: 30px">【{{ obj.code }}】{{ obj.name }}</p>
                 <div style="width: 50%; float:left;">
@@ -60,6 +61,29 @@
                     {% endif %}
                 </div>
             {% endif %}
+
+        {% if type == "标准化知识和信息|制造资源-刀具" %}
+                <p style="font-size: 30px">【{{ obj.code }}】{{ obj.name }}</p>
+                <div style="float:left; width: 50%">
+                    <p style="font-size: 15px">
+                        <b>【刀具名称】</b>{{ obj.name }}</p>
+                    <p style="font-size: 15px">
+                        <b>【供应商】</b>{{ obj.supplier }}</p>
+                    <p style="font-size: 15px"><b>【可加工材料】</b>{{ obj.capMat }}</p>
+                    <p style="font-size: 15px"><b>【刀具材料】</b>{{ obj.cutterMat }}</p>
+                    <p style="font-size: 15px"><b>【可加工工艺】</b>{{ obj.capPro }}</p>
+                    <p style="font-size: 15px"><b>【刀具成本】</b>{{ obj.cutterCost }}</p>
+                    <pre>{{ obj.script }}</pre>
+                </div>
+                <div style="float:right; width: 50%">
+                    <p style=" font-size: 15px"><b>【示意图】</b></p>
+                    {% if obj.cutterImg %}
+                        <img src="{{ obj.cutterImg.url }}" alt="{{ obj.cutterImg }}"
+                             style="width: 100%; object-fit: contain">
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </div>
+
 {% endblock main %}

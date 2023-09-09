@@ -64,34 +64,38 @@
             </div>
         </div>
     </div>
+
     <script>
-        var chosenId = -1
+        var chosenId = []
         var rows = document.getElementsByTagName("tr")
 
         for (var i = 0; i < rows.length; i++) {
             rows[i].addEventListener("click", function () {
                 //先全部清空
-                for (var j = 0; j < rows.length; j++) {
-                    rows[j].style.background = 'white'
-                }
-                chosenId = this.firstElementChild.innerHTML
+
+                chosenId.push(this.firstElementChild.innerHTML)
+
                 if (chosenId != "编号") {
                     //高亮
-                    this.style.background = 'yellow'
+                    this.style.background = 'rgba(162,200,243,0.6)'
                 }
             })
         }
 
         function edit() {
-            if (chosenId != -1) {
-                location.href = '/edit_processCheck?id=' + chosenId
+            if (chosenId.length === 1) {
+                location.href = '/edit_processCheck?id=' + chosenId[0]
             }
         }
 
         function deletes() {
-            if (chosenId != -1) {
-                location.href = '/delete_processCheck?id=' + chosenId
-            }
+            let arrayAsString = JSON.stringify(chosenId);
+            let baseUrl = '/delete_processCheck';
+            let urlWithArray = `${baseUrl}?array=${encodeURIComponent(arrayAsString)}`;
+
+                location.href = urlWithArray
+
+
         }
 
         function search() {
