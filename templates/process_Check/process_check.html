@@ -66,29 +66,61 @@
     </div>
 
     <script>
-        var chosenId = []
-        var rows = document.getElementsByTagName("tr")
+var clickCounts = {}; // 用于存储每行的点击计数
+var rows = document.getElementsByTagName("tr");
+var oddCount = 0; // 用于计数被点击次数为奇数的行数
 
-        for (var i = 0; i < rows.length; i++) {
-            rows[i].addEventListener("click", function () {
-                //先全部清空
+for (var i = 1; i < rows.length; i++) {
+    rows[i].addEventListener("click", function () {
+        var cellValue = this.firstElementChild.innerHTML;
 
-                chosenId.push(this.firstElementChild.innerHTML)
-
-                if (chosenId != "编号") {
-                    //高亮
-                    this.style.background = 'rgba(162,200,243,0.6)'
-                }
-            })
+        // 检查点击计数，如果未定义则初始化为0
+        if (clickCounts[cellValue] === undefined) {
+            clickCounts[cellValue] = 0;
         }
 
+        // 增加点击计数
+        clickCounts[cellValue]++;
+
+        // 根据点击次数切换高亮状态
+        if (clickCounts[cellValue] % 2 === 1) {
+            this.style.background = 'rgba(162, 200, 243, 0.6)';
+            oddCount++;
+        } else {
+            this.style.background = ''; // 取消高亮
+            oddCount--;
+        }
+
+        // 判断被点击次数为奇数的行数是否为1
+        if (oddCount === 1) {
+            console.log("被点击次数为奇数的行数为1。");
+        } else {
+            console.log("被点击次数为奇数的行数不为1。");
+        }
+        console.log(clickCounts);
+    });
+}
+
         function edit() {
-            if (chosenId.length === 1) {
-                location.href = '/edit_processCheck?id=' + chosenId[0]
+                if (oddCount === 1) {
+                        for (var key in clickCounts) {
+                            if (clickCounts[key] % 2 === 1) {
+                        location.href = '/edit_processCheck?id=' + key;
+                                console.log(key);
+                    }
+                }
             }
+
         }
 
         function deletes() {
+
+                var chosenId = [];
+                for (var key in clickCounts) {
+                    if (clickCounts[key] % 2 === 1) {
+                        chosenId.push(key);
+                    }
+                }
             let arrayAsString = JSON.stringify(chosenId);
             let baseUrl = '/delete_processCheck';
             let urlWithArray = `${baseUrl}?array=${encodeURIComponent(arrayAsString)}`;
