@@ -314,12 +314,13 @@ class TableFunction(models.Model):
     查表函数表
     '''
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=128, null=False, unique=True)  # 数据库内表名
+    name = models.CharField(max_length=128, null=False, unique=False)  # 数据库内表名
     functionName = models.CharField(max_length=128, null=True, unique=True)  # 内部查表函数名
     inputPara = models.TextField(null=True, unique=False)   # 输入参数
     outputPara = models.TextField(null=True, unique=False)  # 返回参数
     sql = models.TextField(null=True, unique=False)  # 对应SQL语句
     remark = models.TextField(null=True, unique=False)  # 备注
+    fieldOfInputPara = models.TextField(null=True, unique=False)  # 输入参数的对应字段
 
     def __str__(self):
         return self.name
