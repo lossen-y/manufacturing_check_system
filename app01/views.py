@@ -1089,7 +1089,6 @@ def add_Feature(request):
             return redirect('/standardKnowNInfo/standardStruction/')
         else:
             error_msg = '特征小类不能为空'
-    # books = models.Book.objects.all()
     return render(request, 'old/add_Feature.html', {'error_msg': error_msg})
 
 
@@ -1605,11 +1604,13 @@ class Edge:  # 边
 
 def get_data_links():
     PMI_node_name="PMI规则"
+    Part_node_name="零件级"
     feature_type=["孔","口框","槽" ,"凸台","筋","加工面","轮廓"]
     data=[]
     links=[]
     global Node_ID
     Node_ID=0
+    #特征级
     for type in feature_type:
         node_type = Node(type, '特征', '特征', 0)
         data.append(node_type)
@@ -1643,6 +1644,33 @@ def get_data_links():
                 links.append(edge_ruleTypeSecond)
                 links.append(edge_manuType)
                 links.append(edge_featPro)
+    node_part_root = Node(Part_node_name, '特征', '特征', 0)
+    data.append(node_part_root)
+    part_rule = models.Rule.objects.filter(ruleClass__icontains=Part_node_name)
+    for rule in part_rule:
+        node_rule = Node(rule.name, '规则', '规则', 2)
+        node_rule.rule_type = '工艺性审查知识'
+        node_rule.rule_id = rule.id
+        edge_rule = Edge(node_part_root.id, node_rule.id, '包含规则')
+        data.append(node_rule)
+        links.append(edge_rule)
+        node_ruleTypeFirst = Node(rule.ruleTypeFirst, '规则属性', '规则大类', 3)
+        node_ruleTypeSecond = Node(rule.ruleTypeSecond, '规则属性', '规则小类', 3)
+        node_manuType = Node(rule.manuType, '规则属性', '加工方式', 3)
+        node_featPro = Node(rule.featPro, '规则属性', '特征属性', 3)
+        edge_ruleTypeFirst = Edge(node_rule.id, node_ruleTypeFirst.id, '规则大类')
+        edge_ruleTypeSecond = Edge(node_rule.id, node_ruleTypeSecond.id, '规则小类')
+        edge_manuType = Edge(node_rule.id, node_manuType.id, '加工方式')
+        edge_featPro = Edge(node_rule.id, node_featPro.id, '特征属性')
+        data.append(node_ruleTypeFirst)
+        data.append(node_ruleTypeSecond)
+        data.append(node_manuType)
+        data.append(node_featPro)
+        links.append(edge_ruleTypeFirst)
+        links.append(edge_ruleTypeSecond)
+        links.append(edge_manuType)
+        links.append(edge_featPro)
+
     node_pmi_root = Node(PMI_node_name, '特征', '特征', 0)
     data.append(node_pmi_root)
     PMI_rule=models.PMIRule.objects.all()
@@ -1962,8 +1990,7 @@ def standard_process(request):
 
 
 def material(request):
-    all_author = models.Author.objects.all()
-    return render(request, 'standard_knowledge_and_information/material.html', {'author_list': all_author})
+    return render(request, 'standard_knowledge_and_information/material.html')
 
 
 def resource(request):
@@ -1972,8 +1999,7 @@ def resource(request):
 
 
 def standardize(request):
-    all_author = models.Author.objects.all()
-    return render(request, 'standard_knowledge_and_information/standardize.html', {'author_list': all_author})
+    return render(request, 'standard_knowledge_and_information/standardize.html')
 
 
 def rule_parameter(request):
@@ -2303,108 +2329,3 @@ def API_TableFunction(request):
 
     return JsonResponse(jsonPackage)
 
-def knowledge_graph(request):
-    data, links = get_data_links()
-    d1 = json.dumps(data)
-    l1 = json.dumps(links)
-    return render(request, 'knowledge_graph.html', {'data': d1, 'links': l1})
-    # return render(request, 'knowledge_graph.html')
-
-global Node_ID
-
-class Node:  # 节点
-    def __init__(self, name, belong_to, desc,category):  # 初始化节点的属性
-        global Node_ID
-        self.name = name
-        self.id=Node_ID
-        self.belong_to = belong_to
-        self.desc = desc
-        self.category = category
-        self.rule_id=None
-        self.rule_type = None
-        Node_ID+=1
-class Edge:  # 边
-    def __init__(self, source, target, value):  # 初始化边的属性
-        self.source = source
-        self.target = target
-        self.value = value
-
-
-def get_data_links():
-    PMI_node_name="PMI规则"
-    feature_type=["孔","口框","槽" ,"凸台","筋","加工面","轮廓"]
-    data=[]
-    links=[]
-    global Node_ID
-    Node_ID=0
-    for type in feature_type:
-        node_type = Node(type, '特征', '特征', 0)
-        data.append(node_type)
-        sub_type_set=models.Feature.objects.filter(classFirst__icontains=type)
-        for sub_type in sub_type_set:
-            node_sub_type = Node(sub_type.classSecond, '特征', '特征', 1)
-            edge_sub_type = Edge(node_type.id, node_sub_type.id, '包含子特征')
-            data.append(node_sub_type)
-            links.append(edge_sub_type)
-            sub_type_rule_set = models.Rule.objects.filter(featTypeSecond__icontains=sub_type.classSecond)
-            for rule in sub_type_rule_set:
-                node_rule=Node(rule.name, '规则', '规则', 2)
-                node_rule.rule_type='工艺性审查知识'
-                node_rule.rule_id=rule.id
-                edge_rule=Edge(node_sub_type.id, node_rule.id,'包含规则')
-                data.append(node_rule)
-                links.append(edge_rule)
-                node_ruleTypeFirst=Node(rule.ruleTypeFirst, '规则属性', '规则大类', 3)
-                node_ruleTypeSecond = Node(rule.ruleTypeSecond, '规则属性', '规则小类', 3)
-                node_manuType=Node(rule.manuType, '规则属性', '加工方式', 3)
-                node_featPro = Node(rule.featPro, '规则属性', '特征属性', 3)
-                edge_ruleTypeFirst=Edge(node_rule.id, node_ruleTypeFirst.id,'规则大类')
-                edge_ruleTypeSecond = Edge(node_rule.id, node_ruleTypeSecond.id, '规则小类')
-                edge_manuType = Edge(node_rule.id, node_manuType.id, '加工方式')
-                edge_featPro = Edge(node_rule.id, node_featPro.id, '特征属性')
-                data.append(node_ruleTypeFirst)
-                data.append(node_ruleTypeSecond)
-                data.append(node_manuType)
-                data.append(node_featPro)
-                links.append(edge_ruleTypeFirst)
-                links.append(edge_ruleTypeSecond)
-                links.append(edge_manuType)
-                links.append(edge_featPro)
-    node_pmi_root = Node(PMI_node_name, '特征', '特征', 0)
-    data.append(node_pmi_root)
-    PMI_rule=models.PMIRule.objects.all()
-    for rule in PMI_rule:
-        node_sub_type = Node(rule.name, '规则', '规则', 2)
-        node_sub_type.rule_type='PMI标注审查知识'
-        node_sub_type.rule_id=rule.id
-        edge_pmi_rule = Edge(node_pmi_root.id,node_sub_type.id, '包含规则')
-        node_ruleType = Node(rule.ruleType, '规则属性', '规则类型', 3)
-        edge_ruleType = Edge(node_sub_type.id, node_ruleType.id, '规则类型')
-        node_annoType = Node(rule.annoType, '规则属性', '规则对应标注的类型', 3)
-        edge_annoType = Edge(node_sub_type.id, node_annoType.id, '规则对应标注的类型')
-        data.append(node_sub_type)
-        data.append(node_ruleType)
-        data.append(node_annoType)
-        links.append(edge_pmi_rule)
-        links.append(edge_ruleType)
-        links.append(edge_annoType)
-    node = []
-    for d in data:
-        da = {'value': {'belong_to': '', 'desc': '', }, 'category': 0}
-        da['name'] = d.name
-        da['id'] = d.id
-        da['value']['belong_to'] = d.belong_to
-        da['value']['desc'] = d.desc
-        da['value']['rule_type'] = d.rule_type
-        da['value']['rule_id'] = d.rule_id
-        da['category'] = int(d.category)
-        node.append(da)
-    # links = Edge.objects.all()
-    edge = []
-    for l in links:
-        li = {'source': '', 'target': '', 'category': 0, 'value': '', 'symbolSize': 10}
-        li['source'] = l.source
-        li['target'] = l.target
-        li['value'] = l.value
-        edge.append(li)
-    return node, edge

@@ -11,40 +11,69 @@
         <div class="panel-heading">编辑标准特征</div>
         <div class="panel-body">
             <form class="form-horizontal" action="{% url 'edit_Feature' Feature.id %}" method="post">
-                <div class="form-group">
-                    <label for="Feature_classFirst" class="col-sm-2 control-label">特征大类</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="Feature_classFirst" name="Feature_classFirst"
-                               placeholder="特征大类" value="{{ Feature.classFirst }}">
+                <div class="form-group" id="Rule-basicInfo" style="width:60%;float:left;">
+                    <div class="form-group">
+                        <label for="Feature-classFirst" class="col-sm-2 control-label">特征大类</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="Feature-classFirst" data-live-search="true"
+                                    name="Feature_classFirst" >
+                               <option value="孔" {% if Feature.classFirst == "孔" %} selected {% endif %}>孔
+                                </option>
+                                <option value="口框" {% if Feature.classFirstt == "口框" %} selected {% endif %}>口框
+                                </option>
+                                <option value="槽" {% if Feature.classFirst == "槽" %} selected {% endif %}>槽
+                                </option>
+                                <option value="凸台" {% if Feature.classFirst == "凸台" %} selected {% endif %}>凸台
+                                </option>
+                                <option value="筋" {% if Feature.classFirst == "筋" %} selected {% endif %}>筋
+                                </option>
+                                <option value="加工面" {% if Feature.classFirst == "加工面" %} selected {% endif %}>
+                                    加工面
+                                </option>
+                                <option value="轮廓" {% if Feature.classFirst == "轮廓" %} selected {% endif %}>轮廓
+                                </option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="Feature-classSecond" class="col-sm-2 control-label">特征小类</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="Feature-classSecond" placeholder="特征小类"
-                               name="Feature_classSecond" value="{{ Feature.classSecond }}">
+                    <div class="form-group">
+                        <label for="Feature-classSecond" class="col-sm-2 control-label">特征小类</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="Feature-classSecond" placeholder="特征小类"
+                                   name="Feature_classSecond" value="{{ Feature.classSecond }}">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="Feature-paraDef" class="col-sm-2 control-label">参数化定义</label>
-                    <div class="col-sm-10">
-                        <textarea  class="form-control" id="Feature-paraDef" placeholder="参数化定义"
-                                  name="Feature_paraDef" rows="5" >{{ Feature.paraDef }}</textarea>
+                    <div class="form-group">
+                        <label for="Feature-paraDef" class="col-sm-2 control-label">特征编号</label>
+                        <div class="col-sm-10">
+                            <input  type="text" class="form-control" id="Feature-paraDef" placeholder="特征编号"
+                                      name="Feature_paraDef" value="{{ Feature.paraDef }}">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="Feature-imgPath" class="col-sm-2 control-label">示意图片路径</label>
-                    <div class="col-sm-10">
-                        <textarea  class="form-control" id="Feature-imgPath" placeholder="示意图片路径"
-                                  name="Feature_imgPath" rows="5" >{{ Feature.imgPath }}</textarea>
-                    </div>
-                </div>
-                <div class="form-group">
+                    <div class="form-group">
                     <label for="Feature-remark" class="col-sm-2 control-label">备注</label>
                     <div class="col-sm-10">
                         <textarea  class="form-control" id="Feature-remark" placeholder="备注"
-                                  name="Feature_remark" rows="5" >{{ Feature.remark }}</textarea>
+                                  name="Feature_remark" rows="5">{{ Feature.remark }}</textarea>
                     </div>
+                </div>
+                </div>
+                <div class="form-group" id="Feature-imgPath" style="width:40%; float:right;">
+                    <label for="Feature-imgPath" class="col-sm-2 control-label">示意图</label>
+                    <input type="file" id="oneimg" name="Feature_imgPath">
+                     <div style="clear:both;"></div>
+                    {% if Feature.imgPath %}
+                        <div style="margin-top: 10px; display: inline-block; clear: both"
+                             id="preview">
+                            <img src="{{ Feature.imgPath.url }}" alt="{{ Feature.imgPath }}"
+                                 style="width: 100%; height: 100%; object-fit: contain">
+                        </div>
+                    {% else %}
+                        {#                        <p style="color: red">请上传对应图片</p>#}
+                        <div style="margin-top: 10px; display: inline-block; clear: both"
+                             id="preview">
+                            <img style="width: 100%; height: 100%; object-fit: contain">
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
@@ -56,6 +85,25 @@
             </form>
         </div>
     </div>
+            <script type="text/javascript">
+        const preview = document.getElementById('preview');
+        //图片提示
+        const uploadInput = document.getElementById('oneimg');
+        uploadInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.addEventListener('load', function () {
+                    preview.innerHTML = `<img src="${reader.result}" alt="预览图" style="width: 100%; height: 100%; object-fit: contain">`;
+                });
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '暂无预览';
+            }
+        });
+        </script>
 {% endblock main %}
 
 {% block Feature_list %}
