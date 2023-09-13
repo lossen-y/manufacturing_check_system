@@ -179,7 +179,6 @@
 {#            })#}
 {#        }#}
 {##}
-
 var clickCounts = {}; // 用于存储每行的点击计数
 var rows = document.getElementsByTagName("tr");
 var oddCount = 0; // 用于计数被点击次数为奇数的行数
@@ -213,6 +212,7 @@ for (var i = 1; i < rows.length; i++) {
         console.log(clickCounts);
     });
 }
+
         function edit_cutter() {
             if (oddCount === 1) {
                         for (var key in clickCounts) {
