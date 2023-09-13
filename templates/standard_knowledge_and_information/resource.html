@@ -51,14 +51,23 @@
                                 <form style="width:400px;display:inline" action="/search_cutter/" method="get" id='tool_form'>
                                 <input style="width:300px;float:left;" class="form-control" type="text" name="cutter_search" placeholder="刀具编号">
                                     <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+
                                 </form>
+
                             </div><!-- /input-group -->
+
                         </div><!-- /.col-md-4 -->
+                        <a href="{% url 'resource' %}" class="btn btn-success pull-right">刷新</a>
                         <div class="col-md-3 pull-right">
                             <a href="{% url 'add_cutter' %}" class="btn btn-success pull-right"><i
                                     class="fa fa-plus fa-fw"></i>添加刀具</a>
 
+                            <a class="btn btn-info" onclick="edit_cutter()"><i class="fa fa-pencil fa-fw"></i>修改</a>
+                            <a class="btn btn-danger" onclick="delete_cutter()"><i class="fa fa-trash-o fa-fw"></i>删除</a>
+
                         </div>
+
+
 
                     </div><!-- /.row -->
                     <style>
@@ -110,8 +119,9 @@
                     <table class="table table-bordered" id="table">
                         <thead>
                         <tr>
-                            <th>数据操作</th>
-                            <th>刀具编号</th>
+
+                            <th style="display: none">刀具编号</th>
+                            <th>刀具名称</th>
                             <th>供应商</th>
                             <th>最高公差等级</th>
                             <th>最低公差等级</th>
@@ -130,12 +140,8 @@
                         <tbody>
                         {% for cutter in cutter_list %}
                             <tr>
-                                <td class="buttentest">
-                                    <a class="btn btn-danger" href="{% url 'delete_cutter' cutter.id %}"><i
-                                            class="fa fa-trash-o fa-fw"></i>删除</a>
-                                    <a class="btn btn-info" href="{% url 'edit_cutter' cutter.id %}"><i
-                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
-                                </td>
+
+                                <td style="display: none">{{ cutter.id }}</td>
                                 <td>{{ cutter.name }}</td>
                                 <td>{{ cutter.supplier }}</td>
                                 <td>{{ cutter.minHoleTole }}</td>
@@ -154,6 +160,84 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                                <script>
+
+{##}
+{#        var chosenId = []#}
+{#        var rows = document.getElementsByTagName("tr")#}
+{##}
+{#        for (var i = 0; i < rows.length; i++) {#}
+{#            rows[i].addEventListener("click", function () {#}
+{#                //先全部清空#}
+{##}
+{#                chosenId.push(this.firstElementChild.innerHTML)#}
+{##}
+{#                if (chosenId != "编号") {#}
+{#                    //高亮#}
+{#                    this.style.background = 'rgba(162,200,243,0.6)'#}
+{#                }#}
+{#            })#}
+{#        }#}
+{##}
+var clickCounts = {}; // 用于存储每行的点击计数
+var rows = document.getElementsByTagName("tr");
+var oddCount = 0; // 用于计数被点击次数为奇数的行数
+
+for (var i = 1; i < rows.length; i++) {
+    rows[i].addEventListener("click", function () {
+        var cellValue = this.firstElementChild.innerHTML;
+
+        // 检查点击计数，如果未定义则初始化为0
+        if (clickCounts[cellValue] === undefined) {
+            clickCounts[cellValue] = 0;
+        }
+        // 增加点击计数
+        clickCounts[cellValue]++;
+
+        // 根据点击次数切换高亮状态
+        if (clickCounts[cellValue] % 2 === 1) {
+            this.style.background = 'rgba(162, 200, 243, 0.6)';
+            oddCount++;
+        } else {
+            this.style.background = ''; // 取消高亮
+            oddCount--;
+        }
+
+        // 判断被点击次数为奇数的行数是否为1
+        if (oddCount === 1) {
+            console.log("被点击次数为奇数的行数为1。");
+        } else {
+            console.log("被点击次数为奇数的行数不为1。");
+        }
+        console.log(clickCounts);
+    });
+}
+
+        function edit_cutter() {
+            if (oddCount === 1) {
+                        for (var key in clickCounts) {
+                            if (clickCounts[key] % 2 === 1) {
+                        location.href = '/edit_cutter/' + key;
+                                console.log(key);
+                    }
+                }
+            }
+        }
+        function delete_cutter() {
+            var chosenId = [];
+                for (var key in clickCounts) {
+                    if (clickCounts[key] % 2 === 1) {
+                        chosenId.push(key);
+                    }
+                }
+            let arrayAsString = JSON.stringify(chosenId);
+            let baseUrl = '/delete_cutter';
+            let urlWithArray = `${baseUrl}?array=${encodeURIComponent(arrayAsString)}`;
+                location.href = urlWithArray
+        }
+
+                </script>
+
                     <script type="text/javascript">
                         var tTD;
                         var table = document.getElementById("table");
@@ -192,7 +276,12 @@
                                 }
                             };
                         }
+
+
                 </script>
+
+
+
                 </div>
                 </div>
 
@@ -368,6 +457,7 @@
                                 <form style="width:400px;display:inline" action="/search_mach/" method="get" id="mach_form">
                                 <input style="width:300px;float:left;" class="form-control" type="text" name="mach_search" placeholder="机床编号">
                                     <button style="width:50px;float:right;" class="btn btn-default" type="submit">搜索</button>
+
                                 </form>
                             </div><!-- /input-group -->
                         </div><!-- /.col-md-4 -->
@@ -428,7 +518,7 @@
                         <thead>
                         <tr>
                             <th>数据操作</th>
-                            <th>机床名称</th>
+                            <th style="display: none">机床编号</th>
                             <th>机床类型</th>
                             <th>线行轴X行程</th>
                             <th>线行轴Y行程</th>
@@ -460,10 +550,12 @@
                                 <td class="buttentest">
                                     <a class="btn btn-danger" href="{% url 'delete_mach' mach.id %}"><i
                                             class="fa fa-trash-o fa-fw"></i>删除</a>
-                                    <a class="btn btn-info" href="{% url 'edit_mach' mach.id %}"><i
-                                            class="fa fa-pencil fa-fw"></i>查看并编辑</a>
+                                    <a class="btn btn-danger" href="{% url 'edit_mach' mach.id %}"><i
+                                            class="fa fa-trash-o fa-fw"></i>查看并编辑</a>
+
+
                                 </td>
-                                <td>{{ mach.name }}</td>
+                                <td style="display: none">机床编号</td>
                                 <td>{{ mach.machType }}</td>
                                 <td>{{ mach.travelX }}</td>
                                 <td>{{ mach.travelY }}</td>
@@ -491,6 +583,10 @@
                         {% endfor %}
                         </tbody>
                     </table>
+
+
+
+
                     <script type="text/javascript">
                         var tTD;
                         var table = document.getElementById("table");

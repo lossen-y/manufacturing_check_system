@@ -10,37 +10,92 @@
             <form class="form-horizontal" action="{% url 'index' %}" method="post">
 
                 <div class="form-group" style="text-align: center;">
-                    <select class="form-control" name="type" style="width: 15%; display: inline-block">
+                    <select class="form-control" name="type" style="width: 15%; display: inline-block" id="firstDropdown">
                         <option value="工艺性审查知识" {% if type == "工艺性审查知识" %} selected {% endif %}>
                             工艺性审查知识
                         </option>
                         <option value="PMI标注审查知识" {% if type == "PMI标注审查知识" %} selected {% endif %}>
                             PMI标注审查知识
                         </option>
+                        <option value="标准化知识和信息|制造资源-刀具" {% if type == "标准化知识和信息|制造资源-刀具" %} selected {% endif %}>
+                            标准化知识和信息|制造资源-刀具
+                        </option>
+
                     </select>
 
+                    <select class="form-control" name="class" style="width: 10%; display: inline-block" id="secondDropdown">
+
+                    </select>
+
+                    <script>
+                    // 获取第一个下拉框和第二个下拉框的引用
+                    var firstDropdown = document.getElementById("firstDropdown");
+                    var secondDropdown = document.getElementById("secondDropdown");
+
+                    // 定义一个对象，用于存储第一个下拉框选项和相应的第二个下拉框选项
+                    var optionMapping = {
+                        "工艺性审查知识": ["全部", "零件级", "特征级"],
+                        "PMI标注审查知识": ["全部", "零件级", "特征级"],
+                        "标准化知识和信息|制造资源-刀具": ["全部", "刀具名称", "供应商",'可加工材料','刀具材料','可加工工艺','刀具成本']
+                    };
+
+                    // 初始化第二个下拉框的选项为第一个选项对应的选项
+                    updateSecondDropdown();
+
+                    // 当第一个下拉框的值改变时，更新第二个下拉框的选项
+                    firstDropdown.addEventListener("change", function() {
+                        updateSecondDropdown();
+                    });
+
+                    // 更新第二个下拉框的选项函数
+                    function updateSecondDropdown() {
+                        // 清空第二个下拉框的选项
+                        secondDropdown.innerHTML = "";
+
+                        // 获取第一个下拉框的值
+                        var selectedValue = firstDropdown.value;
+
+                        // 根据第一个下拉框的值，生成第二个下拉框的选项
+                        var options = optionMapping[selectedValue];
+
+                        // 创建新的选项并添加到第二个下拉框
+                        options.forEach(function(optionValue) {
+                            var option = document.createElement("option");
+                            option.text = optionValue;
+                            secondDropdown.add(option);
+                        });
+                    }
+                </script>
+
                     <input type="text" class="form-control" id="search_content"
-                           name="search_content" style="width: 70%; display: inline-block" value="{{ content }}">
+                           name="search_content" style="width: 60%; display: inline-block" value="{{ content }}">
 
                     <button type="submit" class="btn btn-success">搜索</button>
                 </div>
                 {% csrf_token %}
             </form>
         </div>
+
+
+
+
+
         <div style="margin-bottom: -30px">
             <h3 style="font-weight: bold">搜索结果：</h3>
         </div>
+
         <div class="panel-body">
             {% if type == '工艺性审查知识' %}
                 {% for obj_item in obj %}
                     <div style="margin-top:20px;">
                         <div style="width: 70%; height:150px; float:left;">
-                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}"
-                               style="font-size: 20px">{{ obj_item.name }}</a>
+                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}&class={{ class }}"
+                               style="font-size: 20px">【{{ obj_item.code }}】{{ obj_item.name }}</a>
+                            <p>【规则等级】{{ obj_item.ruleClass }}</p>
                             <p>【规则类型】{{ obj_item.ruleTypeFirst }}-{{ obj_item.ruleTypeSecond }}</p>
                             <p>【特征】{{ obj_item.featTypeFirst }}-{{ obj_item.featTypeSecond }}</p>
                             <p>【规则描述】{{ obj_item.content }}</p>
-                            <p>【备注】{{ obj_item.remark }}</p>
+                            {#                            <p>【备注】{{ obj_item.remark }}</p>#}
                         </div>
                         <div style="width: 30%; height:150px; float: right;">
                             {% if obj_item.img %}
@@ -57,7 +112,8 @@
                 {% for obj_item in obj %}
                     <div style="margin-top:30px;">
                         <div style="width: 70%; height:150px; float:left;">
-                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}" style="font-size: 20px">{{ obj_item.name }}</a>
+                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}&class={{ class }}"
+                               style="font-size: 20px">【{{ obj_item.code }}】{{ obj_item.name }}</a>
                             <p>【标注类型】{{ obj_item.annoType }}</p>
                             <p>【规则类型】{{ obj_item.ruleType }}</p>
                             <p>【描述】{{ obj_item.content }}</p>
@@ -72,6 +128,36 @@
                     <div style="clear: both"></div>
                 {% endfor %}
             {% endif %}
+
+
+
+        {% if type == '标准化知识和信息|制造资源-刀具' %}
+                {% for obj_item in obj %}
+                    <div style="margin-top:20px;">
+                        <div style="width: 70%; height:150px; float:left;">
+                            <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}&class={{ class }}"
+                               style="font-size: 20px">【{{ obj_item.name }}】{{ obj_item.name }}</a>
+                            <p>【刀具名称】{{ obj_item.name }}</p>
+                            <p>【供应商】{{ obj_item.supplier }}</p>
+                            <p>【可加工材料】{{ obj_item.capMat }}</p>
+
+                            {#                            <p>【备注】{{ obj_item.remark }}</p>#}
+                        </div>
+                        <div style="width: 30%; height:150px; float: right;">
+                            {% if obj_item.cutterImg %}
+                                <img src="{{ obj_item.cutterImg.url }}" alt="{{ obj_item.cutterImg }}"
+                                     style="width: 100%; height: 100%; object-fit: contain">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+
+                {% endfor %}
+            {% endif %}
+
+
+
         </div>
     </div>
 {% endblock main %}
+

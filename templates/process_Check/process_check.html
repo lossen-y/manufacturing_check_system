@@ -7,89 +7,133 @@
 {% block main %}
     <h2 class="page-header" style="border-bottom: none">工艺性审查知识</h2>
     <div id="myTabContent" class="tab-content">
-            <div class="panel panel-primary">
-                <!-- Default panel contents -->
-                <div class="panel-heading">工艺性审查知识表 <i class="fa fa-thumb-tack pull-right"></i></div>
-                <div class="panel-body">
-                    <div class="row" style="margin-bottom: 15px">
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for..." id="searchInput">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" id = "secrch-Btn" onclick="search()">搜索</button>
+        <div class="panel panel-primary">
+            <!-- Default panel contents -->
+            <div class="panel-heading">工艺性审查知识表 <i class="fa fa-thumb-tack pull-right"></i></div>
+            <div class="panel-body">
+                <div class="row" style="margin-bottom: 15px">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for..." id="searchInput">
+                            <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="secrch-Btn"
+                                            onclick="search()">搜索</button>
                                 </span>
-                                <a href="{% url 'process_check' %}" class="btn btn-success pull-right">刷新</a>
-                            </div><!-- /input-group -->
-                        </div><!-- /.col-md-4 -->
-                        <div class="col-md-3 pull-right">
-                            <a href="{% url 'add_process_check' %}" class="btn btn-success pull-right"><i
-                                    class="fa fa-plus fa-fw"></i>添加</a>
-                            <a class="btn btn-info" onclick="edit()" ><i class="fa fa-pencil fa-fw"></i>修改</a>
-                            <a class="btn btn-danger" onclick="deletes()"><i class="fa fa-trash-o fa-fw"></i>删除</a>
-                        </div>
+                            <a href="{% url 'process_check' %}" class="btn btn-success pull-right">刷新</a>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-md-4 -->
+                    <div class="col-md-3 pull-right">
+                        <a href="{% url 'add_process_check' %}" class="btn btn-success pull-right"><i
+                                class="fa fa-plus fa-fw"></i>添加</a>
+                        <a class="btn btn-info" onclick="edit()"><i class="fa fa-pencil fa-fw"></i>修改</a>
+                        <a class="btn btn-danger" onclick="deletes()"><i class="fa fa-trash-o fa-fw"></i>删除</a>
                     </div>
-
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th style="display: none">编号</th>
-                            <th>规则名称</th>
-                            <th>规则大类</th>
-                            <th>规则小类</th>
-                            <th>特征大类</th>
-                            <th>特征小类</th>
-                            <th>知识描述</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for process_check_rule in process_check_rule_list %}
-                            <tr>
-                                <td style="display: none">{{ process_check_rule.id }}</td>
-                                <td>{{ process_check_rule.name }}</td>
-                                <td>{{ process_check_rule.ruleTypeFirst }}</td>
-                                <td>{{ process_check_rule.ruleTypeSecond }}</td>
-                                <td>{{ process_check_rule.featTypeFirst }}</td>
-                                <td>{{ process_check_rule.featTypeSecond }}</td>
-                                <td>{{ process_check_rule.content }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-
                 </div>
-            </div>
-    </div>
-    <script>
-        var chosenId = -1
-        var rows = document.getElementsByTagName("tr")
 
-        for (var i =0; i< rows.length; i++){
-            rows[i].addEventListener("click", function (){
-                //先全部清空
-                for (var j =0; j< rows.length; j++){
-                    rows[j].style.background = 'white'
-                }
-                chosenId = this.firstElementChild.innerHTML
-                if (chosenId != "编号"){
-                    //高亮
-                this.style.background = 'yellow'
-                }
-            })
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th style="display: none">编号</th>
+                        <th>规则编号</th>
+                        <th>规则名称</th>
+                        <th>规则等级</th>
+                        <th>规则大类</th>
+                        <th>规则小类</th>
+                        <th>特征大类</th>
+                        <th>特征小类</th>
+                        <th>知识描述</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for process_check_rule in process_check_rule_list %}
+                        <tr>
+                            <td style="display: none">{{ process_check_rule.id }}</td>
+                            <td>{{ process_check_rule.code }}</td>
+                            <td>{{ process_check_rule.name }}</td>
+                            <td>{{ process_check_rule.ruleClass }}</td>
+                            <td>{{ process_check_rule.ruleTypeFirst }}</td>
+                            <td>{{ process_check_rule.ruleTypeSecond }}</td>
+                            <td>{{ process_check_rule.featTypeFirst }}</td>
+                            <td>{{ process_check_rule.featTypeSecond }}</td>
+                            <td>{{ process_check_rule.content }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+var clickCounts = {}; // 用于存储每行的点击计数
+var rows = document.getElementsByTagName("tr");
+var oddCount = 0; // 用于计数被点击次数为奇数的行数
+
+for (var i = 1; i < rows.length; i++) {
+    rows[i].addEventListener("click", function () {
+        var cellValue = this.firstElementChild.innerHTML;
+
+        // 检查点击计数，如果未定义则初始化为0
+        if (clickCounts[cellValue] === undefined) {
+            clickCounts[cellValue] = 0;
         }
-        function edit(){
-            if (chosenId != -1){
-                location.href =  '/edit_processCheck?id='+chosenId
+
+        // 增加点击计数
+        clickCounts[cellValue]++;
+
+        // 根据点击次数切换高亮状态
+        if (clickCounts[cellValue] % 2 === 1) {
+            this.style.background = 'rgba(162, 200, 243, 0.6)';
+            oddCount++;
+        } else {
+            this.style.background = ''; // 取消高亮
+            oddCount--;
+        }
+
+        // 判断被点击次数为奇数的行数是否为1
+        if (oddCount === 1) {
+            console.log("被点击次数为奇数的行数为1。");
+        } else {
+            console.log("被点击次数为奇数的行数不为1。");
+        }
+        console.log(clickCounts);
+    });
+}
+
+        function edit() {
+                if (oddCount === 1) {
+                        for (var key in clickCounts) {
+                            if (clickCounts[key] % 2 === 1) {
+                        location.href = '/edit_processCheck?id=' + key;
+                                console.log(key);
+                    }
+                }
             }
+
         }
+
         function deletes() {
-            alert(chosenId)
-            if (chosenId != -1){
-                location.href =  '/delete_processCheck?id='+chosenId
-            }
+
+                var chosenId = [];
+                for (var key in clickCounts) {
+                    if (clickCounts[key] % 2 === 1) {
+                        chosenId.push(key);
+                    }
+                }
+            let arrayAsString = JSON.stringify(chosenId);
+            let baseUrl = '/delete_processCheck';
+            let urlWithArray = `${baseUrl}?array=${encodeURIComponent(arrayAsString)}`;
+
+                location.href = urlWithArray
+
+
         }
+
+
         function search() {
             var searchContent = document.getElementById("searchInput").value;
             location.href = "/processCheck?content=" + searchContent
-            }
+        }
     </script>
 {% endblock main %}

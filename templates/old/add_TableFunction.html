@@ -12,61 +12,254 @@
         </div>
         <div class="panel-body">
             <form class="form-horizontal" action="{% url 'add_TableFunction' %}" method="post">
-                <div class="form-group">
-                    <label for="TableFunction-name" class="col-sm-2 control-label">表名</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-name" placeholder="表名"
-                               name="TableFunction_name">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-functionName" class="col-sm-2 control-label">内部查表函数名</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-functionName" placeholder="内部查表函数名"
-                               name="TableFunction_functionName">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-inputPara" class="col-sm-2 control-label">输入参数</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-inputPara" placeholder="输入参数"
-                               name="TableFunction_inputPara">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-outputPara" class="col-sm-2 control-label">返回参数</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-outputPara" placeholder="返回参数"
-                               name="TableFunction_outputPara">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-sql" class="col-sm-2 control-label">对应SQL语句</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-sql" placeholder="对应SQL语句"
-                               name="TableFunction_sql">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="TableFunction-remark" class="col-sm-2 control-label">备注</label>
-                    <div class="col-sm-10">
-                        <textarea  class="form-control" id="TableFunction-remark" placeholder="备注"
-                                  name="TableFunction_remark" rows="5"></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
+                <div class="form-group" style="text-align:left; margin-left: 0">
+                    <div style="clear:both; float: left; margin-right: 10px">
                         <button type="submit" class="btn btn-success">提交</button>
                         <p style="color: red;">{{ error_msg }}</p>
                     </div>
+                    <div style=" float:left;">
+                        <button type="button" class="btn btn-info" id="formula-generation" onclick="generateFormula()">
+                            生成表达式
+                        </button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+
                 </div>
-            {% csrf_token %}
+
+                <div class="form-group" style=" float: left; width: 50%">
+                    <div class="form-group">
+                        <label for="TableFunction-name" class="col-sm-2 control-label">函数名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-name" placeholder="函数名"
+                                   name="TableFunction_name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-tableName" class="col-sm-2 control-label">查询表名</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="TableFunction_tableName" id="TableFunction-tableName">
+                                <option value="" selected style="display: none"></option>
+                                {% for table in table_list %}
+                                    <option value={{ table }}>{{ table }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <p id="TableFunction-tableNameText"></p>
+                    </div>
+
+                </div>
+                <div class="form-group" style=" float: right; width: 50%; margin-right: 10px">
+                    <div class="form-group">
+                        <label for="TableFunction-remark" class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-10">
+                        <textarea class="form-control" id="TableFunction-remark" placeholder="备注"
+                                  name="TableFunction_remark" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="clear: both"></div>
+                <div class="form-group" style=" float: left; width: 50%">
+
+                    <div class="form-group">
+                        <label for="TableFunction-name" class="col-sm-2 control-label">表达式</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-formula" placeholder="表达式"
+                                   name="TableFunction_formula" readonly=readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-outputPara" class="col-sm-2 control-label">返回参数</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-outputPara" placeholder="返回参数"
+                                   name="TableFunction_outputPara" readonly="readonly">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group" style=" float: right; width: 50%; margin-right: 10px">
+
+                    <div class="form-group" >
+                        <label for="TableFunction-sql" class="col-sm-2 control-label">SQL</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-sql" name="TableFunction_sql"
+                                   readonly=readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-inputPara" class="col-sm-2 control-label">输入参数</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-inputPara" placeholder="输入参数"
+                                   name="TableFunction_inputPara" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-inputPara" class="col-sm-2 control-label">对应字段</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-field_of_inputPara" placeholder="对应字段"
+                                   name="TableFunction_field_of_inputPara" readonly="readonly">
+                        </div>
+                    </div>
+
+                </div>
+                <div style="clear: both"></div>
+                <hr/>
+                <div><h5 style="clear:both; margin-left: 15px; ">输入参数:</h5></div>
+                <div class="form-group">
+
+                    <button type="button" class="btn btn-info" id="add-inputColumn" onclick="addInputColumn(this)">
+                        添加行
+                    </button>
+
+                </div>
+                <hr/>
+                <div><h5 style="clear:both; margin-left: 15px; ">返回参数:</h5></div>
+                <div class="form-group" id="outputParaDiv">
+                </div>
+                <hr/>
+
+
+                {% csrf_token %}
             </form>
         </div>
     </div>
+    <script type="text/javascript">
+
+        var field = Array();
+        var rowCount = 0;
+        //展示返回参数
+        document.getElementById("TableFunction-tableName").addEventListener("change", function () {
+            $.post("/search_table_field/", {
+                    "table": this.value,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                }, //post函数到后端
+                function (result, status) { //回调函数
+                    htmlStr = ''
+                    for (i = 0; i < result['field'].length; i++) {
+                        htmlStr += '<div style="float: left">' +
+                            '<input type = "checkbox" value = "' + result['field'][i] + '" id = outputPara' + i + '>' +
+                            '<label style="margin-right: 10px" for = "outputPara' + i + '">' + result['field'][i] + '</label>' +
+                            '</div>'
+                    }
+                    document.getElementById("outputParaDiv").innerHTML = htmlStr;
+                    field = result['field'];
+                    document.getElementById("TableFunction-tableNameText").innerText = document.getElementById("TableFunction-tableName").value
+                    document.getElementById("TableFunction-tableName").style.display = 'none'
+                });
+        })
+
+        //添加输入参数字段
+        function addInputColumn(obj) {
+            if (field.length > 0) {
+                rowCount++;
+
+                //alert(rowCount);
+                html =
+                    '<div class="col-sm-10" style="margin-top: 5px; text-align: center">' +
+                    '<p style="float: left; margin-left: 10px; margin-right: 10px;text-align: center">字段: </p>' +
+                    '<select style="width: 20%; margin-right:10px; float: left" class="form-control"' +
+                    'name="inputPara_field' + rowCount + '" id="inputPara-field' + rowCount + '">'
+                for (i = 0; i < field.length; i++) {
+                    html = html + '<option value = ' + field[i] + '>' + field[i] + '</option>'
+                }
+                html = html + '</select>' +
+                    '<select style="width: 15%; margin-right:10px; float: left" class="form-control"' +
+                    'name="inputPara_operator' + rowCount + '" id="inputPara-operator' + rowCount + '">' +
+                    '<option value="<=" ><=</option>' +
+                    '<option value="=" >=</option>' +
+                    '<option value=">=" >>=</option>' +
+                    '<option value="like">模糊匹配</option>' +
+                    '</select>' +
+                    '<input style="width: 20%; float: left" type="text" class="form-control"' +
+                    'id="inputPara-inputPara' + rowCount + '" name="inputPara_inputPara' + rowCount +
+                    '" placeholder="参数名">' +
+
+                    '<button style="margin-right:10px; float: left" class="btn btn-danger" type="button" data-toggle="tooltip" title="删除" id="delCenterIpGrp"><span class="glyphicon glyphicon-minus"></span></button>' +
+                    '</div>' +
+                    '<div style="clear: both;"></div>'
+                console.log(html)
+
+                obj.insertAdjacentHTML('beforebegin', html)
+
+                $(document).on('click', '#delCenterIpGrp', function () {
+
+                    var el = this.parentNode;
+                    el.parentNode.removeChild(el)
+
+                })
+            }
+        }
+
+        //生成各种字段和表达式
+        function generateFormula() {
+            var inputPara = "";
+            var fieldOfInputPara = "";
+            var outputPara = "";
+            if (document.getElementById('TableFunction-name').value === "") {
+                alert("未输入函数名")
+                return 0;
+            }
+            var formula = document.getElementById('TableFunction-name').value + "(";
+            var sql = "select";
+            addRow = 0
+            for (i = 0; i < field.length; i++) {
+                if (document.getElementById('outputPara' + i).checked === true) {
+                    outputPara += document.getElementById('outputPara' + i).value + ","
+                    sql += " " + document.getElementById('outputPara' + i).value + ","
+                    addRow++
+                }
+            }
+            if (addRow === 0) {
+                alert("未选择输出参数")
+                return 0;
+            }
+            sql = sql.substring(0, sql.length - 1)
+            outputPara = outputPara.substring(0, outputPara.length - 1)
+            document.getElementById('TableFunction-outputPara').value = outputPara
+            sql += " from " + document.getElementById('TableFunction-tableName').value
+            var sql1 = sql + " where"
+            addRow = 0;
+            for (i = 1; i <= rowCount; i++) {
+                if (document.getElementById('inputPara-field' + i) != null) {
+                    if (document.getElementById('inputPara-inputPara' + i).value === "") {
+                        alert("未填写输入参数")
+                        return 0;
+                    }
+
+                    sql1 += " " + document.getElementById('inputPara-field' + i).value + " " + document.getElementById('inputPara-operator' + i).value
+
+                    if (document.getElementById('inputPara-operator' + i).value === "like") {
+                        sql1 += " '%" + document.getElementById('inputPara-inputPara' + i).value + "%' and"
+                    } else {
+                        sql1 += " " + document.getElementById('inputPara-inputPara' + i).value + " and"
+                    }
+                    inputPara += document.getElementById('inputPara-inputPara' + i).value + ','
+                    fieldOfInputPara += document.getElementById('inputPara-field' + i).value + ','
+
+                    formula += document.getElementById('inputPara-inputPara' + i).value +","
+
+                    addRow++
+                }
+            }
+            inputPara = inputPara.substring(0, inputPara.length - 1)
+            fieldOfInputPara = fieldOfInputPara.substring(0, fieldOfInputPara.length - 1)
+            document.getElementById('TableFunction-inputPara').value = inputPara
+            document.getElementById('TableFunction-field_of_inputPara').value = fieldOfInputPara
+            if (addRow === 0) {
+                document.getElementById('TableFunction-sql').value = sql
+            } else {
+                sql1 = sql1.substring(0, sql1.length - 3)
+                document.getElementById('TableFunction-sql').value = sql1
+            }
+            formula = formula.substring(0, formula.length - 1) + ")"
+            document.getElementById('TableFunction-formula').value = formula
+
+        }
+    </script>
 {% endblock main %}
 
 {% block TableFunction_list %}
-active
+    active
 {% endblock TableFunction_list %}

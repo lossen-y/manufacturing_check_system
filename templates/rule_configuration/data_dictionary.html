@@ -34,7 +34,7 @@
                         <th style="display: none">编号</th>
                         <th>数据项</th>
                         <th>类型</th>
-                        <th>描述</th>
+                        <th>中文名</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -74,15 +74,16 @@
                                 <option value="特征">特征</option>
                                 <option value="特征属性">特征属性</option>
                                 <option value="专有名词">专有名词</option>
+                                <option value="" selected style="display: none"></option>
                             </select>
                         </div>
                     </div>
 
                     {# 描述 #}
                     <div class="form-group">
-                        <label for="dataDictionary-remark" class="col-sm-2 control-label">描述</label>
+                        <label for="dataDictionary-remark" class="col-sm-2 control-label">中文名</label>
                         <div class="col-sm-10">
-                            <textarea type="text" class="form-control" id="dataDictionary-remark" placeholder="描述"
+                            <textarea type="text" class="form-control" id="dataDictionary-remark" placeholder="中文名"
                                       name="dataDictionary_remark" rows = "5"></textarea>
                         </div>
                     </div>

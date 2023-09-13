@@ -84,6 +84,8 @@
                                 <option value="" selected style="display: none"></option>
                                 <option value="单值">单值</option>
                                 <option value="区间值">区间值</option>
+                                <option value="区间值_上界值">区间值_上界值</option>
+                                <option value="区间值_下界值">区间值_下界值</option>
                             </select>
                         </div>
                     </div>
@@ -142,19 +144,25 @@
                     document.getElementById("ruleParameter-name").value = this.cells[1].innerText
                     document.getElementById("ruleParameter-paraType").value = this.cells[2].innerText
                     document.getElementById("ruleParameter-remark").value = this.cells[4].innerText
+                    document.getElementById("ruleParameter-name").readOnly = true
                     if (document.getElementById("ruleParameter-paraType").value == "单值") {
                         document.getElementById('ruleParameter-singleValueDiv').style.display = 'block';
                         document.getElementById('ruleParameter-upperValueDiv').style.display = 'none'
                         document.getElementById('ruleParameter-lowerValueDiv').style.display = 'none'
                         document.getElementById("ruleParameter-singleValue").value = this.cells[3].innerText
                     }
-                    if (document.getElementById("ruleParameter-paraType").value == "区间值") {
+                    if (document.getElementById("ruleParameter-paraType").value == "区间值_上界值") {
                         document.getElementById('ruleParameter-upperValueDiv').style.display = 'block';
+                        document.getElementById('ruleParameter-lowerValueDiv').style.display = 'none';
+                        document.getElementById('ruleParameter-singleValueDiv').style.display = 'none';
+                        document.getElementById("ruleParameter-upperValue").value = this.cells[3].innerText
+                    }
+                    if (document.getElementById("ruleParameter-paraType").value == "区间值_下界值") {
+
+                        document.getElementById('ruleParameter-upperValueDiv').style.display = 'none';
                         document.getElementById('ruleParameter-lowerValueDiv').style.display = 'block';
                         document.getElementById('ruleParameter-singleValueDiv').style.display = 'none';
-                        var qujianList = this.cells[3].innerText.split(',')
-                        document.getElementById("ruleParameter-lowerValue").value = qujianList[0].substr(1)
-                        document.getElementById("ruleParameter-upperValue").value = qujianList[1].substr(0, qujianList[1].length - 1)
+                        document.getElementById("ruleParameter-lowerValue").value = this.cells[3].innerText
                     }
                 }
             })
@@ -171,6 +179,18 @@
             }
             if (paraType == '区间值') {
                 document.getElementById('ruleParameter-upperValueDiv').style.display = 'block';
+                document.getElementById('ruleParameter-lowerValueDiv').style.display = 'block';
+                document.getElementById("ruleParameter-lowerValue").value = "";
+                document.getElementById("ruleParameter-upperValue").value = "";
+            }
+            if (paraType == '区间值_上界值') {
+                document.getElementById('ruleParameter-upperValueDiv').style.display = 'block';
+                document.getElementById('ruleParameter-lowerValueDiv').style.display = 'none';
+                document.getElementById("ruleParameter-lowerValue").value = "";
+                document.getElementById("ruleParameter-upperValue").value = "";
+            }
+            if (paraType == '区间值_下界值') {
+                document.getElementById('ruleParameter-upperValueDiv').style.display = 'none';
                 document.getElementById('ruleParameter-lowerValueDiv').style.display = 'block';
                 document.getElementById("ruleParameter-lowerValue").value = "";
                 document.getElementById("ruleParameter-upperValue").value = "";

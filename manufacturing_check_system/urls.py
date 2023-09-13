@@ -80,7 +80,8 @@ urlpatterns = [
                   url(r'^delete_ruleParameter/([0-9]+)/$', views.delete_ruleParameter, name='delete_ruleParameter'),
                   url(r'^change_ruleParameter/$', views.change_ruleParameter, name='change_ruleParameter'),
                   # 查表函数
-                  url(r'^scriptFunction/table_function/$', views.table_function, name='table_function'),
+                  url(r'^scriptFunction/table_function/', views.table_function, name='table_function'),
+
                   # 数据字典
                   url(r'^scriptFunction/data_dictionary/$', views.data_dictionary, name='data_dictionary'),
                   url(r'^delete_dataDictionary/([0-9]+)/$', views.delete_dataDictionary, name='delete_dataDictionary'),
@@ -114,7 +115,7 @@ urlpatterns = [
                   # url(r'^resource/$', views.reource, name='book_list'),
                   url(r'^add_cutter/$', views.add_cutter, name='add_cutter'),
                   url(r'^search_cutter/$', views.search_cutter, name='search_cutter'),
-                  url(r'^delete_cutter/([0-9]+)/$', views.delete_cutter, name='delete_cutter'),
+                  url(r'^delete_cutter/', views.delete_cutter, name='delete_cutter'),
                   url(r'^edit_cutter/([0-9]+)/$', views.edit_cutter, name='edit_cutter'),
 
                   # 标准孔相关的对应关系
@@ -206,11 +207,16 @@ urlpatterns = [
                   # 查表函数对应关系
                   url(r'^add_TableFunction/$', views.add_TableFunction, name='add_TableFunction'),
                   url(r'^search_TableFunction/$', views.search_TableFunction, name='search_TableFunction'),
-                  url(r'^delete_TableFunction/([0-9]+)/$', views.delete_TableFunction, name='delete_TableFunction'),
-                  url(r'^edit_TableFunction/([0-9]+)/$', views.edit_TableFunction, name='edit_TableFunction'),
+                  url(r'^delete_TableFunction/', views.delete_TableFunction, name='delete_TableFunction'),
+                  url(r'^edit_TableFunction/$', views.edit_TableFunction, name='edit_TableFunction'),
+                  url(r'^search_table_field/$', views.search_table_field, name='search_table_field'),
+
+                  url(r'^knowledge_graph/', views.knowledge_graph, name='knowledge_graph'),
+
 
                   # 系统接口
-                  # url(r'^input_FeaturePara/([0-9]+)/$', views.input_FeaturePara, name='input_FeaturePara'),
+                  url(r'^API/Rule/$', views.API_Rule, name='API_Rule'),
+                  url(r'^API/TableFunction/$', views.API_TableFunction, name='API_TableFunction'),
                   # url(r'^input_table_Function/([0-9]+)/$', views.input_FeaturePara, name='input_FeaturePara'),
                   #
                   #

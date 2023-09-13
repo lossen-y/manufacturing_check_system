@@ -1,0 +1,21 @@
+POST http://127.0.0.1:8000/API/Rule/
+Content-Type: application/json
+
+{
+  "type": "全部",
+  "annoType": "直线度",
+  "featureFirst": "孔",
+  "featureSecond": "沉头"
+}
+
+###
+POST http://127.0.0.1:8000/API/TableFunction/
+Content-Type: application/json
+
+{
+  "function": "searchRule2",
+  "args": {
+    "arg1": "PC",
+    "arg2": "孔"
+  }
+}

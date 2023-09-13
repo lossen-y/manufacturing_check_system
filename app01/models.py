@@ -314,12 +314,13 @@ class TableFunction(models.Model):
     查表函数表
     '''
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=128, null=False, unique=True)  # 数据库内表名
+    name = models.CharField(max_length=128, null=False, unique=False)  # 数据库内表名
     functionName = models.CharField(max_length=128, null=True, unique=True)  # 内部查表函数名
     inputPara = models.TextField(null=True, unique=False)   # 输入参数
     outputPara = models.TextField(null=True, unique=False)  # 返回参数
     sql = models.TextField(null=True, unique=False)  # 对应SQL语句
     remark = models.TextField(null=True, unique=False)  # 备注
+    fieldOfInputPara = models.TextField(null=True, unique=False)  # 输入参数的对应字段
 
     def __str__(self):
         return self.name
@@ -354,8 +355,10 @@ class Rule(models.Model):
     '''
     审查规则表(总表)
     '''
-    id = models.AutoField(primary_key=True) # 规则编号
+    id = models.AutoField(primary_key=True) # 规则编号,用于存储的
+    code = models.CharField(max_length=128, null=True, unique=True) # 规则的编码
     name = models.CharField(max_length=128, null=True, unique=True)  # 规则名称
+    ruleClass = models.CharField(max_length=128, null=False, unique=False) #规则等级（零件级、特征级）
     ruleTypeFirst = models.CharField(max_length=128, null=True, unique=False)  # 规则大类
     ruleTypeSecond = models.CharField(max_length=128, null=True, unique=False)  # 规则小类
     #content = models.TextField(null=True, unique=False)  # 规则特定字段
@@ -415,6 +418,7 @@ class PMIRule(models.Model):
     PMI审查规则表
     '''
     id = models.AutoField(primary_key=True)    # 规则编号
+    code = models.CharField(max_length=128, null=True, unique=True)  # 规则的编码
     name = models.CharField(max_length=128, null=True, unique=True)  # 规则名称
     ruleType = models.CharField(max_length=128, null=True, unique=False)  # 规则类型
     annoType = models.CharField(max_length=128, null=True, unique=False)  # 规则对应标注的类型

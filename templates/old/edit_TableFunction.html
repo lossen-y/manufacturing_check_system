@@ -1,68 +1,292 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    管理系统|编辑查表函数库
+    管理系统|添加查表函数
 {% endblock title %}
 
 {% block main %}
     <h1 class="page-header">查表函数管理页面</h1>
-
     <div class="panel panel-primary">
-        <div class="panel-heading">编辑查表函数数据</div>
+        <div class="panel-heading">
+            <h3 class="panel-title">添加查表函数</h3>
+        </div>
         <div class="panel-body">
-            <form class="form-horizontal" action="{% url 'edit_TableFunction' TableFunction.id %}" method="post">
-                <div class="form-group">
-                    <label for="TableFunction_name" class="col-sm-2 control-label">数据库中表名</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction_name" name="TableFunction_name"
-                               placeholder="数据库中表名" value="{{ TableFunction.name }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-functionName" class="col-sm-2 control-label">内部查表函数名</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-functionName" placeholder="内部查表函数名"
-                               name="TableFunction_functionName" value="{{ TableFunction.functionName }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-inputPara" class="col-sm-2 control-label">输入参数</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-inputPara" placeholder="输入参数"
-                               name="TableFunction_inputPara" value="{{ TableFunction.inputPara }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-outputPara" class="col-sm-2 control-label">返回参数</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-outputPara" placeholder="返回参数"
-                               name="TableFunction_outputPara" value="{{ TableFunction.outputPara }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-sql" class="col-sm-2 control-label">对应SQL语句</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="TableFunction-sql" placeholder="对应SQL语句"
-                               name="TableFunction_sql" value="{{ TableFunction.sql }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="TableFunction-remark" class="col-sm-2 control-label">备注</label>
-                    <div class="col-sm-10">
-                        <textarea  class="form-control" id="TableFunction-remark" placeholder="备注"
-                                  name="TableFunction_remark" rows="5" value="{{ TableFunction.remark }}"></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
+            <form class="form-horizontal" action="{% url 'edit_TableFunction' %}" method="post">
+                <div class="form-group" style="text-align:left; margin-left: 0">
+                    <div style="clear:both; float: left; margin-right: 10px">
                         <button type="submit" class="btn btn-success">提交</button>
                         <p style="color: red;">{{ error_msg }}</p>
                     </div>
+                    <div style=" float:left;">
+                        <button type="button" class="btn btn-info" id="formula-generation" onclick="generateFormula()">
+                            表达式更新
+                        </button>
+                        <p style="color: red;">{{ error_msg }}</p>
+                    </div>
+
                 </div>
+
+                <div class="form-group" style=" float: left; width: 50%">
+                    <div class="form-group" style="display: none">
+                        <label for="TableFunction_id" class="col-sm-2 control-label">函数名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-id" placeholder="函数名"
+                                   name="TableFunction_id" value="{{ TableFunction.id }}" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-name" class="col-sm-2 control-label">函数名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-name" placeholder="函数名"
+                                   name="TableFunction_name" value="{{ functionHead }}" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-tableName" class="col-sm-2 control-label">查询表名</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="TableFunction_tableName" value="{{ TableFunction.name }}"
+                                   id="TableFunction-tableName" readonly="readonly">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group" style=" float: right; width: 50%; margin-right: 10px">
+                    <div class="form-group">
+                        <label for="TableFunction-remark" class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-10">
+                        <textarea class="form-control" id="TableFunction-remark" placeholder="备注"
+                                  name="TableFunction_remark" rows="4">{{ TableFunction.remark }}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="clear: both"></div>
+                <div class="form-group" style=" float: left; width: 50%">
+
+                    <div class="form-group">
+                        <label for="TableFunction-name" class="col-sm-2 control-label">表达式</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-formula" placeholder="表达式"
+                                   name="TableFunction_formula" readonly=readonly
+                                   value="{{ TableFunction.functionName }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-outputPara" class="col-sm-2 control-label">返回参数</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-outputPara" placeholder="返回参数"
+                                   name="TableFunction_outputPara" readonly="readonly"
+                                   value="{{ TableFunction.outputPara }}">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group" style=" float: right; width: 50%; margin-right: 10px">
+
+                    <div class="form-group">
+                        <label for="TableFunction-sql" class="col-sm-2 control-label">SQL</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-sql" name="TableFunction_sql"
+                                   readonly=readonly value="{{ TableFunction.sql }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-inputPara" class="col-sm-2 control-label">输入参数</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-inputPara" placeholder="输入参数"
+                                   name="TableFunction_inputPara" readonly="readonly"
+                                   value="{{ TableFunction.inputPara }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TableFunction-inputPara" class="col-sm-2 control-label">对应字段</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TableFunction-field_of_inputPara"
+                                   placeholder="对应字段"
+                                   name="TableFunction_field_of_inputPara" readonly="readonly"
+                                   value="{{ TableFunction.fieldOfInputPara }}">
+                        </div>
+                    </div>
+
+                </div>
+                <div style="clear: both"></div>
+                <hr/>
+                <div><h5 style="clear:both; margin-left: 15px; ">输入参数:</h5></div>
+                <div class="form-group">
+                    {% for inputPara, inputPara_field in inputPara_and_field.items %}
+                        <div class="col-sm-10" style="margin-top: 5px; text-align: center">
+                            <p style="float: left; margin-left: 10px; margin-right: 10px;text-align: center">字段: </p>
+                            <select style="width: 20%; margin-right:10px; float: left" class="form-control"
+                                    name="inputPara_field{{ forloop.counter }}"
+                                    id="inputPara-field{{ forloop.counter }}">
+                                {% for field in field_list %}
+                                    <option value={{ field }} {% if field == inputPara_field %} selected {% endif %}>{{ field }}</option>
+                                {% endfor %}
+
+                            </select>
+                            <select style="width: 15%; margin-right:10px; float: left" class="form-control"
+                                    name="inputPara_operator{{ forloop.counter }}"
+                                    id="inputPara-operator{{ forloop.counter }}">
+                                <option value="<="><=</option>
+                                <option value="=">=</option>
+                                <option value=">=">>=</option>
+                                <option value="like">模糊匹配</option>
+                            </select>
+                            <input style="width: 20%; float: left" type="text" class="form-control"
+                                   id="inputPara-inputPara{{ forloop.counter }}" value="{{ inputPara }}"
+                                   name="inputPara_inputPara{{ forloop.counter }}" placeholder="参数名">
+
+                            <button style="margin-right:10px; float: left" class="btn btn-danger" type="button"
+                                    data-toggle="tooltip" title="删除" id="delCenterIpGrp"><span
+                                    class="glyphicon glyphicon-minus"></span></button>
+                        </div>
+                        <div style="clear: both;"></div>
+                    {% endfor %}
+                    <button type="button" class="btn btn-info" id="add-inputColumn" onclick="addInputColumn(this)">
+                        添加行
+                    </button>
+
+                </div>
+                <hr/>
+                <div><h5 style="clear:both; margin-left: 15px; ">返回参数:</h5></div>
+                <div class="form-group" id="outputParaDiv">
+                    {% for field in field_list %}
+                        <div style="float: left">
+                            <input {% if field in outputPara_list %}checked="checked" {% endif %}type="checkbox"
+                                   value="{{ field }}" id="outputPara{{ forloop.counter0 }}">
+                            <label style="margin-right: 10px" for="outputPara{{ forloop.counter0 }}">{{ field }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <hr/>
+
                 {% csrf_token %}
             </form>
         </div>
     </div>
+    <script type="text/javascript">
+
+        var field = Array();
+        window.onload = function () {
+            $.post("/search_table_field/", {
+                        "table": document.getElementById("TableFunction-tableName").value,
+                        "csrfmiddlewaretoken": '{{ csrf_token }}'
+                    }, //post函数到后端
+                    function (result, status) { //回调函数
+                        field = result['field'];
+                    });
+        }
+        var rowCount = {{inputPara_and_field|length}};
+        //生成各种字段和表达式
+        function generateFormula() {
+            var inputPara = "";
+            var fieldOfInputPara = "";
+            var outputPara = "";
+            if (document.getElementById('TableFunction-name').value === "") {
+                alert("未输入函数名")
+                return 0;
+            }
+            var formula = document.getElementById('TableFunction-name').value + "(";
+            var sql = "select";
+            addRow = 0
+            for (i = 0; i < field.length; i++) {
+                if (document.getElementById('outputPara' + i).checked === true) {
+                    outputPara += document.getElementById('outputPara' + i).value + ","
+                    sql += " " + document.getElementById('outputPara' + i).value + ","
+                    addRow++
+                }
+            }
+            if (addRow === 0) {
+                alert("未选择输出参数")
+                return 0;
+            }
+            sql = sql.substring(0, sql.length - 1)
+            outputPara = outputPara.substring(0, outputPara.length - 1)
+            document.getElementById('TableFunction-outputPara').value = outputPara
+            sql += " from " + document.getElementById('TableFunction-tableName').value
+            var sql1 = sql + " where"
+            addRow = 0;
+            for (i = 1; i <= rowCount; i++) {
+                if (document.getElementById('inputPara-field' + i) != null) {
+                    if (document.getElementById('inputPara-inputPara' + i).value === "") {
+                        alert("未填写输入参数")
+                        return 0;
+                    }
+
+                    sql1 += " " + document.getElementById('inputPara-field' + i).value + " " + document.getElementById('inputPara-operator' + i).value
+
+                    if (document.getElementById('inputPara-operator' + i).value === "like") {
+                        sql1 += " '%" + document.getElementById('inputPara-inputPara' + i).value + "%' and"
+                    } else {
+                        sql1 += " " + document.getElementById('inputPara-inputPara' + i).value + " and"
+                    }
+                    inputPara += document.getElementById('inputPara-inputPara' + i).value + ','
+                    fieldOfInputPara += document.getElementById('inputPara-field' + i).value + ','
+
+                    formula += document.getElementById('inputPara-inputPara' + i).value + ","
+
+                    addRow++
+                }
+            }
+            inputPara = inputPara.substring(0, inputPara.length - 1)
+            fieldOfInputPara = fieldOfInputPara.substring(0, fieldOfInputPara.length - 1)
+            document.getElementById('TableFunction-inputPara').value = inputPara
+            document.getElementById('TableFunction-field_of_inputPara').value = fieldOfInputPara
+            if (addRow === 0) {
+                document.getElementById('TableFunction-sql').value = sql
+            } else {
+                sql1 = sql1.substring(0, sql1.length - 3)
+                document.getElementById('TableFunction-sql').value = sql1
+            }
+            formula = formula.substring(0, formula.length - 1) + ")"
+            document.getElementById('TableFunction-formula').value = formula
+
+        }
+
+        //添加输入参数字段
+        function addInputColumn(obj) {
+            if (field.length > 0) {
+                rowCount++;
+                //alert(rowCount);
+                html =
+                    '<div class="col-sm-10" style="margin-top: 5px; text-align: center">' +
+                    '<p style="float: left; margin-left: 10px; margin-right: 10px;text-align: center">字段: </p>' +
+                    '<select style="width: 20%; margin-right:10px; float: left" class="form-control"' +
+                    'name="inputPara_field' + rowCount + '" id="inputPara-field' + rowCount + '">'
+                for (i = 0; i < field.length; i++) {
+                    html = html + '<option value = ' + field[i] + '>' + field[i] + '</option>'
+                }
+                html = html + '</select>' +
+                    '<select style="width: 15%; margin-right:10px; float: left" class="form-control"' +
+                    'name="inputPara_operator' + rowCount + '" id="inputPara-operator' + rowCount + '">' +
+                    '<option value="<=" ><=</option>' +
+                    '<option value="=" >=</option>' +
+                    '<option value=">=" >>=</option>' +
+                    '<option value="like">模糊匹配</option>' +
+                    '</select>' +
+                    '<input style="width: 20%; float: left" type="text" class="form-control"' +
+                    'id="inputPara-inputPara' + rowCount + '" name="inputPara_inputPara' + rowCount +
+                    '" placeholder="参数名">' +
+
+                    '<button style="margin-right:10px; float: left" class="btn btn-danger" type="button" data-toggle="tooltip" title="删除" id="delCenterIpGrp"><span class="glyphicon glyphicon-minus"></span></button>' +
+                    '</div>' +
+                    '<div style="clear: both;"></div>'
+                console.log(html)
+
+                obj.insertAdjacentHTML('beforebegin', html)
+
+                $(document).on('click', '#delCenterIpGrp', function () {
+
+                    var el = this.parentNode;
+                    el.parentNode.removeChild(el)
+
+                })
+            }
+        }
+
+
+    </script>
 {% endblock main %}
 
 {% block TableFunction_list %}

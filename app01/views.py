@@ -1,9 +1,16 @@
 import json
+# 吴修改
+import re
 
+from django.apps import apps
 from django.contrib import auth
 from django.core import serializers
+from django.db import connection
+# 杨修改
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
 from app01 import models
 
@@ -203,9 +210,25 @@ def add_cutter(request):
     return render(request, 'old/add_cutter.html', {'error_msg': error_msg})
 
 
-def delete_cutter(request, del_id):
-    models.Cutter.objects.get(id=del_id).delete()
+def delete_cutter(request):
+    if request.method == "GET":
+        array_string = request.GET.get('array', '[]')
+        # print(array_string)
+        try:
+            # 解析 JSON 字符串为 Python 列表
+            array = json.loads(array_string)
+        except json.JSONDecodeError as e:
+            # 处理解析错误
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        for del_id in array:
+            models.Cutter.objects.get(id=del_id).delete()
+
     return redirect('/standardKnowNInfo/resource/')
+
+
+# def delete_cutter(request, del_id):
+#     models.Cutter.objects.get(id=del_id).delete()
+#     return redirect('/standardKnowNInfo/resource/')
 
 
 def edit_cutter(request, edit_id):
@@ -1300,50 +1323,115 @@ def TableFunction_list(request):
 def add_TableFunction(request):
     error_msg = ''
     if request.method == 'POST':
-        new_TableFunction = request.POST.get('TableFunction_name')
+        new_TableFunction = request.POST.get('TableFunction_formula')
         if new_TableFunction:
             # img_file=request.FILES.get('TableFunction_TableFunctionImg')
-            new_TableFunction_obj = models.TableFunction.objects.create(name=new_TableFunction,
-                                                                        functionName=request.POST.get(
-                                                                            'TableFunction_functionName'),
-                                                                        inputPara=request.POST.get(
-                                                                            'TableFunction_inputPara'),
-                                                                        outputPara=request.POST.get(
-                                                                            'TableFunction_outputPara'),
-                                                                        sql=request.POST.get('TableFunction_sql'),
-                                                                        remark=request.POST.get('TableFunction_remark')
-                                                                        )
-
+            new_TableFunction_obj = models.TableFunction.objects.create(name=request.POST.get('TableFunction_tableName'),
+                functionName=request.POST.get('TableFunction_formula'),
+                inputPara=request.POST.get('TableFunction_inputPara'),
+                outputPara=request.POST.get('TableFunction_outputPara'),
+                sql=request.POST.get('TableFunction_sql'),
+                remark=request.POST.get('TableFunction_remark'),
+                fieldOfInputPara= request.POST.get('TableFunction_field_of_inputPara')
+            )
             return redirect('/scriptFunction/table_function/')
         else:
             error_msg = '数据库内表名不能为空'
     # books = models.Book.objects.all()
-    return render(request, 'old/add_TableFunction.html', {'error_msg': error_msg})
+    table_list = [i._meta.db_table for i in apps.get_models(include_auto_created=True)]
+    new_table_list = table_list[:]
+    for table in table_list:
+        if re.match("^app01", table) == None:
+            new_table_list.remove(table)
+    return render(request, 'old/add_TableFunction.html', {'error_msg': error_msg, 'table_list': new_table_list})
 
 
-def delete_TableFunction(request, del_id):
-    models.TableFunction.objects.get(id=del_id).delete()
+def search_table_field(request):
+    table = request.POST.get('table')
+    if table:
+        sql = "select COLUMN_NAME from information_schema.COLUMNS where table_name = '" + table + \
+              "' and table_schema = 'manufacturing_check_system'"
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            dataInfo = cursor.fetchall()  # 元组形式
+        field_list = []
+        for field in dataInfo:
+            field_list.append(field[0])
+        print(field_list)
+        field_json = {"field": field_list}
+        return JsonResponse(field_json)
+
+
+def delete_TableFunction(request):
+    if request.method == "GET":
+        array_string = request.GET.get('array', '[]')
+        # print(array_string)
+        try:
+            # 解析 JSON 字符串为 Python 列表
+            array = json.loads(array_string)
+        except json.JSONDecodeError as e:
+            # 处理解析错误
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        for del_id in array:
+            models.TableFunction.objects.get(id=del_id).delete()
+
     return redirect('/scriptFunction/table_function/')
 
 
-def edit_TableFunction(request, edit_id):
+def edit_TableFunction(request):
+
     error_msg = ''
     if request.method == 'POST':
-        new_name = request.POST.get('TableFunction_name')
-        if new_name:
-            edit_TableFunction_obj = models.TableFunction.objects.get(id=edit_id)
-            edit_TableFunction_obj.name = new_name
-            edit_TableFunction_obj.functionName = request.POST.get('TableFunction_functionName')
-            edit_TableFunction_obj.inputPara = request.POST.get('TableFunction_inputPara')
-            edit_TableFunction_obj.outputPara = request.POST.get('TableFunction_outputPara')
-            edit_TableFunction_obj.sql = request.POST.get('TableFunction_sql')
-            edit_TableFunction_obj.remark = request.POST.get('TableFunction_remark')
-            edit_TableFunction_obj.save()
+        edit_id = request.POST.get('TableFunction_id')
+        if edit_id:
+            tableFunction_obj = models.TableFunction.objects.get(id=edit_id)
+            tableFunction_obj.name = request.POST.get('TableFunction_tableName')
+            tableFunction_obj.functionName = request.POST.get('TableFunction_formula')
+            tableFunction_obj.remark = request.POST.get('TableFunction_remark')
+            tableFunction_obj.inputPara = request.POST.get('TableFunction_inputPara')
+            tableFunction_obj.outputPara = request.POST.get('TableFunction_outputPara')
+            tableFunction_obj.sql = request.POST.get('TableFunction_sql')
+
+            tableFunction_obj.save()
             return redirect('/scriptFunction/table_function/')
         else:
-            error_msg = '刀具名不能为空'
-    TableFunction_obj = models.TableFunction.objects.get(id=edit_id)
-    return render(request, 'old/edit_TableFunction.html', {'TableFunction': TableFunction_obj, 'error_msg': error_msg})
+            error_msg = '规则名不能为空'
+
+    TableFunction_obj = models.TableFunction.objects.get(id=request.GET.get("id"))
+    functionHead = TableFunction_obj.functionName.split('(')[0]
+
+    if TableFunction_obj.name:
+        sql = "select COLUMN_NAME from information_schema.COLUMNS where table_name = '" + TableFunction_obj.name + \
+              "' and table_schema = 'manufacturing_check_system'"
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            dataInfo = cursor.fetchall()  # 元组形式
+        field_list = []
+        for field in dataInfo:
+            field_list.append(field[0])
+    input_para_list = TableFunction_obj.inputPara.split(',')
+    output_para_list = TableFunction_obj.outputPara.split(',')
+    field_of_input_para_list = TableFunction_obj.fieldOfInputPara.split(',')
+    inputPara_and_field = dict(zip(input_para_list,field_of_input_para_list))
+    return render(request, 'old/edit_TableFunction.html',
+                  {'TableFunction': TableFunction_obj, 'error_msg': error_msg, 'functionHead': functionHead,
+                   'field_list': field_list, 'outputPara_list':output_para_list, 'inputPara_and_field':inputPara_and_field,
+                   })
+
+    # if request.method == 'POST':
+    #     new_name = request.POST.get('TableFunction_name')
+    #     if new_name:
+    #         edit_TableFunction_obj = models.TableFunction.objects.get(id=edit_id)
+    #         edit_TableFunction_obj.name = new_name
+    #         edit_TableFunction_obj.functionName = request.POST.get('TableFunction_functionName')
+    #         edit_TableFunction_obj.inputPara = request.POST.get('TableFunction_inputPara')
+    #         edit_TableFunction_obj.outputPara = request.POST.get('TableFunction_outputPara')
+    #         edit_TableFunction_obj.sql = request.POST.get('TableFunction_sql')
+    #         edit_TableFunction_obj.remark = request.POST.get('TableFunction_remark')
+    #         edit_TableFunction_obj.save()
+    #         return redirect('/scriptFunction/table_function/')
+    #     else:
+    #         error_msg = '刀具名不能为空'
 
 
 def search_TableFunction(request):
@@ -1393,24 +1481,100 @@ def index(request):
         return render(request, 'knowledge_search.html')
     type = request.POST.get('type')
     contents = request.POST.get('search_content')
-    if contents == "":
-        return render(request, 'knowledge_search.html')
+    classes = request.POST.get('class')
+    # if contents == "":
+    #     return render(request, 'knowledge_search.html')
     if type == "工艺性审查知识":
-        obj = models.Rule.objects.filter(name__icontains=contents) | \
-              models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
-              models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
-              models.Rule.objects.filter(content__icontains=contents) | \
-              models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
-              models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
-              models.Rule.objects.filter(featPro__icontains=contents) | \
-              models.Rule.objects.filter(remark__icontains=contents)
+        if classes != "全部":
+            obj = models.Rule.objects.filter(name__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(ruleTypeFirst__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(ruleTypeSecond__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(content__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(featTypeFirst__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(featTypeSecond__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(featPro__icontains=contents, ruleClass=classes) | \
+                  models.Rule.objects.filter(remark__icontains=contents, ruleClass=classes)
+        else:
+            obj = models.Rule.objects.filter(name__icontains=contents) | \
+                  models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
+                  models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
+                  models.Rule.objects.filter(content__icontains=contents) | \
+                  models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
+                  models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
+                  models.Rule.objects.filter(featPro__icontains=contents) | \
+                  models.Rule.objects.filter(remark__icontains=contents)
     elif type == "PMI标注审查知识":
         obj = models.PMIRule.objects.filter(content__icontains=contents) | \
               models.PMIRule.objects.filter(name__icontains=contents) | \
               models.PMIRule.objects.filter(ruleType__icontains=contents) | \
               models.PMIRule.objects.filter(annoType__icontains=contents)
-    return render(request, 'knowledge_search.html', {'obj': obj, 'type': type, 'content': contents})
+        # new_cutter_obj = models.Cutter.objects.create(name=new_cutter, supplier=request.POST.get('cutter_supplier'),
+        #                                               minHoleTole=request.POST.get('cutter_minHoleTole'),
+        #                                               maxHoleTole=request.POST.get('cutter_maxHoleTole'),
+        #                                               minDia=request.POST.get('cutter_minDia'),
+        #                                               maxDia=request.POST.get('cutter_maxDia'),
+        #                                               minDepDia=request.POST.get('cutter_minDepDia'),
+        #                                               maxDepDia=request.POST.get('cutter_maxDepDia'),
+        #                                               capMat=request.POST.get('cutter_capMat'),
+        #                                               cutterMat=request.POST.get('cutter_cutterMat'),
+        #                                               capPro=request.POST.get('cutter_capPro'),
+        #                                               cutterCost=request.POST.get('cutter_cutterCost'),
+        #                                               cutterImg=request.FILES.get('cutter_cutterImg_file'),
+        #                                               cutterRemark=request.POST.get('cutter_cutterRemark')
+        #                                               )
 
+    elif type == "标准化知识和信息|制造资源-刀具":
+        obj = models.Cutter.objects.filter(name__icontains=contents) | \
+              models.Cutter.objects.filter(supplier__icontains=contents) | \
+              models.Cutter.objects.filter(minHoleTole__icontains=contents) | \
+              models.Cutter.objects.filter(maxHoleTole__icontains=contents) | \
+              models.Cutter.objects.filter(minDia__icontains=contents) | \
+              models.Cutter.objects.filter(maxDia__icontains=contents) | \
+              models.Cutter.objects.filter(minDepDia__icontains=contents) | \
+              models.Cutter.objects.filter(maxDepDia__icontains=contents) | \
+              models.Cutter.objects.filter(capMat__icontains=contents) | \
+              models.Cutter.objects.filter(cutterMat__icontains=contents) | \
+              models.Cutter.objects.filter(capPro__icontains=contents) | \
+              models.Cutter.objects.filter(cutterCost__icontains=contents) | \
+              models.Cutter.objects.filter(cutterImg__icontains=contents) | \
+              models.Cutter.objects.filter(cutterRemark__icontains=contents)
+
+    return render(request, 'knowledge_search.html', {'obj': obj, 'type': type, 'content': contents, 'class': classes})
+
+
+# def index(request):
+#     if request.method == 'GET':
+#         return render(request, 'knowledge_search.html')
+#     type = request.POST.get('type')
+#     contents = request.POST.get('search_content')
+#     classes = request.POST.get('class')
+#     # if contents == "":
+#     #     return render(request, 'knowledge_search.html')
+#     if type == "工艺性审查知识":
+#         if classes != "全部":
+#             obj = models.Rule.objects.filter(name__icontains=contents, ruleClass=classes) | \
+#                   models.Rule.objects.filter(ruleTypeFirst__icontains=contents, ruleClass=classes) | \
+#                   models.Rule.objects.filter(ruleTypeSecond__icontains=contents, ruleClass=classes) | \
+#                   models.Rule.objects.filter(content__icontains=contents, ruleClass=classes) | \
+#                   models.Rule.objects.filter(featTypeFirst__icontains=contents, ruleClass=classes) | \
+#                   models.Rule.objects.filter(featTypeSecond__icontains=contents, ruleClass=classes) | \
+#                   models.Rule.objects.filter(featPro__icontains=contents, ruleClass=classes) | \
+#                   models.Rule.objects.filter(remark__icontains=contents, ruleClass=classes)
+#         else:
+#             obj = models.Rule.objects.filter(name__icontains=contents) | \
+#                   models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
+#                   models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
+#                   models.Rule.objects.filter(content__icontains=contents) | \
+#                   models.Rule.objects.filter(featTypeFirst__icontains=contents) | \
+#                   models.Rule.objects.filter(featTypeSecond__icontains=contents) | \
+#                   models.Rule.objects.filter(featPro__icontains=contents) | \
+#                   models.Rule.objects.filter(remark__icontains=contents)
+#     elif type == "PMI标注审查知识":
+#         obj = models.PMIRule.objects.filter(content__icontains=contents) | \
+#               models.PMIRule.objects.filter(name__icontains=contents) | \
+#               models.PMIRule.objects.filter(ruleType__icontains=contents) | \
+#               models.PMIRule.objects.filter(annoType__icontains=contents)
+#     return render(request, 'knowledge_search.html', {'obj': obj, 'type': type, 'content': contents, 'class': classes})
 
 def knowledge_graph(request):
     data, links = get_data_links()
@@ -1534,12 +1698,29 @@ def knowledge_detail(request):
     if request.method == 'GET':
         type = request.GET.get('type')
         content = request.GET.get('content')
+        classes = request.GET.get('class')
         id = request.GET.get('id')
         if type == "工艺性审查知识":
             obj = models.Rule.objects.get(id=id)
-        else:
+        elif type == "PMI标注审查知识":
             obj = models.PMIRule.objects.get(id=id)
-    return render(request, 'knowledge_detail.html', {'obj': obj, 'type': type, 'content': content})
+        elif type == "标准化知识和信息|制造资源-刀具":
+            obj = models.Cutter.objects.get(id=id)
+
+    return render(request, 'knowledge_detail.html', {'obj': obj, 'type': type, 'content': content, 'class': classes})
+
+
+# def knowledge_detail(request):
+#     if request.method == 'GET':
+#         type = request.GET.get('type')
+#         content = request.GET.get('content')
+#         classes = request.GET.get('class')
+#         id = request.GET.get('id')
+#         if type == "工艺性审查知识":
+#             obj = models.Rule.objects.get(id=id)
+#         else:
+#             obj = models.PMIRule.objects.get(id=id)
+#     return render(request, 'knowledge_detail.html', {'obj': obj, 'type': type, 'content': content, 'class': classes})
 
 
 def PMI_annotation(request):
@@ -1561,13 +1742,28 @@ def delete_PMIRule(request, del_id):
     return redirect('/modelQuality/PMI/')
 
 
+annotationCode = {"尺寸公差": "DT", "直线度": "ST", "平面度": "FL", "圆度": "CI", "圆柱度": "CY", "线轮廓度": "PL",
+                  "面轮廓度": "PS", "垂直度": "PE", "平行度": "PA", "对称度": "SY", "位置度": "PO", "同轴度": "CO",
+                  "圆跳动": "CR", "全跳动": "TR"}
+
+
 def add_PMIRule(request):
     error_msg = ''
     if request.method == 'POST':
         new_PMIRule = request.POST.get('PMIRule_name')
         print(request.POST.get('PMIRule_script'))
         if new_PMIRule:
+            # 建立编码
+            tempRule = models.PMIRule.objects.filter(annoType=request.POST.get('PMIRule_annoType')).order_by(
+                '-code').values('code').first()
+            if tempRule == None:
+                num = 1
+            else:
+                print(tempRule['code'])
+                num = int(tempRule['code'].split('-')[-1]) + 1
+            code = 'AC-' + annotationCode[request.POST.get('PMIRule_annoType')] + "-" + str(num)
             new_PMIRule_obj = models.PMIRule.objects.create(name=new_PMIRule,
+                                                            code=code,
                                                             ruleType=request.POST.get('PMIRule_ruleType'),
                                                             annoType=request.POST.get('PMIRule_annoType'),
                                                             content=request.POST.get('PMIRule_content'),
@@ -1601,13 +1797,13 @@ def edit_PMIRule(request, edit_id):
 
 
 def process_check(request):
-    print('yes')
     if request.method == 'GET':
         if request.GET.get('content') == None:
             process_check_rule = models.Rule.objects.all()
             return render(request, 'process_Check/process_check.html', {'process_check_rule_list': process_check_rule})
         contents = request.GET.get('content')
         process_check_rule = models.Rule.objects.filter(name__icontains=contents) | \
+                             models.Rule.objects.filter(ruleClass__icontains=contents) | \
                              models.Rule.objects.filter(ruleTypeFirst__icontains=contents) | \
                              models.Rule.objects.filter(ruleTypeSecond__icontains=contents) | \
                              models.Rule.objects.filter(content__icontains=contents) | \
@@ -1620,19 +1816,59 @@ def process_check(request):
 
 def delete_process_check(request):
     if request.method == "GET":
-        del_id = request.GET.get("id")
-        models.Rule.objects.get(id=del_id).delete()
+        array_string = request.GET.get('array', '[]')
+        # print(array_string)
+        try:
+            # 解析 JSON 字符串为 Python 列表
+            array = json.loads(array_string)
+        except json.JSONDecodeError as e:
+            # 处理解析错误
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        for del_id in array:
+            models.Rule.objects.get(id=del_id).delete()
+
     return redirect('/processCheck/')
+
+
+# def delete_process_check(request):
+#     if request.method == "GET":
+#         del_id = request.GET.get("id")
+#         models.Rule.objects.get(id=del_id).delete()
+#     return redirect('/processCheck/')
+
+
+classCode = {'零件级': "P", "特征级": "F"}
+featureCode = {"孔": "H",
+               "槽": "S",
+               "口框": "MF",
+               "凸台": "CP",
+               "筋": "T",
+               "加工面": "MS",
+               "轮廓": "C",
+               }
 
 
 def add_process_check(request):
     error_msg = ''
     if request.method == 'POST':
         process_check_name = request.POST.get("rule_name")
-        # print(request.POST.get('PMIRule_script'))
         if process_check_name:
+
+            # 建立编码
+            tempRule = models.Rule.objects.filter(ruleClass=request.POST.get('rule_ruleClass'), \
+                                                  featTypeFirst=request.POST.get('rule_featTypeFirst')).order_by(
+                '-code').values('code').first()
+            if tempRule == None:
+                num = 1
+            else:
+                print(tempRule['code'])
+                num = int(tempRule['code'].split('-')[-1]) + 1
+            code = 'PC-' + classCode[request.POST.get('rule_ruleClass')] + "-" + featureCode[ \
+                request.POST.get('rule_featTypeFirst')] + "-" + str(num)
             new_process_check_obj = \
                 models.Rule.objects.create(name=process_check_name,
+                                           code=code,
+                                           ruleClass=request.POST.get('rule_ruleClass'),
                                            ruleTypeFirst=request.POST.get('rule_ruleTypeFirst'),
                                            ruleTypeSecond=request.POST.get('rule_ruleTypeSecond'),
                                            manuType=request.POST.get('rule_manuType'),
@@ -1657,6 +1893,7 @@ def edit_process_check(request):
         if edit_id:
             rule_obj = models.Rule.objects.get(id=edit_id)
             rule_obj.name = request.POST.get('rule_name')
+            rule_obj.ruleClass = request.POST.get('rule_ruleClass')
             rule_obj.ruleTypeFirst = request.POST.get('rule_ruleTypeFirst')
             rule_obj.ruleTypeSecond = request.POST.get('rule_ruleTypeSecond')
             rule_obj.manuType = request.POST.get('rule_manuType')
@@ -1771,7 +2008,7 @@ def change_ruleParameter(request):
                 ruleParameter_obj.defaultValue = '[' + request.POST.get(
                     'ruleParameter_lowerValue') + ',' + request.POST.get('ruleParameter_upperValue') + ']'
             ruleParameter_obj.save()
-        else:  # 更新
+        else:  # 添加
             if request.POST.get('ruleParameter_paraType') == '单值':
                 ruleParameter_obj = \
                     models.KnowledgeParaTable.objects.create(name=name,
@@ -1779,13 +2016,24 @@ def change_ruleParameter(request):
                                                              remark=request.POST.get('ruleParameter_remark'),
                                                              defaultValue=request.POST.get('ruleParameter_singleValue'))
             else:
-                tempStr = '[' + request.POST.get('ruleParameter_lowerValue') + ',' + request.POST.get(
-                    'ruleParameter_upperValue') + ']'
-                ruleParameter_obj = \
-                    models.KnowledgeParaTable.objects.create(name=name,
-                                                             paraType=request.POST.get('ruleParameter_paraType'),
-                                                             remark=request.POST.get('ruleParameter_remark'),
-                                                             defaultValue=tempStr)
+                ruleParameter_obj = models.KnowledgeParaTable.objects.create(
+                    name=name + "_minValue",
+                    paraType=request.POST.get('ruleParameter_paraType') + "_下界值",
+                    remark=request.POST.get('ruleParameter_remark') + "_下界值",
+                    defaultValue=request.POST.get('ruleParameter_lowerValue'))
+                ruleParameter_obj = models.KnowledgeParaTable.objects.create(
+                    name=name + "_maxValue",
+                    paraType=request.POST.get('ruleParameter_paraType') + "_上界值",
+                    remark=request.POST.get('ruleParameter_remark') + "_上界值",
+                    defaultValue=request.POST.get('ruleParameter_upperValue'))
+
+                # tempStr = '[' + request.POST.get('ruleParameter_lowerValue') + ',' + request.POST.get(
+                #     'ruleParameter_upperValue') + ']'
+                # ruleParameter_obj = \
+                #     models.KnowledgeParaTable.objects.create(name=name,
+                #                                              paraType=request.POST.get('ruleParameter_paraType'),
+                #                                              remark=request.POST.get('ruleParameter_remark'),
+                #                                              defaultValue=tempStr)
     return redirect('/scriptFunction/rule_parameter/')
 
 
@@ -1873,8 +2121,18 @@ def search_script_supporter(request):
 
 
 def table_function(request):
-    all_tablaFuction = models.TableFunction.objects.all()
-    return render(request, 'rule_configuration/table_function.html', {'TableFunction_list': all_tablaFuction})
+    if request.method == 'GET':
+        if request.GET.get('content') == None:
+            all_tablaFuction = models.TableFunction.objects.all()
+            return render(request, 'rule_configuration/table_function.html', {'TableFunction_list': all_tablaFuction})
+        contents = request.GET.get('content')
+        all_tablaFuction = models.TableFunction.objects.filter(name__icontains=contents) | \
+                           models.TableFunction.objects.filter(functionName__icontains=contents) | \
+                           models.TableFunction.objects.filter(inputPara__icontains=contents) | \
+                           models.TableFunction.objects.filter(outputPara__icontains=contents) | \
+                           models.TableFunction.objects.filter(remark__icontains=contents)
+
+        return render(request, 'rule_configuration/table_function.html', {'TableFunction_list': all_tablaFuction})
 
 
 def script_function(request):
@@ -1938,3 +2196,215 @@ def edit_scriptFunction(request):
     scriptFunction_obj = models.ScriptFunction.objects.get(id=edit_id)
     return render(request, 'old/edit_scriptFunction.html',
                   {'scriptFunction': scriptFunction_obj, 'error_msg': error_msg})
+
+
+# 规则的接口，按照输入的规则种类、特征属性（大类和小类）
+@csrf_exempt
+def API_Rule(request):
+    # 0. 获得输入
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        ruleType = json_data["type"]
+        annoType = json_data["annoType"]
+        featureFirst = json_data["featureFirst"]
+        featureSecond = json_data["featureSecond"]
+    # 1. 找打所有规则脚本
+    if ruleType == "全部":
+        PMIRules = models.PMIRule.objects.filter(annoType__icontains=annoType).values("code", "name", "content",
+                                                                                      "script")
+        ProcessRules = models.Rule.objects.filter(featTypeFirst__icontains=featureFirst,
+                                                  featTypeSecond__icontains=featureSecond).values("code", "name",
+                                                                                                  "content",
+                                                                                                  "script")
+        rulesList = list(PMIRules) + list(ProcessRules)
+    elif ruleType == "工艺":  # 工艺性审查知识
+        rulesList = list(models.Rule.objects.filter(featTypeFirst__icontains=featureFirst,
+                                                    featTypeSecond__icontains=featureSecond).values("code", "name",
+                                                                                                    "content",
+                                                                                                    "script"))
+    elif ruleType == "标注":
+        rulesList = list(
+            models.PMIRule.objects.filter(annoType__icontains=annoType).values("code", "name", "content", "script"))
+
+    paras = models.KnowledgeParaTable.objects.all().values("name", "defaultValue")
+    paraDict = {}
+    for item in paras:
+        paraDict[item["name"]] = item["defaultValue"]
+    # 3. 打包成json，返回
+    rulePackage = {}
+    for rule in rulesList:
+        ruleCode = rule.pop("code")
+        # 2. 后置处理
+        if rule["script"] != "":
+            rule["script"] = Post_Process(rule["script"], paraDict)
+        rulePackage[ruleCode] = rule
+
+    return JsonResponse(rulePackage)
+
+
+# 后置处理
+def Post_Process(strs, paraDict):
+    variables = ""
+    startIndex = endIndex = 0
+    i = 0
+    while True:
+        if re.match("\w", strs[i]):  # 匹配数字字母下划线，可能为变量的一部分
+            if len(variables) == 0 and re.match("[a-z]|[A-Z]", strs[i]):
+                startIndex = i
+                variables = strs[i]
+            elif len(variables) != 0:
+                variables = variables + strs[i]
+                endIndex = i
+        elif len(variables) > 0:  # 开始替换
+            if variables in paraDict.keys():
+                # print(variables)
+                strs = strs[:startIndex] + str(paraDict[variables]) + strs[endIndex + 1:]
+                i = endIndex - len(variables) + len(str(paraDict[variables]))
+            variables = ""
+
+        i += 1
+
+        if i == len(strs):
+            if len(variables) > 0 and variables in paraDict.keys():
+                strs = strs[:startIndex] + str(paraDict[variables]) + strs[endIndex + 1:]
+            break
+    return strs
+
+
+@csrf_exempt
+def API_TableFunction(request):
+    # 获取输入
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        function = json_data["function"]
+        argsDict = json_data["args"]
+    sql = models.TableFunction.objects.filter(functionName__icontains=function).values("sql")[0]['sql']
+    outputPara = models.TableFunction.objects.filter(functionName__icontains=function).values("outputPara")[0]['outputPara'].split(
+        ',')
+    print(outputPara)
+    # sql参数替换
+    # sql = "select script, code from app01_rule where id <= arg1 and ruleClass like 'arg2'"
+    sql = Post_Process(sql, argsDict)
+    print(sql)
+    # 获取数据
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        dataInfo = cursor.fetchall()  # 元组形式
+    print(dataInfo)
+    # 打包成json文件
+    dataList = []
+    for items in dataInfo:
+        tempDict = {}
+        for indexs in range(len(items)):
+            tempDict[outputPara[indexs]] = items[indexs]
+        dataList.append(tempDict)
+
+    jsonPackage = {"result": dataList}
+
+    return JsonResponse(jsonPackage)
+
+def knowledge_graph(request):
+    data, links = get_data_links()
+    d1 = json.dumps(data)
+    l1 = json.dumps(links)
+    return render(request, 'knowledge_graph.html', {'data': d1, 'links': l1})
+    # return render(request, 'knowledge_graph.html')
+
+global Node_ID
+
+class Node:  # 节点
+    def __init__(self, name, belong_to, desc,category):  # 初始化节点的属性
+        global Node_ID
+        self.name = name
+        self.id=Node_ID
+        self.belong_to = belong_to
+        self.desc = desc
+        self.category = category
+        self.rule_id=None
+        self.rule_type = None
+        Node_ID+=1
+class Edge:  # 边
+    def __init__(self, source, target, value):  # 初始化边的属性
+        self.source = source
+        self.target = target
+        self.value = value
+
+
+def get_data_links():
+    PMI_node_name="PMI规则"
+    feature_type=["孔","口框","槽" ,"凸台","筋","加工面","轮廓"]
+    data=[]
+    links=[]
+    global Node_ID
+    Node_ID=0
+    for type in feature_type:
+        node_type = Node(type, '特征', '特征', 0)
+        data.append(node_type)
+        sub_type_set=models.Feature.objects.filter(classFirst__icontains=type)
+        for sub_type in sub_type_set:
+            node_sub_type = Node(sub_type.classSecond, '特征', '特征', 1)
+            edge_sub_type = Edge(node_type.id, node_sub_type.id, '包含子特征')
+            data.append(node_sub_type)
+            links.append(edge_sub_type)
+            sub_type_rule_set = models.Rule.objects.filter(featTypeSecond__icontains=sub_type.classSecond)
+            for rule in sub_type_rule_set:
+                node_rule=Node(rule.name, '规则', '规则', 2)
+                node_rule.rule_type='工艺性审查知识'
+                node_rule.rule_id=rule.id
+                edge_rule=Edge(node_sub_type.id, node_rule.id,'包含规则')
+                data.append(node_rule)
+                links.append(edge_rule)
+                node_ruleTypeFirst=Node(rule.ruleTypeFirst, '规则属性', '规则大类', 3)
+                node_ruleTypeSecond = Node(rule.ruleTypeSecond, '规则属性', '规则小类', 3)
+                node_manuType=Node(rule.manuType, '规则属性', '加工方式', 3)
+                node_featPro = Node(rule.featPro, '规则属性', '特征属性', 3)
+                edge_ruleTypeFirst=Edge(node_rule.id, node_ruleTypeFirst.id,'规则大类')
+                edge_ruleTypeSecond = Edge(node_rule.id, node_ruleTypeSecond.id, '规则小类')
+                edge_manuType = Edge(node_rule.id, node_manuType.id, '加工方式')
+                edge_featPro = Edge(node_rule.id, node_featPro.id, '特征属性')
+                data.append(node_ruleTypeFirst)
+                data.append(node_ruleTypeSecond)
+                data.append(node_manuType)
+                data.append(node_featPro)
+                links.append(edge_ruleTypeFirst)
+                links.append(edge_ruleTypeSecond)
+                links.append(edge_manuType)
+                links.append(edge_featPro)
+    node_pmi_root = Node(PMI_node_name, '特征', '特征', 0)
+    data.append(node_pmi_root)
+    PMI_rule=models.PMIRule.objects.all()
+    for rule in PMI_rule:
+        node_sub_type = Node(rule.name, '规则', '规则', 2)
+        node_sub_type.rule_type='PMI标注审查知识'
+        node_sub_type.rule_id=rule.id
+        edge_pmi_rule = Edge(node_pmi_root.id,node_sub_type.id, '包含规则')
+        node_ruleType = Node(rule.ruleType, '规则属性', '规则类型', 3)
+        edge_ruleType = Edge(node_sub_type.id, node_ruleType.id, '规则类型')
+        node_annoType = Node(rule.annoType, '规则属性', '规则对应标注的类型', 3)
+        edge_annoType = Edge(node_sub_type.id, node_annoType.id, '规则对应标注的类型')
+        data.append(node_sub_type)
+        data.append(node_ruleType)
+        data.append(node_annoType)
+        links.append(edge_pmi_rule)
+        links.append(edge_ruleType)
+        links.append(edge_annoType)
+    node = []
+    for d in data:
+        da = {'value': {'belong_to': '', 'desc': '', }, 'category': 0}
+        da['name'] = d.name
+        da['id'] = d.id
+        da['value']['belong_to'] = d.belong_to
+        da['value']['desc'] = d.desc
+        da['value']['rule_type'] = d.rule_type
+        da['value']['rule_id'] = d.rule_id
+        da['category'] = int(d.category)
+        node.append(da)
+    # links = Edge.objects.all()
+    edge = []
+    for l in links:
+        li = {'source': '', 'target': '', 'category': 0, 'value': '', 'symbolSize': 10}
+        li['source'] = l.source
+        li['target'] = l.target
+        li['value'] = l.value
+        edge.append(li)
+    return node, edge
