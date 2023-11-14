@@ -2070,21 +2070,33 @@ def change_ruleParameter(request):
             ruleParameter_obj.save()
         else:  # 添加
             if request.POST.get('ruleParameter_paraType') == '单值':
-                ruleParameter_obj = \
-                    models.KnowledgeParaTable.objects.create(name=name,
-                                                             paraType=request.POST.get('ruleParameter_paraType'),
-                                                             remark=request.POST.get('ruleParameter_remark'),
-                                                             defaultValue=request.POST.get('ruleParameter_singleValue'))
+                ruleParameter_obj = models.KnowledgeParaTable.objects.create(
+                    name=name,
+                    paraType=request.POST.get('ruleParameter_paraType'),
+                    remark=request.POST.get('ruleParameter_remark'),
+                    defaultValue=request.POST.get('ruleParameter_singleValue'))
+            elif request.POST.get('ruleParameter_paraType') == '区间值_最大值':
+                ruleParameter_obj = models.KnowledgeParaTable.objects.create(
+                    name=name + "_maxValue",
+                    paraType=request.POST.get('ruleParameter_paraType'),
+                    remark=request.POST.get('ruleParameter_remark') + "_最大值",
+                    defaultValue=request.POST.get('ruleParameter_upperValue'))
+            elif request.POST.get('ruleParameter_paraType') == '区间值_最小值':
+                ruleParameter_obj = models.KnowledgeParaTable.objects.create(
+                    name=name + "_minValue",
+                    paraType=request.POST.get('ruleParameter_paraType'),
+                    remark=request.POST.get('ruleParameter_remark') + "_最小值",
+                    defaultValue=request.POST.get('ruleParameter_lowerValue'))
             else:
                 ruleParameter_obj = models.KnowledgeParaTable.objects.create(
                     name=name + "_minValue",
-                    paraType=request.POST.get('ruleParameter_paraType') + "_下界值",
-                    remark=request.POST.get('ruleParameter_remark') + "_下界值",
+                    paraType=request.POST.get('ruleParameter_paraType') + "_最小值",
+                    remark=request.POST.get('ruleParameter_remark') + "_最小值",
                     defaultValue=request.POST.get('ruleParameter_lowerValue'))
                 ruleParameter_obj = models.KnowledgeParaTable.objects.create(
                     name=name + "_maxValue",
-                    paraType=request.POST.get('ruleParameter_paraType') + "_上界值",
-                    remark=request.POST.get('ruleParameter_remark') + "_上界值",
+                    paraType=request.POST.get('ruleParameter_paraType') + "_最大值",
+                    remark=request.POST.get('ruleParameter_remark') + "_最大值",
                     defaultValue=request.POST.get('ruleParameter_upperValue'))
 
                 # tempStr = '[' + request.POST.get('ruleParameter_lowerValue') + ',' + request.POST.get(

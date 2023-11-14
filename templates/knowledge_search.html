@@ -88,7 +88,7 @@
             {% if type == '工艺性审查知识' %}
                 {% for obj_item in obj %}
                     <div style="margin-top:20px;">
-                        <div style="width: 70%; height:150px; float:left;">
+                        <div style="width: 40%; height:150px; float:left;">
                             <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}&class={{ class }}"
                                style="font-size: 20px">【{{ obj_item.code }}】{{ obj_item.name }}</a>
                             <p>【规则等级】{{ obj_item.ruleClass }}</p>
@@ -97,35 +97,36 @@
                             <p>【规则描述】{{ obj_item.content }}</p>
                             {#                            <p>【备注】{{ obj_item.remark }}</p>#}
                         </div>
-                        <div style="width: 30%; height:150px; float: right;">
+                        <div style="width: 30%; height:150px; float: left;">
                             {% if obj_item.img %}
                                 <img src="{{ obj_item.img.url }}" alt="{{ obj_item.img }}"
                                      style="width: 100%; height: 100%; object-fit: contain">
                             {% endif %}
                         </div>
                     </div>
-                    <div style="clear: both"></div>
+
+                    <div style="clear: both"><hr style="height: 20px; color: black"></div>
                 {% endfor %}
             {% endif %}
 
             {% if type == 'PMI标注审查知识' %}
                 {% for obj_item in obj %}
                     <div style="margin-top:30px;">
-                        <div style="width: 70%; height:150px; float:left;">
+                        <div style="width: 40%; height:150px; float:left;">
                             <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}&class={{ class }}"
                                style="font-size: 20px">【{{ obj_item.code }}】{{ obj_item.name }}</a>
                             <p>【标注类型】{{ obj_item.annoType }}</p>
                             <p>【规则类型】{{ obj_item.ruleType }}</p>
                             <p>【描述】{{ obj_item.content }}</p>
                         </div>
-                        <div style="width: 30%; height:150px; float: right;">
+                        <div style="width: 30%; height:150px; float: left;">
                             {% if obj_item.PMIImg %}
                                 <img src="{{ obj_item.PMIImg.url }}" alt="{{ obj_item.PMIImg }}"
                                      style="width: 100%; height: 100%; object-fit: contain">
                             {% endif %}
                         </div>
                     </div>
-                    <div style="clear: both"></div>
+                    <div style="clear: both"><hr style="height: 20px; color: black"></div>
                 {% endfor %}
             {% endif %}
 
@@ -134,7 +135,7 @@
         {% if type == '标准化知识和信息|制造资源-刀具' %}
                 {% for obj_item in obj %}
                     <div style="margin-top:20px;">
-                        <div style="width: 70%; height:150px; float:left;">
+                        <div style="width: 40%; height:150px; float:left;">
                             <a href="/knowledge_detail?type={{ type }}&content={{ content }}&id={{ obj_item.id }}&class={{ class }}"
                                style="font-size: 20px">【{{ obj_item.name }}】{{ obj_item.name }}</a>
                             <p>【刀具名称】{{ obj_item.name }}</p>
@@ -143,14 +144,14 @@
 
                             {#                            <p>【备注】{{ obj_item.remark }}</p>#}
                         </div>
-                        <div style="width: 30%; height:150px; float: right;">
+                        <div style="width: 30%; height:150px; float: left;">
                             {% if obj_item.cutterImg %}
                                 <img src="{{ obj_item.cutterImg.url }}" alt="{{ obj_item.cutterImg }}"
                                      style="width: 100%; height: 100%; object-fit: contain">
                             {% endif %}
                         </div>
                     </div>
-                    <div style="clear: both"></div>
+                    <div style="clear: both"><hr style="height: 20px; color: black"></div>
 
                 {% endfor %}
             {% endif %}

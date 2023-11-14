@@ -84,8 +84,8 @@
                                 <option value="" selected style="display: none"></option>
                                 <option value="单值">单值</option>
                                 <option value="区间值">区间值</option>
-                                <option value="区间值_上界值">区间值_上界值</option>
-                                <option value="区间值_下界值">区间值_下界值</option>
+                                <option value="区间值_最大值">区间值_最大值</option>
+                                <option value="区间值_最小值">区间值_最小值</option>
                             </select>
                         </div>
                     </div>
@@ -101,16 +101,16 @@
 
                     {# 参数值，区间值 #}
                     <div class="form-group" id="ruleParameter-upperValueDiv" style="display: none">
-                        <label for="ruleParameter-upperValue" class="col-sm-2 control-label">上界值</label>
+                        <label for="ruleParameter-upperValue" class="col-sm-2 control-label">最大值</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="ruleParameter-upperValue" placeholder="上界值"
+                            <input type="text" class="form-control" id="ruleParameter-upperValue" placeholder="最大值"
                                    name="ruleParameter_upperValue">
                         </div>
                     </div>
                     <div class="form-group" id="ruleParameter-lowerValueDiv" style="display: none">
-                        <label for="ruleParameter-lowerValue" class="col-sm-2 control-label">下界值</label>
+                        <label for="ruleParameter-lowerValue" class="col-sm-2 control-label">最小值</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="ruleParameter-lowerValue" placeholder="下界值"
+                            <input type="text" class="form-control" id="ruleParameter-lowerValue" placeholder="最小值"
                                    name="ruleParameter_lowerValue">
                         </div>
                     </div>
@@ -183,13 +183,13 @@
                 document.getElementById("ruleParameter-lowerValue").value = "";
                 document.getElementById("ruleParameter-upperValue").value = "";
             }
-            if (paraType == '区间值_上界值') {
+            if (paraType == '区间值_最大值') {
                 document.getElementById('ruleParameter-upperValueDiv').style.display = 'block';
                 document.getElementById('ruleParameter-lowerValueDiv').style.display = 'none';
                 document.getElementById("ruleParameter-lowerValue").value = "";
                 document.getElementById("ruleParameter-upperValue").value = "";
             }
-            if (paraType == '区间值_下界值') {
+            if (paraType == '区间值_最小值') {
                 document.getElementById('ruleParameter-upperValueDiv').style.display = 'none';
                 document.getElementById('ruleParameter-lowerValueDiv').style.display = 'block';
                 document.getElementById("ruleParameter-lowerValue").value = "";
