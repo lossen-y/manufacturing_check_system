@@ -7,154 +7,202 @@
     <script src="/static/echarts.js"></script>
     <script src="/static/jquery-3.3.1.js"></script>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div class="form-group" style="text-align: left;">
+        <label >特征筛选</label>
+        <input type="checkbox" name="fruits" value="孔" id = type0>孔
+        <input type="checkbox" name="fruits" value="口框" id = type1>口框
+        <input type="checkbox" name="fruits" value="槽" id = type2>槽
+        <input type="checkbox" name="fruits" value="凸台" id = type3>凸台
+        <input type="checkbox" name="fruits" value="筋" id = type4>筋
+        <input type="checkbox" name="fruits" value="加工面" id = type5>加工面
+        <input type="checkbox" name="fruits" value="轮廓" id = type6>轮廓
+
+{#        <select class="form-control" name="type" style="width: 15%; display: inline-block" id="firstDropdown">#}
+{#            <option value="孔">孔</option>#}
+{#            <option value="口框">口框</option>#}
+{#            <option value="槽">槽</option>#}
+{#            <option value="凸台">凸台</option>#}
+{#            <option value="筋">筋</option>#}
+{#            <option value="加工面">加工面</option>#}
+{#            <option value="轮廓">轮廓</option>#}
+{#            <option value="零件级">零件级</option>#}
+{#            <option value="全部" selected>全部</option>#}
+{#        </select>#}
+        <button type="submit" class="btn btn-success" onclick="generateGraph()">生成图谱</button>
+
+    </div>
     <div  class="tab-content" id="main" style="width: 1000px;height:800px;"></div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
-        // 指定图表的配置项和数据
-        var option = {
-            title: {
-                text: '知识图谱'
-            },
-            tooltip: {},
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
+        function generateGraph() {
+            var type = "";
+            for (i = 0; i < 7; i++) {
+                if (document.getElementById('type' + i).checked === true) {
+                    type+=document.getElementById('type' + i).value+ ",";
                 }
-            },
-            series: [
-                {
-                    type: 'graph', {# 表示这是画一个关系图 #}
-                    layout: 'force',{# 表示这是力导向的关系图 #}
-                    symbolSize: 45,
-                    focusNodeAdjacency: true,{# 表示鼠标移上结点或者箭头其相关元素是否高亮 #}
-                    draggable:true,{# 表示结点可以拖动 #}
-                    roam: true,{# 表示图形可以放大缩小 #}
-                    edgeSymbol: ['none', 'arrow'],
-                    categories: [{{# 用来保存不同分类结点的样式 #}
-                        name: '特征',
-                        symbolSize: 70,
-                        itemStyle: {
-                            normal: {
-                                color: "#abd7ab",
+            }
+            location.href = '/knowledge_graph?type=' + type;
 
+            {#$.get("/knowledge_graph/", {#}
+            {#        "type": type,#}
+            {#        "csrfmiddlewaretoken": '{{ csrf_token }}'#}
+            {#    }, //post函数到后端#}
+            {#    function (result, status) { //回调函数#}
+            {##}
+            {##}
+            {#    });#}
+
+
+        }
+
+            var myChart = echarts.init(document.getElementById('main'));
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '知识图谱'
+                },
+                tooltip: {},
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                series: [
+                    {
+                        type: 'graph', {# 表示这是画一个关系图 #}
+                        layout: 'force', {# 表示这是力导向的关系图 #}
+                        symbolSize: 45,
+                        focusNodeAdjacency: true, {# 表示鼠标移上结点或者箭头其相关元素是否高亮 #}
+                        draggable: true, {# 表示结点可以拖动 #}
+                        roam: true, {# 表示图形可以放大缩小 #}
+                        edgeSymbol: ['none', 'arrow'],
+                        categories: [{
+                            {# 用来保存不同分类结点的样式 #}
+                            name: '特征',
+                            symbolSize: 70,
+                            itemStyle: {
+                                normal: {
+                                    color: "#abd7ab",
+
+                                }
                             }
-                        }
-                    }, {
-                        name: '子特征',
-                        symbolSize: 50,
-                        itemStyle: {
-                            normal: {
-                                color: "#b8ccea",
+                        }, {
+                            name: '子特征',
+                            symbolSize: 50,
+                            itemStyle: {
+                                normal: {
+                                    color: "#b8ccea",
 
+                                }
                             }
-                        }
-                    }, {
-                        name: '规则',
-                        symbolSize: 40,
-                        itemStyle: {
+                        }, {
+                            name: '规则',
+                            symbolSize: 40,
+                            itemStyle: {
 
-                            normal: {
-                                color: "#e5c2d4",
+                                normal: {
+                                    color: "#e5c2d4",
 
+                                }
                             }
-                        }
-                    }, {
-                        name: '规则属性',
-                        symbolSize: 30,
-                        itemStyle: {
+                        }, {
+                            name: '规则属性',
+                            symbolSize: 30,
+                            itemStyle: {
 
-                            normal: {
-                                color: "#ffc9af",
+                                normal: {
+                                    color: "#ffc9af",
 
+                                }
                             }
-                        }
-                    }],
-                    label: {
-                        normal: {
-                            show: true,
-                            textStyle: {
-                                fontSize: 12,
-                            },
-                        }
-                    },
-                    force: {
-                        repulsion: 1000
-                    },
-                    edgeSymbolSize: [4, 50],
-                    edgeLabel: {
-                        normal: {
-                            show: true,{# 表示箭头会显示关系 #}
-                            textStyle: {
-                                fontSize: 10
-                            },
-                            formatter: "{c}"
-                        }
-                    },
-                    data: {{ data|safe  }},{# 传入结点信息 #}
-                    links: {{ links|safe  }},{# 传入关系箭头信息 #}
-                    lineStyle: {
-                        normal: {
-                            opacity: 0.9,
-                            width: 1.3,
-                            curveness: 0,
-                            color:"#262626",
+                        }],
+                        label: {
+                            normal: {
+                                show: true,
+                                textStyle: {
+                                    fontSize: 12,
+                                },
+                            }
+                        },
+                        force: {
+                            repulsion: 1000
+                        },
+                        edgeSymbolSize: [4, 50],
+                        edgeLabel: {
+                            normal: {
+                                show: true, {# 表示箭头会显示关系 #}
+                                textStyle: {
+                                    fontSize: 10
+                                },
+                                formatter: "{c}"
+                            }
+                        },
+                        data: {{ data|safe  }}, {# 传入结点信息 #}
+                        links: {{ links|safe  }}, {# 传入关系箭头信息 #}
+                        lineStyle: {
+                            normal: {
+                                opacity: 0.9,
+                                width: 1.3,
+                                curveness: 0,
+                                color: "#262626",
+                            }
                         }
                     }
-                }
-            ]
-        };
+                ]
+            };
 
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-        myChart.on("click", function (param){
-                setTimeout(function(){
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.on("click", function (param) {
+                setTimeout(function () {
                     if (isClick && param.dataType == "node") {//点击线是不能搜索的，因此判断触发点击事件的数据是否是节点
-                       if (option.series[0].data[param.dataIndex].value.desc=='规则'){
-                           var rule_id =option.series[0].data[param.dataIndex].value.rule_id;
-                           var rule_name=option.series[0].data[param.dataIndex].name;
-                           var rule_type=option.series[0].data[param.dataIndex].value.rule_type;
-                           window.location.href="/knowledge_detail?type="+rule_type+"&content="+"&id="+rule_id;
-                           {#$.post("/graph_rule_detail/", {#}
-                           {#        "rule_id": option.series[0].data[param.dataIndex].value.rule_id,#}
-                           {#        "rule_name": option.series[0].data[param.dataIndex].name,#}
-                           {#        "rule_type": option.series[0].data[param.dataIndex].value.rule_type,#}
-                           {#        "csrfmiddlewaretoken": '{{ csrf_token }}'#}
-                           {#    }, //post函数到后端#}
-                           {#    function (result, status) { //回调函数#}
-                           {#    window.location.href="../SystemInfoJsp/add_user.jsp?"+"id="+id+"&name="+name+"&grade="+grade;#}
-                           {##}
-                           {##}
-                           {#    });#}
+                        if (option.series[0].data[param.dataIndex].value.desc == '规则') {
+                            var rule_id = option.series[0].data[param.dataIndex].value.rule_id;
+                            var rule_name = option.series[0].data[param.dataIndex].name;
+                            var rule_type = option.series[0].data[param.dataIndex].value.rule_type;
+                            window.location.href = "/knowledge_detail?type=" + rule_type + "&content=" + "&id=" + rule_id;
+                            {#$.post("/graph_rule_detail/", {#}
+                            {#        "rule_id": option.series[0].data[param.dataIndex].value.rule_id,#}
+                            {#        "rule_name": option.series[0].data[param.dataIndex].name,#}
+                            {#        "rule_type": option.series[0].data[param.dataIndex].value.rule_type,#}
+                            {#        "csrfmiddlewaretoken": '{{ csrf_token }}'#}
+                            {#    }, //post函数到后端#}
+                            {#    function (result, status) { //回调函数#}
+                            {#    window.location.href="../SystemInfoJsp/add_user.jsp?"+"id="+id+"&name="+name+"&grade="+grade;#}
+                            {##}
+                            {##}
+                            {#    });#}
 
-                       }
+                        }
                         {#$("input[name=keyword]").val();#}
                         {#$rootScope.goSearchPage();#}
 
                     }
-                },500);
+                }, 500);
             });
-            myChart.on("mousedown", function (param){
+            myChart.on("mousedown", function (param) {
                 //因为mouseDownFun每次都会调用的，在这里重新初始化这个变量
                 isDrag = false;
                 //延迟100ms
-                timmerHandle = setTimeout(setDragTrue,200);
+                timmerHandle = setTimeout(setDragTrue, 200);
             });
-            myChart.on("mouseup", function (param){
-                if (!isDrag){
+            myChart.on("mouseup", function (param) {
+                if (!isDrag) {
                     //先把doMouseDownTimmer清除，不然200毫秒后setGragTrue方法还是会被调用的
                     clearTimeout(timmerHandle);
                     console.log("mouse up.");
                     isClick = true;
-                }else{
+                } else {
                     isDrag = false;
                     console.log("draging over.");
                     isClick = false;
                 }
             });
-            function setDragTrue()  {
+
+            function setDragTrue() {
                 isDrag = true;
             }
+
 
     </script>
 

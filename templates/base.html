@@ -32,7 +32,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'knowledge_graph' %}" methods="GET" style="color:#fff">知识图谱</a></li>
+                <li><a href= '/knowledge_graph?type=孔, 口框, 槽, 凸台, 筋, 加工面, 轮廓'  methods="GET" style="color:#fff">知识图谱</a></li>
 
 
                 <li><a data-toggle="modal" data-target="#myModal" style="color:#fff; cursor: pointer">修改密码</a></li>
@@ -74,27 +74,29 @@
             </div>
             {#标准化知识和信息#}
             <div class="nav-item">
-                <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white "
-                   href="#pp3">标准化知识和信息</a>
-                <ul class="collapse list-group" id="pp3" style="margin-bottom: 0px">
+{#                <ul data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white "#}
+{#                   href="#pp3">标准化知识和信息</ul>#}
+{#                <ul class="collapse list-group" id="pp3" style="margin-bottom: 0px">#}
+                <ul data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white "
+                   >标准化知识和信息</ul>
                     <li class="collapse list-group-item"><a href="{% url 'standard_struction' %}">标准结构</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'standardize' %}">标准与规范</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'standard_process' %}">标准工艺</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'material' %}">材料信息</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'resource' %}">制造资源</a></li>
-                </ul>
+{#                </ul>#}
             </div>
 
             <div class="nav-item">
                 <a data-toggle="collapse" class="list-group-item" style="background-color: #4682B4; color: white "
-                   href="#pp4">规则配置</a>
-                <ul class="collapse list-group" id="pp4" style="margin-bottom: 0px">
+                   >规则配置</a>
+{#                <ul class="collapse list-group" id="pp4" style="margin-bottom: 0px">#}
                     <li class="collapse list-group-item"><a href="{% url 'data_dictionary' %}">数据字典</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'rule_parameter' %}">规则参数</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'table_function' %}">查表函数</a></li>
                     <li class="collapse list-group-item"><a href="{% url 'script_function' %}">脚本函数</a></li>
 {#                    <li class="collapse list-group-item"><a href="{% url 'script_function' %}">脚本函数</a></li>#}
-                </ul>
+{#                </ul>#}
             </div>
         </div>
     </div>

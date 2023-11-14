@@ -1378,7 +1378,6 @@ def delete_TableFunction(request):
 
 
 def edit_TableFunction(request):
-
     error_msg = ''
     if request.method == 'POST':
         edit_id = request.POST.get('TableFunction_id')
@@ -1411,10 +1410,11 @@ def edit_TableFunction(request):
     input_para_list = TableFunction_obj.inputPara.split(',')
     output_para_list = TableFunction_obj.outputPara.split(',')
     field_of_input_para_list = TableFunction_obj.fieldOfInputPara.split(',')
-    inputPara_and_field = dict(zip(input_para_list,field_of_input_para_list))
+    inputPara_and_field = dict(zip(input_para_list, field_of_input_para_list))
     return render(request, 'old/edit_TableFunction.html',
                   {'TableFunction': TableFunction_obj, 'error_msg': error_msg, 'functionHead': functionHead,
-                   'field_list': field_list, 'outputPara_list':output_para_list, 'inputPara_and_field':inputPara_and_field,
+                   'field_list': field_list, 'outputPara_list': output_para_list,
+                   'inputPara_and_field': inputPara_and_field,
                    })
 
     # if request.method == 'POST':
@@ -1575,26 +1575,58 @@ def index(request):
 #               models.PMIRule.objects.filter(annoType__icontains=contents)
 #     return render(request, 'knowledge_search.html', {'obj': obj, 'type': type, 'content': contents, 'class': classes})
 
+
+# def knowledge_graph_search(request):
+#     type = request.POST.get('type')
+#     type_list=type.split(",")
+#     if type_list[-1]=='':
+#         type_list.pop()
+#     data, links = get_data_links(type_list)
+#     d1 = json.dumps(data)
+#     l1 = json.dumps(links)
+#     result = []
+#     result.append(d1)
+#     result.append(l1)
+#     result_json = {'data': d1, 'links': l1}
+#     return JsonResponse(result_json)
+#     # return render(request, 'knowledge_graph.html')
+
+
 def knowledge_graph(request):
-    data, links = get_data_links()
+    # if request.method == 'POST':
+    #     type = request.POST.get('type')
+    #     type_list = type.split(",")
+    #     if type_list[-1] == '':
+    #         type_list.pop()
+    # else:
+    #     type_list = ["孔", "口框", "槽", "凸台", "筋", "加工面", "轮廓"]
+    type=request.GET.get('type')
+    type_list = type.split(",")
+    if type_list[-1] == '':
+        type_list.pop()
+    data, links = get_data_links(type_list)
     d1 = json.dumps(data)
     l1 = json.dumps(links)
     return render(request, 'knowledge_graph.html', {'data': d1, 'links': l1})
     # return render(request, 'knowledge_graph.html')
 
+
 global Node_ID
 
+
 class Node:  # 节点
-    def __init__(self, name, belong_to, desc,category):  # 初始化节点的属性
+    def __init__(self, name, belong_to, desc, category):  # 初始化节点的属性
         global Node_ID
         self.name = name
-        self.id=Node_ID
+        self.id = Node_ID
         self.belong_to = belong_to
         self.desc = desc
         self.category = category
-        self.rule_id=None
+        self.rule_id = None
         self.rule_type = None
-        Node_ID+=1
+        Node_ID += 1
+
+
 class Edge:  # 边
     def __init__(self, source, target, value):  # 初始化边的属性
         self.source = source
@@ -1602,19 +1634,20 @@ class Edge:  # 边
         self.value = value
 
 
-def get_data_links():
-    PMI_node_name="PMI规则"
-    Part_node_name="零件级"
-    feature_type=["孔","口框","槽" ,"凸台","筋","加工面","轮廓"]
-    data=[]
-    links=[]
+def get_data_links(inputtype):
+    PMI_node_name = "PMI规则"
+    Part_node_name = "零件级"
+    # feature_type=["孔","口框","槽" ,"凸台","筋","加工面","轮廓"]
+    feature_type = inputtype
+    data = []
+    links = []
     global Node_ID
-    Node_ID=0
-    #特征级
+    Node_ID = 0
+    # 特征级
     for type in feature_type:
         node_type = Node(type, '特征', '特征', 0)
         data.append(node_type)
-        sub_type_set=models.Feature.objects.filter(classFirst__icontains=type)
+        sub_type_set = models.Feature.objects.filter(classFirst__icontains=type)
         for sub_type in sub_type_set:
             node_sub_type = Node(sub_type.classSecond, '特征', '特征', 1)
             edge_sub_type = Edge(node_type.id, node_sub_type.id, '包含子特征')
@@ -1622,17 +1655,17 @@ def get_data_links():
             links.append(edge_sub_type)
             sub_type_rule_set = models.Rule.objects.filter(featTypeSecond__icontains=sub_type.classSecond)
             for rule in sub_type_rule_set:
-                node_rule=Node(rule.name, '规则', '规则', 2)
-                node_rule.rule_type='工艺性审查知识'
-                node_rule.rule_id=rule.id
-                edge_rule=Edge(node_sub_type.id, node_rule.id,'包含规则')
+                node_rule = Node(rule.name, '规则', '规则', 2)
+                node_rule.rule_type = '工艺性审查知识'
+                node_rule.rule_id = rule.id
+                edge_rule = Edge(node_sub_type.id, node_rule.id, '包含规则')
                 data.append(node_rule)
                 links.append(edge_rule)
-                node_ruleTypeFirst=Node(rule.ruleTypeFirst, '规则属性', '规则大类', 3)
+                node_ruleTypeFirst = Node(rule.ruleTypeFirst, '规则属性', '规则大类', 3)
                 node_ruleTypeSecond = Node(rule.ruleTypeSecond, '规则属性', '规则小类', 3)
-                node_manuType=Node(rule.manuType, '规则属性', '加工方式', 3)
+                node_manuType = Node(rule.manuType, '规则属性', '加工方式', 3)
                 node_featPro = Node(rule.featPro, '规则属性', '特征属性', 3)
-                edge_ruleTypeFirst=Edge(node_rule.id, node_ruleTypeFirst.id,'规则大类')
+                edge_ruleTypeFirst = Edge(node_rule.id, node_ruleTypeFirst.id, '规则大类')
                 edge_ruleTypeSecond = Edge(node_rule.id, node_ruleTypeSecond.id, '规则小类')
                 edge_manuType = Edge(node_rule.id, node_manuType.id, '加工方式')
                 edge_featPro = Edge(node_rule.id, node_featPro.id, '特征属性')
@@ -1673,12 +1706,12 @@ def get_data_links():
 
     node_pmi_root = Node(PMI_node_name, '特征', '特征', 0)
     data.append(node_pmi_root)
-    PMI_rule=models.PMIRule.objects.all()
+    PMI_rule = models.PMIRule.objects.all()
     for rule in PMI_rule:
         node_sub_type = Node(rule.name, '规则', '规则', 2)
-        node_sub_type.rule_type='PMI标注审查知识'
-        node_sub_type.rule_id=rule.id
-        edge_pmi_rule = Edge(node_pmi_root.id,node_sub_type.id, '包含规则')
+        node_sub_type.rule_type = 'PMI标注审查知识'
+        node_sub_type.rule_id = rule.id
+        edge_pmi_rule = Edge(node_pmi_root.id, node_sub_type.id, '包含规则')
         node_ruleType = Node(rule.ruleType, '规则属性', '规则类型', 3)
         edge_ruleType = Edge(node_sub_type.id, node_ruleType.id, '规则类型')
         node_annoType = Node(rule.annoType, '规则属性', '规则对应标注的类型', 3)
@@ -1709,6 +1742,7 @@ def get_data_links():
         li['value'] = l.value
         edge.append(li)
     return node, edge
+
 
 # def graph_rule_detail(request):
 #     if request.method == 'POST':
@@ -2305,7 +2339,8 @@ def API_TableFunction(request):
         function = json_data["function"]
         argsDict = json_data["args"]
     sql = models.TableFunction.objects.filter(functionName__icontains=function).values("sql")[0]['sql']
-    outputPara = models.TableFunction.objects.filter(functionName__icontains=function).values("outputPara")[0]['outputPara'].split(
+    outputPara = models.TableFunction.objects.filter(functionName__icontains=function).values("outputPara")[0][
+        'outputPara'].split(
         ',')
     print(outputPara)
     # sql参数替换
@@ -2328,4 +2363,3 @@ def API_TableFunction(request):
     jsonPackage = {"result": dataList}
 
     return JsonResponse(jsonPackage)
-
