@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    标准化知识和信息|标准结构
+    标准化知识和信息|标准特征
 {% endblock title %}
 
 {% block main %}
-    <h2 class="page-header" style="border-bottom: none">标准化知识和信息|标准结构</h2>
+    <h2 class="page-header" style="border-bottom: none">标准化知识和信息|标准特征</h2>
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a href="#featureStruction" data-toggle="tab">典型特征结构</a></li>
 {#        <li><a href="#featureStruction" data-toggle="tab">典型特征结构</a></li>#}
@@ -50,7 +50,7 @@
                     border-collapse: collapse; /* 合并单元格 */
                     }
                     th {
-                        font-size: 10px;
+                        font-size: 15px;
                         border: 1px solid black; /* 设置边框 */
                         padding: 10px; /* 设置内边距 */
                         height: 20px; /* 设置行高 */
@@ -60,19 +60,19 @@
                         max-width: 300px;
                     }
                     td{
-                        font-size: 10px;
+                        font-size: 15px;
                         height: 20px; /* 设置行高 */
                         max-height:30px;
                         {#width: 50px;#}
                         max-width: 300px;
-                        min-width:60px;
+                        min-width:100px;
                         overflow:hidden;text-overflow:ellipsis;
                         white-space:nowrap; /* 超出部分用省略号 */
 
 
                     }
                     td.buttentest{
-                        width: 200px;
+                        width: 100px;
                         max-width: 300px;
                     }
                     a{
@@ -89,28 +89,29 @@
                     <table class="table table-bordered" id="table">
                         <thead>
                         <tr>
-                            <th>数据操作</th>
                             <th>特征大类</th>
                             <th>特征小类</th>
                             <th>特征编号</th>
                             <th>示意图片路径</th>
                             <th>备注</th>
+                            <th>数据操作</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for Feature in Feature_list %}
                             <tr>
+
+                                <td>{{ Feature.classFirst }}</td>
+                                <td>{{ Feature.classSecond }}</td>
+                                <td>{{ Feature.paraDef }}</td>
+                                <td>{{ Feature.imgPath }}</td>
+                                <td>{{ Feature.remark }}</td>
                                 <td class="buttentest">
                                     <a class="btn btn-danger" href="{% url 'delete_Feature' Feature.id %}"><i
                                             class="fa fa-trash-o fa-fw"></i>删除</a>
                                     <a class="btn btn-info" href="{% url 'edit_Feature' Feature.id %}"><i
                                             class="fa fa-pencil fa-fw"></i>查看并编辑</a>
                                 </td>
-                                <td>{{ Feature.classFirst }}</td>
-                                <td>{{ Feature.classSecond }}</td>
-                                <td>{{ Feature.paraDef }}</td>
-                                <td>{{ Feature.imgPath }}</td>
-                                <td>{{ Feature.remark }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
