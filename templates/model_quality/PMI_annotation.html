@@ -30,6 +30,34 @@
                         </div>
 
                     </div>
+                <style>
+                    table {
+                    border-collapse: collapse; /* 合并单元格 */
+                    }
+                    th {
+                        font-size: 15px;
+                        border: 1px solid black; /* 设置边框 */
+                        padding: 10px; /* 设置内边距 */
+                        height: 20px; /* 设置行高 */
+                        min-width:100px;
+                        max-height:50px;
+                        width: 50px;
+                        max-width: 250px;
+                    }
+                    td{
+                        font-size: 15px;
+                        height: 20px; /* 设置行高 */
+                        max-height:30px;
+                        {#width: 50px;#}
+                        max-width: 250px;
+                        min-width:100px;
+                        overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap; /* 超出部分用省略号 */
+
+                    }
+
+                </style>
+            <div style="width:100%; height:100%; overflow:scroll;">
 
                     <table class="table table-bordered">
                         <thead>
@@ -63,9 +91,7 @@
                         </tbody>
                     </table>
 
-                </div>
-            </div>
-    </div>
+
     <script>
         var chosenId = -1
         var rows = document.getElementsByTagName("tr")
@@ -98,4 +124,8 @@
             location.href = "/modelQuality/PMI?content=" + searchContent
             }
     </script>
+             </div>
+                            </div>
+            </div>
+    </div>
 {% endblock main %}
